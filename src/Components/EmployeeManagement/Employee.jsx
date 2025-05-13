@@ -7,9 +7,7 @@ import {
   editEmployeeStatus,
 } from "../../services/EmpManagement/apiCompanyProfile";
 import { HandleDeleteById } from "../../services/DeleteSwal/HandleDeleteById";
-import { hasRightsPermission } from "../../Private/premissionChecker";
 import crmStore from "../../Utils/crmStore";
-import ValidationCard from "../../ui/ValidationCard";
 import { getEmployeeIVRDetails } from "../../services/IVR/apiTeleCalling";
 import { deleteEmployeeFromIVR } from "../../services/IVR/apiTeleCalling";
 import * as XLSX from "xlsx";
@@ -305,10 +303,10 @@ const Employee = () => {
                           <td className="py-3 px-4">{employee.email}</td>
                           <td className="py-3 px-4">{employee.mobileno}</td>
                           <td className="py-3 px-4">
-                            {employee.department_name}
+                            {employee.department}
                           </td>
                           <td className="py-3 px-4">
-                            {employee.designation_name}
+                            {employee.designation}
                           </td>
                           <td className="py-3 px-4">
                             {employee.date_of_joining}
