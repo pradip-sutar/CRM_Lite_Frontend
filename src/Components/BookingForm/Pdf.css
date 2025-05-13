@@ -1,0 +1,126 @@
+
+
+ 
+  @media (max-width: 321px) { 
+    .group_Pdf_Form {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between;
+        font-size: 10px !important;
+      }
+    
+      .group_Pdf_Form > div {
+        flex: 0 0 48%; 
+        margin-bottom: 16px; 
+      }
+    
+      .group_Pdf_Form .full-width {
+        flex: 0 0 100%; 
+      }
+  }
+
+  @media (max-width: 426px) { 
+    .group_Pdf_Form {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between;
+        font-size: 14px;
+      }
+    
+      .group_Pdf_Form > div {
+        flex: 0 0 48%; 
+        margin-bottom: 16px;
+      }
+    
+      .group_Pdf_Form .full-width {
+        flex: 0 0 100%; 
+      }
+
+      .group_Pdf_Form_col{
+        flex-direction: row !important;
+      }
+  }
+
+  @media (max-width: 576px) {
+    .responsive-input-PDF {
+      width: 200px !important;
+    }
+    .responsive-para-PDF{
+      text-wrap: wrap !important;
+      font-size: 15px;
+    }
+    .responsive-m0-pdf{
+      margin-left: 0 !important;
+    }
+    .responsive-checkList-pdf{
+      text-align: center;
+      text-wrap: noWrap !important;
+    }
+    
+  }
+
+  @media (max-width: 769px) {
+    .group_Pdf_Form {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between;
+        font-size: 15px;
+        margin-bottom: 0 !important; 
+      }
+    
+      .group_Pdf_Form > div {
+        flex: 0 0 48%; 
+        margin-bottom: 0; 
+      }
+
+      
+    
+      .group_Pdf_Form .full-width {
+        flex: 0 0 100%; 
+      }
+      .responsive-m0-pdf{
+        margin-left: 0 !important;
+      }
+      .responsive-para-PDF{
+        text-wrap: wrap !important;
+        font-size: 15px;
+      }
+     
+    
+  }
+
+  @media (max-width: 1024px) {
+    .group_Pdf_Form {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: space-between;
+      }
+    
+      .group_Pdf_Form > div {
+        flex: 0 0 49%; 
+        margin-bottom: 16px;
+      }
+    
+      .group_Pdf_Form .full-width {
+        flex: 0 0 100%; 
+      }
+  }
+  @media (min-width: 1025px) {
+    .group_Pdf_Form {
+      flex-direction: row;
+    }
+  }
+
+
+
+  /* .Sec-FormPdf {
+    padding: 15px;
+  }
+  .form-label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  .PDF-divider {
+    border: 1px solid #ddd;
+    margin: 20px 0;
+  } */

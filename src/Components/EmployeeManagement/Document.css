@@ -1,0 +1,54 @@
+.toggle-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-container {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  height: 34px;
+  margin: 0 10px;
+}
+
+.toggle-switch {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.toggle-switch:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-switch {
+  background-color: #4caf50;
+}
+
+input:checked + .toggle-switch:before {
+  transform: translateX(26px);
+}
+
+.toggle-container input {
+  display: none;
+}
+
+.ml {
+  margin-left: 15px;
+}
+
+

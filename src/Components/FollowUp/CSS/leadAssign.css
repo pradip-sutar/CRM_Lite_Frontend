@@ -1,0 +1,70 @@
+.css-x8zyyx-MuiPaper-root{
+    max-width: 76rem;
+    width: 73rem;
+}
+
+
+
+/* Responsive styles for different screen sizes */
+
+/* For screens with max-width 768px */
+@media (max-width: 768px) {
+    th, td {
+        font-size: 16px;
+        padding: 6px;
+    }
+
+    .container-xxl {
+        padding: 10px;
+    }
+
+
+    /* .card-header .btn {
+        font-size: 14px;
+    } */
+}
+
+/* For screens with max-width 426px */
+@media (max-width: 426px) {
+    th, td {
+        font-size: 14px;
+        padding: 4px;
+    }
+    .BoldFont-Assign{
+        font-size: 17px !important;
+    }
+.Font-Assign{
+    font-size: 14px !important;
+}
+    .container-xxl {
+        padding: 8px;
+    }
+
+    .card-header h5 {
+        font-size: 16px;
+    }
+
+    .table-responsive {
+        overflow-x: scroll;
+    }
+}
+
+/* For screens with max-width 321px */
+@media (max-width: 321px) {
+    th, td {
+        font-size: 12px;
+        padding: 2px;
+    }
+
+    .container-xxl {
+        padding: 5px;
+    }
+
+    .card-header h5 {
+        font-size: 14px;
+    }
+
+    .table-responsive {
+        overflow-x: scroll;
+    }
+}

@@ -1,0 +1,80 @@
+@media (max-width: 699px) {
+    .InitiatedComponentbox {
+        padding: 12px !important;
+        min-height: 84% !important;
+        padding-bottom: 0 !important;
+        gap: 5px;
+        /* overflow: auto !important; */
+    }
+
+    .InitiatedComponentList {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 3rem;
+        white-space: nowrap; /* Prevents text wrapping, keeping items in a single line */
+        /* overflow-x: auto; Allows horizontal scrolling for items if they exceed container width */
+        flex-wrap: nowrap;
+
+    }
+}
+@media (max-width: 567px) {
+    .InitiatedComponentbox{
+        /* width: 260px !important; */
+        padding: 12px !important;
+        /* overflow: auto !important; */
+        min-height: 84% !important;
+        padding-bottom: 0 !important;
+        /* overflow-x: scroll !important; */
+    }
+    .InitiatedComponentList{
+        display: flex !important;
+        flex-direction: column  !important;
+        
+    }
+    }
+
+@media (max-width: 426px) {
+    .InitiatedComponentbox{
+        /* width: 260px !important; */
+        padding: 12px !important;
+        /* overflow: auto !important; */
+        min-height: 84% !important;
+        padding-bottom: 0 !important;
+        /* overflow-x: scroll !important; */
+    }
+    .InitiatedComponentList{
+        display: flex !important;
+        flex-direction: column  !important;
+        gap: 0rem !important;
+        
+    }
+    }
+
+
+@media (max-width: 376px) {
+    .InitiatedComponentbox{
+        width: 211px !important;
+        padding: 12px !important;
+        overflow: auto !important;
+        min-height: 84% !important;
+        padding-bottom: 0 !important;
+    }
+    .InitiatedComponentList{
+        display: flex !important;
+        flex-direction: column  !important;
+    }
+    }
+
+@media (max-width: 321px) {
+.InitiatedComponentbox{
+    width: 172px !important;
+    padding: 12px !important;
+    overflow: auto !important;
+    min-height: 84% !important;
+    padding-bottom: 0 !important;
+}
+.InitiatedComponentList{
+    display: flex !important;
+    flex-direction: column  !important;
+}
+}

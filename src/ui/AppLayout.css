@@ -1,0 +1,11 @@
+.content-wrapper {
+  min-height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  height: 'auto'!important; 
+  max-height: 'none' !important; 
+  overflow-y: 'auto' !important;
+}
+.main-content {
+  flex: 8; 
+}

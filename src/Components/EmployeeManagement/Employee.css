@@ -1,0 +1,18 @@
+.content-wrapper {
+  /* padding: 20px; */
+  padding-top: 10px;
+  
+}
+
+.us .form-label {
+  margin-bottom: 10px;
+}
+
+.us .form-control {
+  margin-bottom: 15px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}

@@ -1,0 +1,88 @@
+new_document.css
+
+/* Base styles */
+.container-xxl {
+    padding: 1rem;
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.DocHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+    .container-xxl {
+        padding: 0.5rem;
+    }
+
+    .breadDoc {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: center;
+        text-wrap: nowrap; 
+    
+    }
+
+    .DocHeader h5 {
+        font-size: 1.25rem;
+    }
+
+    .card-body {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container-xxl {
+        padding: 0.25rem;
+    }
+
+    .DocHeader h5 {
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 0.25rem;
+    }
+
+    .table-container {
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 376px) {
+    .container-xxl {
+        padding: 0.125rem;
+    }
+
+    .DocHeader h5 {
+        font-size: 0.875rem;
+    }
+
+    .card-body {
+        padding: 0.125rem;
+    }
+
+    .table-container {
+        font-size: 0.75rem;
+    }
+    .breadDoc{
+        font-size: 0.99rem !important;
+        text-wrap-mode: wrap;
+    }
+}

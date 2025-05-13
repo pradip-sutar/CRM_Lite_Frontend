@@ -1,0 +1,888 @@
+/* .logo{
+    width: 10rem;
+} */
+/* .col-md-2 {
+    width: 100%;
+} */
+.BookingHeader {
+    padding: 0px 10px 10px 30px;
+    text-align: right;
+    font-size: 11px;
+    font-weight: 400;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  
+  .App-Title {
+    text-align: left;
+    font-size: 24px;
+  }
+  
+  .sec-logo{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .logoClass {
+    width: 173px;
+    margin-right: 20px;
+    margin-left: 200px;
+  }
+  .logo{
+    width: 173px;
+    margin-right: 20px;
+    margin-left: 200px;
+  }
+  
+  .box-applicant {
+    width: 153%;
+    height: 214px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 11px;
+  }
+  .applicant-row {
+    display: flex;
+    justify-content: space-between; 
+    gap: 45px; 
+    margin-left: 272px;
+  }
+  
+  .group-Form.col-md-4 {
+    flex: 1; 
+  }
+  
+  .instrucClass {
+    font-size: 15px;
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .instrucClass ul {
+    padding-left: 20px;
+  }
+  
+  .instrucClass li {
+    margin-bottom: 5px;
+  }
+  
+ 
+  .section-form {
+    margin: 20px 0;
+    text-align: left;
+  }
+  
+  .title-form {
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .controlFoorm {
+    border-radius: 7px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .inliIput .col-md-2,
+  .inliIput .col-md-3,
+  .inliIput .col-md-4 {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .group-Form {
+    margin-bottom: 15px;
+  }
+  
+  .inline-radio {
+  margin-right: 5px;
+  }
+  
+  .inliIput label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  
+  .divider {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: grey;
+  }
+  .page-break {
+      page-break-after: always;
+  }
+  
+  .footer {
+          padding: 0px;
+          margin: 0;
+      }
+  
+      .terms-left, .terms-right {
+    padding: 15px;
+  }
+  
+  .terms-right ul li{
+      list-style: none;
+  }
+  
+  .icon-class {
+  font-size: 1.2em;
+  }
+  .dropdown-container-Box {
+  position: relative;
+  width: 100%;
+  }
+  
+
+  
+  .dropdown-container-Box::after {
+  content: "▼"; 
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+  }
+.width42{
+    width: 42rem;
+}
+
+@media (max-width: 769px) {
+    .BookingHeader {
+        text-align: center;
+        padding: 10px;
+      }
+    .container-Box {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .flex-d {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    /* .logoClass{
+        width: 19rem;
+    } */
+    .logoClass {
+        margin: 0 auto 10px;
+      }
+    .logo {
+        margin: 0 auto 10px;
+      }
+    .title-form {
+        font-size: 20px;
+      }
+      
+    .header.BookingHeader,
+    .sec-logo,
+    .instrucClass,
+    .section-form,
+    .title-form,
+    .group-Form,
+    .inliIput {
+        display: flex;
+        flex-direction: column;
+        align-items: left !important;
+    }
+    .section-form {
+        margin: 10px 0;
+      }
+    .instrucClass {
+        font-size: 14px;
+      }
+
+    .flex-d label {
+        margin-right: auto !important;
+    }
+    
+    .controlFoorm {
+        font-size: 14px;
+      }
+
+      .controlFoorm {
+        font-size: 14px;
+      }
+    .sec-logo .col-md-2,
+    .sec-logo .col-md-10,
+    .applicant-row .col-md-3,
+    .group-Form .col-md-6,
+    .group-Form .col-md-4,
+    .group-Form .col-md-3,
+    .group-Form .col-md-2,
+    .group-Form .col-md-1 {
+        width: 100%;
+    }
+    .applicant-row {
+      flex-direction: column;
+      margin-left: 0;
+    }
+
+    .box-applicant {
+        width: 100%;
+    }
+
+    .dropdown-container-Box {
+        width: 100%;
+    }
+
+    .flex-d {
+        flex-direction: column;
+    }
+    .row .form-check-input {
+        display: flex !important;
+        flex-direction: row !important;
+       
+    }
+    .putInli .putInli-col{
+        width: 15% !important;
+
+    }
+    .putInli .putInli-col-2{
+        width: 22% !important;
+    }
+     .TitleSty {
+        margin-right: 15px !important;
+        margin-top: -5px;
+    }
+    .mar40{
+        margin-left: 0 !important;
+    }
+    .refer-col-3{
+        width: 26% !important;
+    }
+    .refer-col-2{
+        width: 18% !important;
+    }
+    .additional {
+        align-items: unset !important;
+    }
+    .finan{
+    width: 13.4rem
+    }   
+    .custom-max-width{
+      max-width: 30%;
+    }
+    .ofClass{
+        width: 19rem;
+    }
+    .subpro{
+        padding-right: 23px;
+    padding-top: 15px;
+    height: 48px;
+    }
+    .agentDet{
+        margin-left: 0 !important;
+        width: 90%;
+    }
+    .ofField{
+    width: 50%;
+    margin-right: auto;
+    }
+}
+
+@media (max-width: 426px) {
+    .BookingHeader {
+        font-size: 10px;
+      }
+    .container-Box {
+        display: flex;
+        flex-direction: column;
+    }
+    /* .logoClass{
+        width: 19rem;
+    } */
+   .marginL0{
+    margin-left: 0 !important;
+   }
+   .marginL2{
+    margin-left: 2rem  !important;
+   }
+   .marginL4{
+    margin-left: 0rem !important;
+   }
+   /* .marginL5{
+    margin-left: 5rem !important;
+} */
+   /* .marginL16{
+    margin-left: 16rem !important;
+   } */
+    .header.BookingHeader,
+    .sec-logo,
+    .instrucClass,
+    .section-form,
+    .title-form,
+    .group-Form,
+    .inliIput {
+        display: flex;
+        flex-direction: column;
+        align-items: left !important;
+    }
+
+    .sec-logo .col-md-2,
+    .sec-logo .col-md-10,
+    .applicant-row .col-md-3,
+    .group-Form .col-md-6,
+    .group-Form .col-md-4,
+    .group-Form .col-md-3,
+    .group-Form .col-md-2,
+    .group-Form .col-md-1 {
+        width: 100%;
+    }
+
+    .box-applicant {
+        width: 100%;
+        font-size: 10px;
+    }
+
+    .dropdown-container-Box {
+        width: 100%;
+    }
+
+    .flex-d {
+        flex-direction: column;
+    }
+    .row.form-group.group-Form.inline-inputs.inliIput {
+        flex-direction: row !important;
+    }
+    
+    .putInli .putInli-col{
+        width: 23% !important;
+        /* margin-right: 4rem; */
+    }
+    .putInli .putInli-col-2{
+        width: 30% !important;
+        /* margin-right: 4rem; */
+    }
+     .TitleSty {
+        margin-right: 15px !important;
+        margin-top: -5px;
+    }
+    .mar40{
+        margin-left: 0 !important;
+    }
+    .refer-col-3{
+        width: 26% !important;
+    }
+    .refer-col-2{
+        width: 18% !important;
+    }
+    .title-form {
+        font-size: 18px;
+      }
+  
+      .logoClass {
+        width: 150px;
+      }
+  
+   
+  
+      .instrucClass {
+        font-size: 12px;
+      }
+  
+  
+      .controlFoorm {
+        font-size: 12px;
+      }
+    .additional {
+        align-items: unset !important;
+    }
+    .finan{
+    width: 13.4rem;
+    /* margin-left:160px !important; */
+    text-wrap: nowrap
+    }   
+    .Book{
+        width: 13.4rem;
+        margin-left:135px;
+        /* text-wrap: nowrap !important */
+    }
+    .ofClass{
+        width: 19rem;
+    }
+    .subpro{
+        padding-right: 23px;
+    padding-top: 15px;
+    height: 48px;
+    }
+    .agentDet{
+        margin-left: 0 !important;
+        width: 90%;
+        align-items: baseline !important;
+    }
+    .ofField{
+        width: 269%;
+        padding: 1px;
+        }
+    .SonDaughter{
+        /* margin-left: 0 !important; */
+        padding: 1;
+    }
+    .FULLN{
+        align-items: flex-start !important;
+    width: 24rem !important;
+    }
+    .width22{
+        width: 20rem;
+    }
+    .wiiid{
+        margin-left: 3px !important;
+        /* text-wrap: wrap; */
+        width: 23rem !important;
+        text-Wrap: wrap !important;
+    }
+
+    .row.directionCol {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    
+      .row.directionCol .flexxiD {
+        flex-direction: column;
+        width: 100%;
+      }
+    
+      .row.directionCol .refer-col-3,
+      .row.directionCol .refer-col-2 {
+        width: 100%;
+        margin-bottom: 8px; 
+        margin-left: 1rem;
+      }
+    
+      .row.directionCol .form-check-input {
+        margin-right: 8px; 
+      }
+    
+      .flexxiD .lab {
+        margin-left: 3rem;
+        text-wrap: nowrap !important; 
+      }
+   
+
+      .row.forrms-gro {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 0 !important; /* Prevent horizontal overflow */
+      }
+    
+      .row.forrms-gro .ddFlex {
+        flex-direction: column;
+        width: 100%;
+      }
+    
+      .row.forrms-gro .col-md-2,
+      .row.forrms-gro .col-md-5,
+      .row.forrms-gro .col-md-8 {
+        width: 100%; /* Full width for stacking */
+        margin-bottom: 8px; /* Spacing between rows */
+      }
+    
+      .row.forrms-gro .col-md-8 .form-control {
+        width: 100%; /* Ensure input fields stretch to full width */
+      }
+    
+      .row.forrms-gro label {
+        margin-right: 8px; /* Minimal spacing between label and input */
+        text-wrap: wrap; /* Adjust wrapping for labels */
+        width: 100%; /* Full width for better alignment */
+      }
+    
+      .row.forrms-gro .form-check-input {
+        margin-right: 8px; /* Space between input and label */
+      }
+}
+
+@media (max-width: 376px) {
+    .container-Box {
+        display: flex;
+        flex-direction: column;
+    }
+    /* .marginL20{
+        margin-left: 0 !important;
+    } */
+
+    .header.BookingHeader,
+    .sec-logo,
+    .instrucClass,
+    .section-form,
+    .title-form,
+    .group-Form,
+    .inliIput {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+    }
+
+    .sec-logo .col-md-2,
+    .sec-logo .col-md-10,
+    .applicant-row .col-md-3,
+    .group-Form .col-md-6,
+    .group-Form .col-md-4,
+    .group-Form .col-md-3,
+    .group-Form .col-md-2,
+    .group-Form .col-md-1 {
+        width: 100%;
+    }
+
+    .box-applicant {
+        width: 100%;
+    }
+
+    .dropdown-container-Box {
+        width: 100%;
+    }
+
+    .flex-d {
+        flex-direction: column;
+    }
+    .row.form-group.group-Form.inline-inputs.inliIput {
+        flex-direction: row !important;
+    }
+    
+    .putInli .putInli-col{
+        width: 23% !important;
+        /* margin-right: 4rem; */
+    }
+    .putInli .putInli-col-2{
+        width: 30% !important;
+        /* margin-right: 4rem; */
+    }
+     .TitleSty {
+        margin-right: 15px !important;
+        margin-top: -5px;
+    }
+    .mar40{
+        margin-left: 0 !important;
+    }
+    .refer-col-3{
+        width: 26% !important;
+    }
+    .refer-col-2{
+        width: 18% !important;
+    }
+    .additional {
+        align-items: unset !important;
+    }
+    .finan{
+    width: 13.4rem;
+    /* margin-left:167px !important; */
+    text-wrap: nowrap
+    }   
+    .Book{
+        width: 23rem !important;
+        margin-left:136px !important    ;
+        /* text-wrap: nowrap !important */
+    }
+    .ofClass{
+        width: 19rem;
+    }
+    .subpro{
+        padding-right: 23px;
+    padding-top: 15px;
+    height: 48px;
+    }
+    .agentDet{
+        margin-left: 0 !important;
+        width: 90%;
+        align-items: baseline !important;
+    }
+    .ofField{
+        width: 269%;
+        padding: 1px;
+        }
+    .SonDaughter{
+        /* margin-left: 0 !important; */
+        padding: 1;
+    }
+    .FULLN{
+        align-items: flex-start !important;
+    width: 24rem !important;
+    }
+    .width22{
+        width: 20rem;
+    }
+    .wiiid{
+        margin-left: 3px !important;
+        /* text-wrap: wrap; */
+        width: 23rem !important;
+        text-Wrap: wrap !important;
+    }
+
+    .row.directionCol {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    
+      .row.directionCol .flexxiD {
+        flex-direction: column;
+        width: 100%;
+      }
+    
+      .row.directionCol .refer-col-3,
+      .row.directionCol .refer-col-2 {
+        width: 100%;
+        margin-bottom: 8px; 
+        margin-left: 1rem;
+      }
+    
+      .row.directionCol .form-check-input {
+        margin-right: 8px; 
+      }
+    
+      .flexxiD .lab {
+        margin-left: 3rem;
+        text-wrap: nowrap !important; 
+      }
+   
+
+      .row.forrms-gro {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 0 !important; /* Prevent horizontal overflow */
+      }
+    
+      .row.forrms-gro .ddFlex {
+        flex-direction: column;
+        width: 100%;
+      }
+    
+      .row.forrms-gro .col-md-2,
+      .row.forrms-gro .col-md-5,
+      .row.forrms-gro .col-md-8 {
+        width: 100%; /* Full width for stacking */
+        margin-bottom: 8px; /* Spacing between rows */
+      }
+    
+      .row.forrms-gro .col-md-8 .form-control {
+        width: 100%; /* Ensure input fields stretch to full width */
+      }
+    
+      .row.forrms-gro label {
+        margin-right: 8px; /* Minimal spacing between label and input */
+        text-wrap: wrap; /* Adjust wrapping for labels */
+        width: 100%; /* Full width for better alignment */
+      }
+    
+      .row.forrms-gro .form-check-input {
+        margin-right: 8px; /* Space between input and label */
+      }
+}
+@media (max-width: 321px) {
+    .container-Box {
+        display: flex;
+        flex-direction: column;
+    }
+    .BookingHeader {
+        font-size: 8px;
+      }
+    .marginL20{
+        margin-left: 23rem !important;
+    }
+    .marginL5{
+      margin-left: 5rem !important;
+    }
+
+    .header.BookingHeader,
+    .sec-logo,
+    .instrucClass,
+    .section-form,
+    .title-form,
+    .group-Form,
+    .inliIput {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .title-form {
+        font-size: 16px;
+      }
+    .sec-logo .col-md-2,
+    .sec-logo .col-md-10,
+    .applicant-row .col-md-3,
+    .group-Form .col-md-6,
+    .group-Form .col-md-4,
+    .group-Form .col-md-3,
+    .group-Form .col-md-2,
+    .group-Form .col-md-1 {
+        width: 100%;
+    }
+
+    .box-applicant {
+        width: 100%;
+    }
+
+    .dropdown-container-Box {
+        width: 100%;
+    }
+
+    .flex-d {
+        flex-direction: column;
+    }
+    .row.form-group.group-Form.inline-inputs.inliIput {
+        flex-direction: row !important;
+    }
+    
+    .putInli .putInli-col{
+        width: 23% !important;
+        /* margin-right: 4rem; */
+    }
+    .putInli .putInli-col-2{
+        width: 30% !important;
+        /* margin-right: 4rem; */
+    }
+     .TitleSty {
+        margin-right: 15px !important;
+        margin-top: -5px;
+    }
+    .mar40{
+        margin-left: 0 !important;
+    }
+    .refer-col-3{
+        width: 26% !important;
+    }
+    .refer-col-2{
+        width: 18% !important;
+    }
+    .additional {
+        align-items: unset !important;
+    }
+    .finan{
+    width: 13.4rem;
+    /* margin-left:167px !important; */
+    text-wrap: nowrap
+    }   
+    .Book{
+        width: 23rem !important;
+        margin-left:136px !important    ;
+        /* text-wrap: nowrap !important */
+    }
+    .ofClass{
+        width: 19rem;
+    }
+    .subpro{
+        padding-right: 23px;
+    padding-top: 15px;
+    height: 48px;
+    }
+    .agentDet{
+        margin-left: 0 !important;
+        width: 90%;
+        align-items: baseline !important;
+    }
+    .ofField{
+        width: 269%;
+        padding: 1px;
+        }
+    .SonDaughter{
+        /* margin-left: 0 !important; */
+        padding: 1;
+    }
+    .FULLN{
+        align-items: flex-start !important;
+    width: 24rem !important;
+    }
+    .width22{
+        width: 20rem;
+    }
+    .wiiid{
+        margin-left: 3px !important;
+        /* text-wrap: wrap; */
+        width: 23rem !important;
+        text-Wrap: wrap !important;
+    }
+
+    .row.directionCol {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    
+      .row.directionCol .flexxiD {
+        flex-direction: column;
+        width: 100%;
+      }
+    
+      .row.directionCol .refer-col-3,
+      .row.directionCol .refer-col-2 {
+        width: 100%;
+        margin-bottom: 8px; 
+        margin-left: 1rem;
+      }
+    
+      .row.directionCol .form-check-input {
+        margin-right: 8px; 
+      }
+    
+      .flexxiD .lab {
+        margin-left: 3rem;
+        text-wrap: nowrap !important; 
+      }
+   .flexxiD{
+    margin-left: 13px;
+   }
+
+      .row.forrms-gro {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 0 !important; /* Prevent horizontal overflow */
+      }
+    
+      .row.forrms-gro .ddFlex {
+        flex-direction: column;
+        width: 100%;
+      }
+    
+      .row.forrms-gro .col-md-2,
+      .row.forrms-gro .col-md-5,
+      .row.forrms-gro .col-md-8 {
+        width: 100%; 
+        margin-bottom: 8px;
+      }
+    
+      .row.forrms-gro .col-md-8 .form-control {
+        width: 100%; 
+      }
+    
+      .row.forrms-gro label {
+        margin-right: 8px; 
+        text-wrap: wrap; 
+        width: 100%; 
+      }
+    
+      .row.forrms-gro .form-check-input {
+        margin-right: 8px; 
+      }
+      .logoClass {
+        width: 120px;
+      }
+      .logo {
+        width: 120px;
+      }
+  
+      .applicant-box {
+        font-size: 8px;
+      }
+  
+      .instrucClass {
+        font-size: 10px;
+      }
+  
+      .title-form {
+        font-size: 14px;
+      }
+  
+      .controlFoorm {
+        font-size: 10px;
+      }
+}

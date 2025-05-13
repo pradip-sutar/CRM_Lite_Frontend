@@ -1,0 +1,82 @@
+/* Expectation.css */
+/* 
+.container-xxl {
+    width: 100%;
+    padding: 0 15px;
+    margin: 0 auto;
+}
+
+.card {
+    margin-bottom: 1.5rem;
+    border: 1px solid #e3e6f0;
+    border-radius: 0.35rem;
+    background-color: #fff;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.expectHeader {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.formDiv{
+    max-width: auto;
+    width: auto;
+} */
+
+@media (max-width: 376px) {
+    .fontSubCategory{
+        width: 400px !important;
+    }
+    .font_Category{
+        width: 150px !important;
+    }
+    .fontCategory{
+        font-size: 15px !important;
+    }
+    .formDiv{
+        max-width: 34rem;
+        width: 18rem;
+    }
+}
+@media (max-width: 320px) {
+    /* .container-xxl {
+        padding: 0 10px;
+    } */
+
+    .expectHeader {
+        padding: 0.5rem 1rem;
+    }
+
+    .fontSubCategory{
+        width: 200px !important;
+    }
+    .font_Category{
+        width: 150px !important;
+    }
+    .fontCategory{
+        font-size: 15px !important;
+    }
+
+    .responsiveTable {
+        overflow-x: scroll;
+    }
+/* 
+    .form-control {
+        width: 100%;
+    } */
+    .formDiv{
+        max-width: 34rem;
+        width: 24rem;
+    }
+
+    
+}
