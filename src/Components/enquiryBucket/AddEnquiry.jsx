@@ -41,7 +41,6 @@ const AddEnquiry = () => {
   const [sourceType, setSourceType] = useState([]);
   const [projectType, setProjectType] = useState([]);
   const [enquiryData, setenquiryData] = useState([]);
-  const [team, setTeam] = useState([]);
   const [team_id, setteam_id] = useState(null);
   const [teamMember, setTeamMember] = useState([]);
   const [confirmProject, setConfirmProject] = useState([]);
@@ -57,13 +56,6 @@ const AddEnquiry = () => {
           shouldValidate: true,
         });
       });
-      if (editData?.team) {
-        setValue("team", editData.team, {
-          shouldTouch: true,
-          shouldValidate: true,
-        });
-        fetchTeamMember(editData.team);
-      }
 
       if (editData?.customer_state) {
         setValue("state", editData.customer_state, {
@@ -74,15 +66,9 @@ const AddEnquiry = () => {
     }
   }, [editData, setValue]);
 
-  const fetchTeamMember = async (team_id) => {
-    const data = await getTeamMembers(team_id);
-    setTeamMember(data);
-    console.log(data);
-  };
 
-  useEffect(() => {
-    fetchTeamMember(team_id);
-  }, [team_id]);
+
+
 
   const fetchSourceType = async () => {
     try {
@@ -111,15 +97,7 @@ const AddEnquiry = () => {
     }
   };
 
-  const fetchTeam = async () => {
-    try {
-      const data = await getTeam();
-      setTeam(data);
-    } catch (error) {
-      console.error("Error fetching team data:", error);
-    }
-  };
-  console.log(team);
+
 
   const fetchConfirmProject = async () => {
     try {
@@ -137,9 +115,8 @@ const AddEnquiry = () => {
       return;
     }
 
-    const linkToCopy = `${
-      import.meta.env.VITE_LinkGenerate_Ip
-    }/enquiry/CreateLink/${selectedId}`;
+    const linkToCopy = `${import.meta.env.VITE_LinkGenerate_Ip
+      }/enquiry/CreateLink/${selectedId}`;
 
     navigator.clipboard
       ?.writeText(linkToCopy)
@@ -195,7 +172,6 @@ const AddEnquiry = () => {
     fetchSourceType();
     fetchProjectType();
     fetchEnquiryType();
-    fetchTeam();
     fetchConfirmProject();
   }, []);
 
@@ -282,9 +258,8 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="text"
-                            className={`form-control ${
-                              errors.customer_name ? "is-invalid" : ""
-                            }`}
+                            className={`form-control ${errors.customer_name ? "is-invalid" : ""
+                              }`}
                             placeholder="Customer Name"
                             {...register("customer_name", { required: true })}
                           />
@@ -301,9 +276,8 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="number"
-                            className={`form-control ${
-                              errors.customer_phone ? "is-invalid" : ""
-                            }`}
+                            className={`form-control ${errors.customer_phone ? "is-invalid" : ""
+                              }`}
                             placeholder="Customer Phone"
                             {...register("customer_phone", {
                               required: true,
@@ -341,9 +315,8 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="text"
-                            className={`form-control ${
-                              errors.customer_address ? "is-invalid" : ""
-                            }`}
+                            className={`form-control ${errors.customer_address ? "is-invalid" : ""
+                              }`}
                             placeholder="Customer Address"
                             {...register("customer_address")}
                           />
@@ -355,9 +328,8 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <select
                             id="country"
-                            className={`select2 form-select ${
-                              errors.customer_country ? "is-invalid" : ""
-                            }`}
+                            className={`select2 form-select ${errors.customer_country ? "is-invalid" : ""
+                              }`}
                             {...register("customer_country")}
                           >
                             <option value="" selected disabled>
@@ -384,9 +356,8 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="text"
-                            className={`form-control ${
-                              errors.customer_state ? "is-invalid" : ""
-                            }`}
+                            className={`form-control ${errors.customer_state ? "is-invalid" : ""
+                              }`}
                             placeholder="Customer's State"
                             {...register("customer_state")}
                           />
@@ -398,9 +369,8 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="date"
-                            className={`form-control ${
-                              errors.date ? "is-invalid" : ""
-                            }`}
+                            className={`form-control ${errors.date ? "is-invalid" : ""
+                              }`}
                             placeholder="Date"
                             {...register("date")}
                           />
@@ -412,9 +382,8 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <select
                             id="productType"
-                            className={`select2 form-select ${
-                              errors.source ? "is-invalid" : ""
-                            }`}
+                            className={`select2 form-select ${errors.source ? "is-invalid" : ""
+                              }`}
                             {...register("source")}
                           >
                             <option value="" selected disabled>
@@ -435,26 +404,20 @@ const AddEnquiry = () => {
 
                       <div className="col-md-6">
                         <div className="form-floating form-floating-outline">
-                          <select
-                            id="productType"
-                            className={`select2 form-select ${
-                              errors.project ? "is-invalid" : ""
-                            }`}
-                            {...register("project")}
-                          >
-                            <option value="" selected disabled>
-                              Project
-                            </option>
-                            {projectType?.length > 0 &&
-                              projectType?.map((data, index) => {
-                                return (
-                                  <option key={index} value={data?.id}>
-                                    {data?.name}
-                                  </option>
-                                );
-                              })}
-                          </select>
-                          <label htmlFor="productType">Project Type</label>
+
+                          <input
+                            type="text"
+                            className={`form-control ${errors.project ? "is-invalid" : ""
+                              }`}
+                            placeholder="Customer Name"
+                            {...register("project", { required: true })}
+                          />
+                          <label htmlFor="productType">Product Type</label>
+                          {errors.project && (
+                            <div className="invalid-feedback">
+                              {errors.project.message}
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -483,74 +446,25 @@ const AddEnquiry = () => {
                       </div>
 
                       <div className="col-md-6">
+
                         <div className="form-floating form-floating-outline">
-                          <select
-                            id="productType"
-                            className="select2 form-select"
-                            {...register("enquiry_type")}
-                          >
-                            <option value="" selected disabled>
-                              Enquiry Type
-                            </option>
-                            {enquiryData?.length > 0 &&
-                              enquiryData?.map((data, index) => {
-                                return (
-                                  <option key={index} value={data?.id}>
-                                    {data?.name}
-                                  </option>
-                                );
-                              })}
-                          </select>
+
+                          <input
+                            type="text"
+                            className={`form-control ${errors.enquiry_type ? "is-invalid" : ""
+                              }`}
+                            placeholder="Customer Name"
+                            {...register("enquiry_type", { required: true })}
+                          />
                           <label htmlFor="productType">Enquiry Type</label>
+                          {errors.enquiry_type && (
+                            <div className="invalid-feedback">
+                              {errors.enquiry_type.message}
+                            </div>
+                          )}
                         </div>
                       </div>
 
-                      <div className="col-md-6">
-                        <div className="form-floating form-floating-outline">
-                          <select
-                            id="productType"
-                            className="select2 form-select"
-                            {...register("team")}
-                            onChange={(e) => setteam_id(e.target.value)}
-                          >
-                            <option value="" selected disabled>
-                              Team
-                            </option>
-                            {team?.data?.length > 0 &&
-                              team?.data?.map((data, index) => {
-                                return (
-                                  <option key={index} value={data?.id}>
-                                    {data?.team_name}
-                                  </option>
-                                );
-                              })}
-                          </select>
-                          <label htmlFor="productType">Team</label>
-                        </div>
-                      </div>
-
-                      <div className="col-md-6">
-                        <div className="form-floating form-floating-outline">
-                          <select
-                            id="productType"
-                            className="select2 form-select"
-                            {...register("assign")}
-                          >
-                            <option value="" selected disabled>
-                              Assign member
-                            </option>
-                            {teamMember?.length > 0 &&
-                              teamMember?.map((data, index) => {
-                                return (
-                                  <option key={index} value={data?.id}>
-                                    {data?.name}
-                                  </option>
-                                );
-                              })}
-                          </select>
-                          <label htmlFor="productType">Assign member</label>
-                        </div>
-                      </div>
                       <div className="col-md-6">
                         <div className="form-floating form-floating-outline">
                           <select
@@ -620,9 +534,9 @@ const AddEnquiry = () => {
                         </div>
                       </div>
                     </div>
-                      <button className="col-md-2 btn btn-primary ms-auto waves-effect waves-light mt-3">
-                        Submit
-                      </button>
+                    <button className="col-md-2 btn btn-primary ms-auto waves-effect waves-light mt-3">
+                      Submit
+                    </button>
                   </form>
                 </div>
               </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   postSource,
   getSource,
@@ -7,13 +6,9 @@ import {
   updateSource,
 } from "../../services/EnquiryBucket/apiSourceType";
 import { useForm } from "react-hook-form";
-import { getCommunication } from "../../services/EnquiryBucket/apiCommunicationType";
 import { HandleDeleteById } from "../../services/DeleteSwal/HandleDeleteById";
 import "./CSS/enquiry.css";
-import { hasRightsPermission } from "../../Private/premissionChecker";
 import crmStore from "../../Utils/crmStore";
-import ValidationCard from "../../ui/ValidationCard";
-
 
 function SourceType() {
   const userType = crmStore.getState().user.userInfo.userType;
@@ -25,14 +20,6 @@ function SourceType() {
   const [editData, setEditData] = useState(null);
   const { register, reset, handleSubmit } = useForm();
 
-  const fetchCommunication = async () => {
-    try {
-      const response = await getCommunication();
-      setCommunication(response);
-    } catch (error) {
-      console.error("Error fetching communication data:", error);
-    }
-  };
 
   const fetchSourceType = async () => {
     try {
@@ -44,12 +31,15 @@ function SourceType() {
   };
 
   const onSubmit = async (data) => {
+    const payload = {
+      name: data.name,
+      comm_type: data.comm_type,
+      platform: data.platform,
+      status: data.status,
+    };
+
     if (editData) {
-      const status = await updateSource(editData.id, {
-        name: data.name,
-        comm_type: data.comm_type,
-        status: data.status,
-      });
+      const status = await updateSource(editData.id, payload);
       if (status === 200) {
         setEditData(null);
         setModalOpen(false);
@@ -57,11 +47,7 @@ function SourceType() {
         fetchSourceType();
       }
     } else {
-      const status = await postSource({
-        name: data.name,
-        comm_type: data.comm_type,
-        status: data.status,
-      });
+      const status = await postSource(payload);
       if (status === 201) {
         setModalOpen(false);
         fetchSourceType();
@@ -71,18 +57,20 @@ function SourceType() {
   };
 
   const handleEdit = (data) => {
+    console.log(data);
+
     setEditData(data);
     setModalOpen(true);
     reset({
       name: data.name,
       comm_type: data.comm_type,
+      platform: data.platform || "",
       status: data.status.toString(),
     });
   };
 
   useEffect(() => {
     fetchSourceType();
-    fetchCommunication();
   }, []);
 
   return (
@@ -94,25 +82,25 @@ function SourceType() {
         <span className="text-muted fw-light">Enquiry Bucket /</span> Source
         Type
       </h5>
-     
-          <div className="mb-2 text-end">
-            <button
-              type="button"
-              className="btn btn-primary waves-effect waves-light"
-              onClick={() => {
-                setEditData(null);
-                setModalOpen(true);
-                reset({ name: "", comma_type: "", status: "" });
-              }}
-            >
-              <span>
-                <i className="mdi mdi-plus me-0 me-sm-1"></i>
-              </span>
-              Source Type
-            </button>
-          </div>
 
-      <div className=" col-sm ml-2">
+      <div className="mb-2 text-end">
+        <button
+          type="button"
+          className="btn btn-primary waves-effect waves-light"
+          onClick={() => {
+            setEditData(null);
+            setModalOpen(true);
+            reset({ name: "", comm_type: "", platform: "", status: "" });
+          }}
+        >
+          <span>
+            <i className="mdi mdi-plus me-0 me-sm-1"></i>
+          </span>
+          Source Type
+        </button>
+      </div>
+
+      <div className="col-sm ml-2">
         <div className="card">
           <div className="title card-header d-flex justify-content-between align-items-center bg-label-primary py-2">
             <h5 className="mb-0">Source Type:</h5>
@@ -125,6 +113,7 @@ function SourceType() {
                     <td>SL No</td>
                     <td>Source</td>
                     <td>Medium Type</td>
+                    <td>Communication Type</td>
                     <td>Status</td>
                     <td>Action</td>
                   </tr>
@@ -134,38 +123,30 @@ function SourceType() {
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{data.name}</td>
-                      <td>
-                        {
-                          communication?.find(
-                            (item) => item.id === data.comm_type
-                          )?.name
-                        }
-                      </td>
+                      <td>{data.platform}</td>
+                      <td>{data.comm_type}</td>
                       <td>{data.status ? "Active" : "Inactive"}</td>
                       <td>
-                       
-                            <button
-                              className="btn btn-text-primary btn-sm small py-1 px-2 waves-effect waves-light"
-                              title="Edit"
-                              onClick={() => handleEdit(data)}
-                            >
-                              <i className="mdi mdi-pencil-outline"></i>
-                            </button>
-
-                        
-                            <button
-                              onClick={() =>
-                                HandleDeleteById(
-                                  data.id,
-                                  deleteSource,
-                                  fetchSourceType
-                                )
-                              }
-                              className="btn btn-text-danger btn-sm small py-1 px-2 waves-effect waves-light"
-                              title="Delete"
-                            >
-                              <i className="mdi mdi-trash-can"></i>
-                            </button>
+                        <button
+                          className="btn btn-text-primary btn-sm small py-1 px-2 waves-effect waves-light"
+                          title="Edit"
+                          onClick={() => handleEdit(data)}
+                        >
+                          <i className="mdi mdi-pencil-outline"></i>
+                        </button>
+                        <button
+                          onClick={() =>
+                            HandleDeleteById(
+                              data.id,
+                              deleteSource,
+                              fetchSourceType
+                            )
+                          }
+                          className="btn btn-text-danger btn-sm small py-1 px-2 waves-effect waves-light"
+                          title="Delete"
+                        >
+                          <i className="mdi mdi-trash-can"></i>
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -207,10 +188,11 @@ function SourceType() {
                   {/* Source Platform Dropdown */}
                   <div className="col-md-12 mb-2">
                     <label className="form-label">Source Platform</label>
-                    <select className="form-select" {...register("source_platform")}>
-                      <option value="" disabled selected>
-                        Select Source Platform
-                      </option>
+                    <select
+                      className="form-select"
+                      {...register("platform")}
+                    >
+                      <option value="">Select Source Platform</option>
                       <option value="walk-in">Walk-in</option>
                       <option value="exhibition">Exhibition</option>
                       <option value="social media">Social Media</option>
@@ -223,64 +205,63 @@ function SourceType() {
                     </select>
                   </div>
 
+
                   {/* Type Of Communication */}
+
+
+                  {/* Communication Mode Dropdown */}
                   <div className="col-md-12 mb-2">
-                    <label className="form-label">Type Of Communication</label>
+                    <label className="form-label">Communication Mode</label>
                     <select className="form-select" {...register("comm_type")}>
-                      <option value="" disabled>
-                        Select Communication Type
+                      <option value="" disabled selected>
+                        Select Communication Mode
                       </option>
-                      {communication?.map((data, index) => (
-                        <option key={index} value={data.id}>
-                          {data.name}
-                        </option>
-                      ))}
+                      <option value="online">Online</option>
+                      <option value="offline">Offline</option>
                     </select>
                   </div>
-                </div>
 
-                {/* Status Radio Buttons */}
-                <div className="row g-2 my-3">
-                  <div className="col">
-                    <label className="form-label mx-2">Status</label>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        value="true"
-                        {...register("status")}
-                      />
-                      <label className="form-check-label">Active</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        value="false"
-                        {...register("status")}
-                      />
-                      <label className="form-check-label">Inactive</label>
+                  {/* Status Radio Buttons */}
+                  <div className="row g-2 my-3">
+                    <div className="col">
+                      <label className="form-label mx-2">Status</label>
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          value="true"
+                          {...register("status")}
+                        />
+                        <label className="form-check-label">Active</label>
+                      </div>
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          value="false"
+                          {...register("status")}
+                        />
+                        <label className="form-check-label">Inactive</label>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              
-                  <div className="modal-footer">
-                    <button
-                      type="button"
-                      className="btn btn-outline-secondary waves-effect"
-                      onClick={() => setModalOpen(false)}
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="submit"
-                      className="btn btn-primary waves-effect waves-light"
-                    >
-                      Save
-                    </button>
-                  </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary waves-effect"
+                  onClick={() => setModalOpen(false)}
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary waves-effect waves-light"
+                >
+                  Save
+                </button>
+              </div>
             </form>
           </div>
         </div>

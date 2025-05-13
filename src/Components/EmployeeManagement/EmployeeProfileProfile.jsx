@@ -8,7 +8,7 @@ import {
   getEmployeeProfile,
   editEmployeeProfile,
 } from "../../services/EmpManagement/apiCompanyProfile";
-import { useGetDropDowns } from "../../hooks/useGetDropDowns";
+// import { useGetDropDowns } from "../../hooks/useGetDropDowns";
 import "./CSS/CompanyProfile.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addEmployeetoIVR } from "../../services/IVR/apiTeleCalling";
@@ -410,17 +410,17 @@ const EmployeeProfileProfile = () => {
     name: "experiences",
   });
   const department = watch("department") || 0;
-  const { dropDowns: designations } = useGetDropDowns(
-    `department_designation_handler/?department_id=${department}`
-  );
+  // const { dropDowns: designations } = useGetDropDowns(
+  //   `department_designation_handler/?department_id=${department}`
+  // );
 
-  const { dropDowns: departmentName } = useGetDropDowns(
-    "department_name_handler/"
-  );
-  const { dropDowns: branchType } = useGetDropDowns(
-    "system_branch_type_handler/"
-  );
-  const { dropDowns: grades } = useGetDropDowns("department_grade_handler/");
+  // const { dropDowns: departmentName } = useGetDropDowns(
+  //   "department_name_handler/"
+  // );
+  // const { dropDowns: branchType } = useGetDropDowns(
+  //   "system_branch_type_handler/"
+  // );
+  // const { dropDowns: grades } = useGetDropDowns("department_grade_handler/");
 
   const countries = [
     "Australia",
@@ -1276,7 +1276,11 @@ const EmployeeProfileProfile = () => {
                 <button
                   type="button"
                   className="btn btn-info"
-                  onClick={nextPannel}
+                   onClick={(e) => {
+                    e.preventDefault();
+                    validCheck();
+                    handleSubmit(onSubmit)();
+                  }}
                 >
                   <span className="align-middle ">Submit</span>
                 </button>
