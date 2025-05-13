@@ -262,11 +262,9 @@ function BankInfoForm() {
                       <div className="form-floating form-floating-outline">
                         <input
                           type="file"
-                          className={`form-control ${errors?.Bankinfo?.[index]?.bank_logo ? "is-invalid" : ""}`}
+                          className="form-control"
                           id={`bank_logo_${index}`}
-                          {...register(`Bankinfo.${index}.bank_logo`, {
-                            required: "Bank Logo is required",
-                          })}
+                          {...register(`Bankinfo.${index}.bank_logo`)}
                           placeholder="Bank Logo"
                         />
                         <label htmlFor={`bank_logo_${index}`}>

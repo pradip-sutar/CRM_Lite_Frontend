@@ -790,7 +790,7 @@ const EmployeeProfileProfile = () => {
         >
           <Tab label="Company Profile" />
           <Tab label="Address" />
-          
+
         </Tabs>
       </div>
       <div>
@@ -805,9 +805,8 @@ const EmployeeProfileProfile = () => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${
-                        errors.name ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.name ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
                       {...register("name", { required: true })}
                     />
@@ -823,9 +822,8 @@ const EmployeeProfileProfile = () => {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${
-                        errors.empid ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.empid ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
                       {...register("empid", { required: true })}
                     />
@@ -868,9 +866,8 @@ const EmployeeProfileProfile = () => {
                     </label>
                     <input
                       type="number"
-                      className={`form-control ${
-                        errors.mobileno ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.mobileno ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
                       {...register("mobileno", {
                         required: true,
@@ -920,9 +917,8 @@ const EmployeeProfileProfile = () => {
                     </label>
                     <input
                       type="email"
-                      className={`form-control ${
-                        errors.email ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.email ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
                       {...register("email", { required: true })}
                       onInput={handleEmailInput}
@@ -940,9 +936,8 @@ const EmployeeProfileProfile = () => {
                     </label>
                     <input
                       type="number"
-                      className={`form-control ${
-                        errors.emergency_no ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.emergency_no ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
                       {...register("emergency_no", {
                         required: true,
@@ -973,9 +968,8 @@ const EmployeeProfileProfile = () => {
                     </label>
                     <input
                       type="date"
-                      className={`form-control ${
-                        errors.date_of_joining ? "is-invalid" : ""
-                      }`}
+                      className={`form-control ${errors.date_of_joining ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
                       {...register("date_of_joining", {
                         required: true,
@@ -1003,38 +997,36 @@ const EmployeeProfileProfile = () => {
                 <div className="row">
                   <div className="col">
                     <label>Branch</label>
-                    <select
-                      className="form-control"
+
+
+                    <input
+                      type="text"
+                      className={`form-control ${errors.branch ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
-                      {...register("branch")}
-                    >
-                      <option value="" selected disabled>
-                        Choose Branch
-                      </option>
-                      {branchType?.map((branch) => (
-                        <option key={branch.id} value={branch.id}>
-                          {branch.type_name}
-                        </option>
-                      ))}
-                    </select>
+                      {...register("branch", { required: true })}
+                    />
+                    {errors.branch && (
+                      <div className="invalid-feedback">
+                        This field is required.
+                      </div>
+                    )}
                   </div>
 
                   <div className="col">
                     <label>Grade</label>
-                    <select
-                      className="form-control"
+                    <input
+                      type="text"
+                      className={`form-control ${errors.grade ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
-                      {...register("grade")}
-                    >
-                      <option value="" selected disabled>
-                        Choose Grade
-                      </option>
-                      {grades?.map((grade, index) => (
-                        <option key={index} value={grade.id}>
-                          {grade.level}
-                        </option>
-                      ))}
-                    </select>
+                      {...register("grade", { required: true })}
+                    />
+                    {errors.grade && (
+                      <div className="invalid-feedback">
+                        This field is required.
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1043,43 +1035,35 @@ const EmployeeProfileProfile = () => {
                 <div className="row">
                   <div className="col">
                     <label>Department</label>
-                    <select
-                      className="form-control"
+
+                    <input
+                      type="text"
+                      className={`form-control ${errors.department ? "is-invalid" : ""
+                        }`}
                       style={{ borderRadius: "15px", height: "45px" }}
-                      {...register("department")}
-                    >
-                      <option value="" selected disabled>
-                        Choose Department
-                      </option>
-                      {departmentName?.map((department) => (
-                        <option key={department.id} value={department.id}>
-                          {department.name}
-                        </option>
-                      ))}
-                    </select>
+                      {...register("department", { required: true })}
+                    />
+                    {errors.department && (
+                      <div className="invalid-feedback">
+                        This field is required.
+                      </div>
+                    )}
                   </div>
 
                   <div className="col">
                     <label>Designation</label>
-                    {designations?.length > 0 ? (
-                      <select
-                        className="form-control"
-                        style={{ borderRadius: "15px", height: "45px" }}
-                        {...register("designation")}
-                      >
-                        <option value="" disabled selected>
-                          Choose Designation
-                        </option>
-                        {designations.map((desig, index) => (
-                          <option key={index} value={desig.id}>
-                            {desig.designation}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <p style={{ color: "red", paddingTop: "10px" }}>
-                        No designations found for this department.
-                      </p>
+
+                    <input
+                      type="text"
+                      className={`form-control ${errors.designation ? "is-invalid" : ""
+                        }`}
+                      style={{ borderRadius: "15px", height: "45px" }}
+                      {...register("designation", { required: true })}
+                    />
+                    {errors.designation && (
+                      <div className="invalid-feedback">
+                        This field is required.
+                      </div>
                     )}
                   </div>
 
@@ -1288,13 +1272,13 @@ const EmployeeProfileProfile = () => {
                   </div>
                 </div>
               </div>
-              <div className="mb-0 float-end ">
+              <div className=" pb-4 float-end  ">
                 <button
                   type="button"
                   className="btn btn-info"
                   onClick={nextPannel}
                 >
-                  <span className="align-middle">Next</span>
+                  <span className="align-middle ">Submit</span>
                 </button>
               </div>
             </div>
