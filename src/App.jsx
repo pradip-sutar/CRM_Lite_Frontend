@@ -99,7 +99,7 @@ const App = () => {
                 <Route path="/" element={<Login />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
 
-                <Route element={<PrivateRoute />}>
+                {/* <Route element={<PrivateRoute />}> */}
                   <Route element={<AppLayout />}>
                     {/* <Route element={<FinancialGraph />} path="/dashboard"></Route> */}
 
@@ -276,7 +276,7 @@ const App = () => {
                     </Route>
 
                     <Route path="/*" element={<NotFound />} />
-                  </Route>
+                  {/* </Route> */}
                 </Route>
               </Routes>
             </Suspense>

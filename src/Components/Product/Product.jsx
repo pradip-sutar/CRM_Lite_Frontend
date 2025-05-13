@@ -1,36 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ValidationCard from "../../ui/ValidationCard";
 import crmStore from "../../Utils/crmStore";
-import { hasRightsPermission } from "../../Private/premissionChecker";
+import { getProductForm } from "../../services/Product/apiProductForm";
 
 function Product() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const [productData, setProductData] = useState([
-    {
-      id: 1,
-      name: "Product A",
-      description: "High-quality product for daily use",
-      rate: 100,
-      gst: 18,
-      cost: 118,
-      imageUrl: "/images/product-a.jpg",
-      createdAt: "2025-01-01",
-      updatedAt: "2025-02-01",
-    },
-    {
-      id: 2,
-      name: "Product B",
-      description: "Durable and reliable product",
-      rate: 200,
-      gst: 12,
-      cost: 224,
-      imageUrl: "/images/product-b.jpg",
-      createdAt: "2025-01-15",
-      updatedAt: "2025-02-15",
-    },
-  ]);
+  const [productData, setProductData] = useState([]);
+
+  const initialUrl = `/api/project_new_handler/`;
+  const fetchData = async () => {
+    const response = await getProductForm(initialUrl);
+    setProductData(response);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginationInfo, setPaginationInfo] = useState({
     total: 2,
@@ -58,15 +42,14 @@ function Product() {
           Product
         </h5>
 
-        
-          <div className="mb-2 text-end">
-            <div
-              className="ms-2 btn btn-primary btn-sm waves-effect waves-light"
-              onClick={() => navigate("/product/product-form")}
-            >
-              <span className="mdi mdi-plus"></span>Add Product
-            </div>
+        <div className="mb-2 text-end">
+          <div
+            className="ms-2 btn btn-primary btn-sm waves-effect waves-light"
+            onClick={() => navigate("/product/product-form")}
+          >
+            <span className="mdi mdi-plus"></span>Add Product
           </div>
+        </div>
       </div>
       <div className="container-fluid p-0 ps-lg-4">
         <div className="col">
@@ -98,8 +81,6 @@ function Product() {
                               <th style={{ width: "100px" }}>GST (%)</th>
                               <th style={{ width: "100px" }}>Cost</th>
                               <th style={{ width: "100px" }}>Image</th>
-                              <th style={{ width: "150px" }}>Created At</th>
-                              <th style={{ width: "150px" }}>Updated At</th>
                               <th style={{ width: "100px" }}>Action</th>
                             </tr>
                           </thead>
@@ -111,70 +92,52 @@ function Product() {
                                     index +
                                     1}
                                 </td>
-                                <td>{row.name}</td>
-                                <td>{row.description}</td>
+                                <td>{row.project_name}</td>
+                                <td>{row.project_description}</td>
                                 <td>{row.rate}</td>
                                 <td>{row.gst}</td>
                                 <td>{row.cost}</td>
                                 <td>
                                   <img
-                                    src={row.imageUrl}
+                                    src={`${import.meta.env.VITE_URL_BASE}${row.image}`}
                                     alt="Product"
                                     style={{ width: 80, height: 40 }}
                                   />
                                 </td>
-                                <td>{row.createdAt}</td>
-                                <td>{row.updatedAt}</td>
                                 <td>
                                   <div
                                     onClick={() =>
-                                      navigate("/systemAdmin/productDetails", {
+                                      navigate("/systemAdmin/productForm", {
                                         state: { data: row },
                                       })
                                     }
-                                    className="btn btn-text-primary btn-sm small py-1 px-2 waves-effect waves-light"
+                                    className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
                                     data-bs-toggle="tooltip"
                                     data-bs-placement="top"
-                                    data-bs-original-title="View"
+                                    data-bs-original-title="Edit"
                                   >
-                                    <i className="mdi mdi-eye"></i>
+                                    <i className="mdi mdi-pencil-outline"></i>
                                   </div>
 
-                                  
-                                    <div
-                                      onClick={() =>
-                                        navigate("/systemAdmin/productForm", {
-                                          state: { data: row },
-                                        })
-                                      }
-                                      className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      data-bs-original-title="Edit"
-                                    >
-                                      <i className="mdi mdi-pencil-outline"></i>
-                                    </div>
-
-                                  
-                                    <div
-                                      onClick={() => {
-                                        setProductData(
-                                          productData.filter(
-                                            (item) => item.id !== row.id
-                                          )
-                                        );
-                                        setPaginationInfo({
-                                          ...paginationInfo,
-                                          total: paginationInfo.total - 1,
-                                        });
-                                      }}
-                                      className="btn btn-text-danger btn-sm small py-1 px-2"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      data-bs-original-title="Delete"
-                                    >
-                                      <i className="mdi mdi-trash-can" />
-                                    </div>
+                                  <div
+                                    onClick={() => {
+                                      setProductData(
+                                        productData.filter(
+                                          (item) => item.id !== row.id
+                                        )
+                                      );
+                                      setPaginationInfo({
+                                        ...paginationInfo,
+                                        total: paginationInfo.total - 1,
+                                      });
+                                    }}
+                                    className="btn btn-text-danger btn-sm small py-1 px-2"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="Delete"
+                                  >
+                                    <i className="mdi mdi-trash-can" />
+                                  </div>
                                 </td>
                               </tr>
                             ))}
@@ -193,11 +156,16 @@ function Product() {
               {/* Pagination */}
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <div className="text-muted">
-                  Showing {Math.min(paginationInfo.perPage, productData.length)} of{" "}
+                  Showing{" "}
+                  {Math.min(paginationInfo?.perPage, productData?.length)} of{" "}
                   {paginationInfo.total} entries
                 </div>
                 <ul className="pagination m-0">
-                  <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
                     <button
                       className="page-link"
                       onClick={handlePrev}
@@ -213,8 +181,9 @@ function Product() {
 
                   <li
                     className={`page-item ${
-                      productData.length < paginationInfo.perPage ||
-                      paginationInfo.total <= currentPage * paginationInfo.perPage
+                      productData?.length < paginationInfo.perPage ||
+                      paginationInfo.total <=
+                        currentPage * paginationInfo.perPage
                         ? "disabled"
                         : ""
                     }`}
@@ -223,8 +192,9 @@ function Product() {
                       className="page-link"
                       onClick={handleNext}
                       disabled={
-                        productData.length < paginationInfo.perPage ||
-                        paginationInfo.total <= currentPage * paginationInfo.perPage
+                        productData?.length < paginationInfo.perPage ||
+                        paginationInfo.total <=
+                          currentPage * paginationInfo.perPage
                       }
                     >
                       Next

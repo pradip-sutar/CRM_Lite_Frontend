@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { postProductForm } from "../../services/Product/apiProductForm";
 
-function AddProductForm () {
+function AddProductForm() {
   const navigate = useNavigate();
   const {
     register,
@@ -16,18 +17,22 @@ function AddProductForm () {
     defaultValues: {
       ProductInfo: [
         {
-          name: "",
-          description: "",
+          project_name: "",
+          project_description: "",
           rate: "",
           gst: "",
           cost: "",
-          imageUrl: null,
+          image: null,
         },
       ],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: productInfoArray,
+    append,
+    remove,
+  } = useFieldArray({
     control,
     name: "ProductInfo",
   });
@@ -41,17 +46,18 @@ function AddProductForm () {
 
     data?.ProductInfo?.forEach((productDetail, index) => {
       for (const [key, value] of Object.entries(productDetail)) {
-        if (key === "imageUrl" && value) {
+        if (key === "image" && value?.[0] instanceof File) {
           formData.append(`${key}[${index}]`, value[0]);
         } else {
           formData.append(`${key}[${index}]`, value);
         }
       }
     });
-
-    // Simulate successful submission
-    reset();
-    navigate(-1);
+    const res = await postProductForm(formData);
+    if (res == 201) {
+      reset();
+      navigate(-1);
+    }
   }
 
   useEffect(() => {
@@ -98,29 +104,31 @@ function AddProductForm () {
             </div>
             <div className="card-body">
               <form className="form-repeater" onSubmit={handleSubmit(onSubmit)}>
-                {fields.map((field, index) => (
+                {productInfoArray.map((field, index) => (
                   <div key={field.id} className="row g-4 mb-4">
                     <div className="col-md-4">
                       <div className="form-floating form-floating-outline">
                         <input
                           className={`form-control controlFoorm ${
-                            errors?.ProductInfo?.[index]?.name ? "is-invalid" : ""
+                            errors?.ProductInfo?.[index]?.project_name
+                              ? "is-invalid"
+                              : ""
                           }`}
                           type="text"
                           id={`name_${index}`}
-                          {...register(`ProductInfo.${index}.name`, {
+                          {...register(`ProductInfo.${index}.project_name`, {
                             required: "Product Name is required",
                             onBlur: () =>
-                              clearErrors(`ProductInfo.${index}.name`),
+                              clearErrors(`ProductInfo.${index}.project_name`),
                           })}
                           placeholder="Product Name"
                         />
                         <label htmlFor={`name_${index}`}>
                           Product Name <span className="text-danger">*</span>
                         </label>
-                        {errors?.ProductInfo?.[index]?.name && (
+                        {errors?.ProductInfo?.[index]?.project_name && (
                           <small className="text-danger">
-                            {errors.ProductInfo[index].name.message}
+                            {errors.ProductInfo[index].project_name.message}
                           </small>
                         )}
                       </div>
@@ -129,25 +137,33 @@ function AddProductForm () {
                       <div className="form-floating form-floating-outline">
                         <input
                           className={`form-control controlFoorm ${
-                            errors?.ProductInfo?.[index]?.description
+                            errors?.ProductInfo?.[index]?.project_description
                               ? "is-invalid"
                               : ""
                           }`}
                           type="text"
                           id={`description_${index}`}
-                          {...register(`ProductInfo.${index}.description`, {
-                            required: "Description is required",
-                            onBlur: () =>
-                              clearErrors(`ProductInfo.${index}.description`),
-                          })}
+                          {...register(
+                            `ProductInfo.${index}.project_description`,
+                            {
+                              required: "Description is required",
+                              onBlur: () =>
+                                clearErrors(
+                                  `ProductInfo.${index}.project_description`
+                                ),
+                            }
+                          )}
                           placeholder="Description"
                         />
                         <label htmlFor={`description_${index}`}>
                           Description <span className="text-danger">*</span>
                         </label>
-                        {errors?.ProductInfo?.[index]?.description && (
+                        {errors?.ProductInfo?.[index]?.project_description && (
                           <small className="text-danger">
-                            {errors.ProductInfo[index].description.message}
+                            {
+                              errors.ProductInfo[index].project_description
+                                .message
+                            }
                           </small>
                         )}
                       </div>
@@ -156,7 +172,9 @@ function AddProductForm () {
                       <div className="form-floating form-floating-outline">
                         <input
                           className={`form-control controlFoorm ${
-                            errors?.ProductInfo?.[index]?.rate ? "is-invalid" : ""
+                            errors?.ProductInfo?.[index]?.rate
+                              ? "is-invalid"
+                              : ""
                           }`}
                           type="number"
                           id={`rate_${index}`}
@@ -185,7 +203,9 @@ function AddProductForm () {
                       <div className="form-floating form-floating-outline">
                         <input
                           className={`form-control controlFoorm ${
-                            errors?.ProductInfo?.[index]?.gst ? "is-invalid" : ""
+                            errors?.ProductInfo?.[index]?.gst
+                              ? "is-invalid"
+                              : ""
                           }`}
                           type="number"
                           id={`gst_${index}`}
@@ -214,7 +234,9 @@ function AddProductForm () {
                       <div className="form-floating form-floating-outline">
                         <input
                           className={`form-control controlFoorm ${
-                            errors?.ProductInfo?.[index]?.cost ? "is-invalid" : ""
+                            errors?.ProductInfo?.[index]?.cost
+                              ? "is-invalid"
+                              : ""
                           }`}
                           type="number"
                           id={`cost_${index}`}
@@ -244,29 +266,27 @@ function AddProductForm () {
                         <input
                           type="file"
                           className={`form-control ${
-                            errors?.ProductInfo?.[index]?.imageUrl
+                            errors?.ProductInfo?.[index]?.image
                               ? "is-invalid"
                               : ""
                           }`}
                           id={`imageUrl_${index}`}
-                          {...register(`ProductInfo.${index}.imageUrl`, {
-                            required: "Product Image is required",
-                          })}
+                          {...register(`ProductInfo.${index}.image`)}
                           placeholder="Product Image"
                         />
                         <label htmlFor={`imageUrl_${index}`}>
                           Product Image <span className="text-danger">*</span>
                         </label>
 
-                        {errors?.ProductInfo?.[index]?.imageUrl && (
+                        {errors?.ProductInfo?.[index]?.image && (
                           <div className="invalid-feedback d-block">
-                            {errors.ProductInfo[index].imageUrl.message}
+                            {errors.ProductInfo[index].image.message}
                           </div>
                         )}
 
                         {editData && (
                           <Link
-                            to={editData?.imageUrl}
+                            to={editData?.image}
                             className="d-block mt-1"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -292,22 +312,22 @@ function AddProductForm () {
                 <div className="col-12 d-flex justify-content-between">
                   {!editData && (
                     <button
-                            type="button"
-                            onClick={() =>
-                                append({
-                                    name: "",
-                                    description: "",
-                                    rate: "",
-                                    gst: "",
-                                    cost: "",
-                                    imageUrl: null,
-                                })
-                            }
-                            className="btn btn-primary waves-effect waves-light addBtn"
-                        >
-                            <i className="mdi mdi-plus me-1"></i>
-                            <span className="align-middle">Add</span>
-                        </button>
+                      type="button"
+                      onClick={() =>
+                        append({
+                          project_name: "",
+                          project_description: "",
+                          rate: "",
+                          gst: "",
+                          cost: "",
+                          image: null,
+                        })
+                      }
+                      className="btn btn-primary waves-effect waves-light addBtn"
+                    >
+                      <i className="mdi mdi-plus me-1"></i>
+                      <span className="align-middle">Add</span>
+                    </button>
                   )}
                   <button
                     type="submit"
