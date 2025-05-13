@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import toast from "react-hot-toast";
-import { createEmployeeBank } from "../../../../RealEstate/src/services/apiEmployeeManagement";
+import { createEmployeeBank} from "../../services/apiEmployeeManagement"
 
 export function useAddEmBank() {
   const { isPending, mutate } = useMutation({
