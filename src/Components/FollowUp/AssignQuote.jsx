@@ -352,7 +352,13 @@ const AssignQuote = () => {
                 </Table>
 
                 {/* Submit Button */}
-                <Box textAlign="center" marginTop={2}>
+                {(userType === "Super Admin" ||
+                  hasRightsPermission(
+                    "FollowUp",
+                    "Follow Up",
+                    "write",
+                    Permissions
+                  )) && (<Box textAlign="center" marginTop={2}>
                     <Button
                       type="submit"
                       variant="contained"
@@ -361,7 +367,7 @@ const AssignQuote = () => {
                     >
                       Submit
                     </Button>
-                  </Box>
+                  </Box>)}
 
               </form>
             </Paper>

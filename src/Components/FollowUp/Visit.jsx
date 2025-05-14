@@ -173,7 +173,8 @@ function Visit() {
     hour12: true,
   };
 
-  return (
+  return userType === "Super Admin" ||
+    hasRightsPermission("FollowUp", "Visit", "read", Permissions) ? (
     <div
       className="container-xxl flex-grow-1 container-p-y"
       style={{ minHeight: "84%" }}
@@ -764,6 +765,8 @@ function Visit() {
         </Grid>
       </div>
     </div>
+  ) : (
+    <ValidationCard />
   );
 }
 export default Visit;

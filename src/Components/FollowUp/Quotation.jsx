@@ -99,7 +99,8 @@ const [content, setContent] = useState("Today");
     fetchCompanyInfo();
   }, [logged_employee_Id]);
 
-  return (
+  return userType === "Super Admin" ||
+    hasRightsPermission("FollowUp", "Quotation", "read", Permissions) ? (
     <div
       className="container-xxl flex-grow-1 container-p-y"
       style={{ minHeight: "84%" }}
@@ -457,6 +458,8 @@ const [content, setContent] = useState("Today");
         </Grid>
       </div>
     </div>
+  ) : (
+    <ValidationCard />
   );
 }
 

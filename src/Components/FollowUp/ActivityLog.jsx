@@ -26,6 +26,11 @@ const BlueStepIcon = styled("div")(({ theme }) => ({
   marginLeft: "7px",
 }));
 
+function convertToLocalTime(isoString) {
+  const localDate = new Date(isoString);
+  return localDate.toLocaleString() || isoString;
+}
+
 // Custom StepConnector with blue lines
 const BlueConnector = styled(StepConnector)(({ theme }) => ({
   [`& .${StepConnector.line}`]: {
@@ -97,13 +102,7 @@ const ActivityLog = ({ enquiry_id }) => {
                       </StepContent>
                       <StepContent>
                         <Typography variant="body2" color="textSecondary">
-                          {activity?.next_date_time &&
-                            (isNaN(new Date(activity.next_date_time).getTime())
-                              ? activity?.next_date_time
-                              :  new Date(activity?.next_date_time + "Z").toLocaleString(
-                                "en-IN",
-                                options
-                              ) || "")}
+                          {convertToLocalTime(activity?.next_date_time) }
                         </Typography>
                       </StepContent>
                     </Step>

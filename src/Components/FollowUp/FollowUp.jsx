@@ -110,6 +110,7 @@ function FollowUp() {
     console.log(response);
 
     setFilterData(response);
+    handleFilterClose();
   };
 
   const handleTabClick = (tabName) => {
@@ -191,87 +192,11 @@ function FollowUp() {
   };
 
   useEffect(() => {
-    const ctx = chartRef.current.getContext("2d");
-
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
-    }
-
-    chartInstance.current = new Chart(ctx, {
-      type: "polarArea",
-      data: {
-        labels: ["Hot Lead", "Cold Lead", "Warm Lead"],
-        datasets: [
-          {
-            data: [35, 25, 40],
-            backgroundColor: ["#FF8A33", "#33D9FF", "#FFD633"],
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-      },
-    });
-
-    const doughnutCtx = doughnutChartRef.current.getContext("2d");
-    if (doughnutChartInstance.current) {
-      doughnutChartInstance.current.destroy();
-    }
-    doughnutChartInstance.current = new Chart(doughnutCtx, {
-      type: "doughnut",
-      data: {
-        labels: ["Desktop", "Tablet", "Mobile"],
-        datasets: [
-          {
-            data: [80, 10, 10],
-            backgroundColor: [
-              "rgb(102,110,232)",
-              "rgb(40,208,148)",
-              "rgb(253,172,52)",
-            ],
-            hoverBackgroundColor: [
-              "rgb(102,110,232)",
-              "rgb(40,208,148)",
-              "rgb(253,172,52)",
-            ],
-            borderWidth: 0,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-        cutout: "80%",
-      },
-    });
-
-    return () => {
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-      }
-      if (doughnutChartInstance.current) {
-        doughnutChartInstance.current.destroy();
-      }
-      fetchSourceType();
-    };
-  }, []);
-
-  useEffect(() => {
     if (currentActiveTab) {
       setContent(currentActiveTab);
       setActiveTab(currentActiveTab);
     }
+    fetchSourceType();
   }, []);
 
   return (
@@ -600,9 +525,7 @@ function FollowUp() {
 
               {/* Follow Up List */}
               <Grid item xs={10} className="followup-section">
-                <div className="text-end mb-3">
-
-                </div>
+                <div className="text-end mb-3"></div>
 
                 <Box className="followup-box">
                   <div className="d-flex justify-content-between">
@@ -625,7 +548,10 @@ function FollowUp() {
                             fontSize: { xs: "16px", sm: "17px", md: "18px" },
                           }}
                         >
-                          <strong className="text-nowrap "> FollowUp List:</strong>
+                          <strong className="text-nowrap ">
+                            {" "}
+                            FollowUp List:
+                          </strong>
                         </Typography>
 
                         <Box
@@ -657,17 +583,27 @@ function FollowUp() {
                                 whiteSpace: "nowrap",
                                 width: "auto",
                                 height: "25px",
-                                fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                                fontSize: {
+                                  xs: "10px",
+                                  sm: "12px",
+                                  md: "14px",
+                                },
                               }}
                               onClick={handleOpen}
                             >
                               Report
                             </Button>
                             {[
-                              { label: "pending", icon: <PendingActionsIcon /> },
+                              {
+                                label: "pending",
+                                icon: <PendingActionsIcon />,
+                              },
                               { label: "today", icon: <TodayIcon /> },
                               { label: "upcoming", icon: <AccessAlarmIcon /> },
-                              { label: "new", icon: <FormatListBulletedIcon /> },
+                              {
+                                label: "new",
+                                icon: <FormatListBulletedIcon />,
+                              },
                             ].map((item) => (
                               <Button
                                 key={item.label}
@@ -680,7 +616,9 @@ function FollowUp() {
                                       ? "#666cff !important"
                                       : "#e7e7ff !important",
                                   color:
-                                    activeTab === item.label ? "#fff" : "#666cff",
+                                    activeTab === item.label
+                                      ? "#fff"
+                                      : "#666cff",
                                   whiteSpace: "nowrap",
                                   width: "auto",
                                   height: "25px",
@@ -699,20 +637,21 @@ function FollowUp() {
                       </Box>
                     </div>
 
-                    <div >
+                    <div>
                       <button
                         className="btn btn-outline-primary btn-sm me-2 position-relative"
                         onClick={() => handleFilterOpen()}
                         title="Filter"
                       >
-                        <i className="mdi mdi-filter" style={{ fontSize: '0.85rem' }}></i>
+                        <i
+                          className="mdi mdi-filter"
+                          style={{ fontSize: "0.85rem" }}
+                        ></i>
 
-                        {Object.keys(filterData).length > 0 && (filterTabname === activeTab) && (
-                          <span
-                            className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
-
-                          ></span>
-                        )}
+                        {Object.keys(filterData).length > 0 &&
+                          filterTabname === activeTab && (
+                            <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                          )}
                       </button>
 
                       <button
@@ -722,14 +661,15 @@ function FollowUp() {
                           setFilterUrl("");
                         }}
                         title="Reset"
-                        style={{ padding: '4px 15px', fontSize: '0.75rem' }}
+                        style={{ padding: "4px 15px", fontSize: "0.75rem" }}
                       >
-                        <i className="mdi mdi-refresh" style={{ fontSize: '0.85rem' }}></i>
+                        <i
+                          className="mdi mdi-refresh"
+                          style={{ fontSize: "0.85rem" }}
+                        ></i>
                       </button>
                     </div>
-
                   </div>
-
 
                   {content === "today" && (
                     <InitiatedComponent

@@ -51,7 +51,7 @@ const AssignVisit = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const { control, getValues, register, setValue } = useForm();
   const [isFocused, setIsFocused] = React.useState(false);
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState([]); 
   console.log(team_id);
 
   const options = {
@@ -84,9 +84,16 @@ const AssignVisit = () => {
 
   const getAssignedVisitByEmployee = async () => {
     try {
-      const result = await getVisitAssignedBy();
-      setRows(result);
-      console.log(result);
+      if(userType === "Super Admin"){
+        const result = await getVisitAssignedBy();
+        setRows(result);
+        console.log(result);
+      }else{
+        const result = await getVisitAssignedBy(logged_employee_Id);
+        setRows(result);
+        console.log(result);
+      }
+      
     } catch (error) {
       console.log(error);
     }
@@ -102,22 +109,22 @@ const AssignVisit = () => {
   }, []);
 
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
+const year = now.getFullYear();
+const month = String(now.getMonth() + 1).padStart(2, "0");
+const day = String(now.getDate()).padStart(2, "0");
+const hours = String(now.getHours()).padStart(2, "0");
+const minutes = String(now.getMinutes()).padStart(2, "0");
 
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  const next_date_time = `${year}-${month}-${day}T${hours}:${minutes}`;
+const next_date_time = `${year}-${month}-${day}T${hours}:${minutes}`;
 
-  const formatedDataForActivity = {
-    enquiry_id,
-    action: "Visit Assigned Successfully",
-    next_discussion_point: "Do Next Follow-Up",
-    next_date_time,
-  };
+const formatedDataForActivity = {
+  enquiry_id,
+  action: "Visit Assigned Successfully",
+  next_discussion_point: "Do Next Follow-Up",
+  next_date_time,
+};
 
 
   const handleSubmit = async () => {
@@ -368,8 +375,9 @@ const AssignVisit = () => {
                               placeholder="Enter Instruction"
                               style={{
                                 width: "100%",
-                                border: `2px solid ${isFocused ? "#007bff" : "#ccc"
-                                  }`, // Border color changes on focus
+                                border: `2px solid ${
+                                  isFocused ? "#007bff" : "#ccc"
+                                }`, // Border color changes on focus
                                 borderRadius: "4px",
                                 padding: "8px",
                                 boxSizing: "border-box",
@@ -419,17 +427,24 @@ const AssignVisit = () => {
                 </TableBody>
               </Table>
               {/* Submit Button */}
-              
-                  <Box textAlign="center" marginTop={2}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleSubmit}
-                      sx={{ backgroundColor: "#666cff" }}
-                    >
-                      Submit
-                    </Button>{" "}
-                  </Box>
+              {(userType === "Super Admin" ||
+                hasRightsPermission(
+                  "FollowUp",
+                  "Follow Up",
+                  "write",
+                  Permissions
+                )) && (
+                <Box textAlign="center" marginTop={2}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSubmit}
+                    sx={{ backgroundColor: "#666cff" }}
+                  >
+                    Submit
+                  </Button>{" "}
+                </Box>
+              )}
             </Paper>
 
             {/* visit History */}

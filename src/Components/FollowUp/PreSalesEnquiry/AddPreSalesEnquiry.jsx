@@ -613,10 +613,17 @@ const AddPreSalesEnquiry = () => {
                         </div>
                       </div>
                     </div>
-                   
+                    {(userType === "Super Admin" ||
+                      hasRightsPermission(
+                        "FollowUp",
+                        "Pre Sales Enquiry",
+                        "write",
+                        Permissions
+                      )) && (
                       <button className="col-md-2 btn btn-primary ms-auto waves-effect waves-light mt-3">
                         Submit
                       </button>
+                    )}
                   </form>
                 </div>
               </div>
