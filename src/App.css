@@ -53,9 +53,7 @@ body {
   padding: 0;
 }
 
-.menu-item {
-  margin: 5px 0;
-}
+
 
 .menu-link {
   text-decoration: none;
@@ -74,7 +72,7 @@ body {
 
 
 .menu-sub li:hover .menu-link {
-  background: linear-gradient(45deg, #0dadfd, #0d67ef7a);
+  background: linear-gradient(45deg, #0dadfd, #075ee0b6);
   color: #ffffff;
   border-radius: 6px;
   transform: translateX(5px);
@@ -87,15 +85,15 @@ body {
 .sidebar ul li .menu-link.selected {
   color: #ffffff !important;
    border-left: 4px solid #2563eb;
-  background: linear-gradient(45deg, #0dadfd, #0d67ef7a);
+  background: linear-gradient(45deg, #0dadfd, #075ee0e2);
 }
 
 
-.sidebar ul li .menu-link.selected::before {
+/* .sidebar ul li .menu-link.selected::before {
   content: "•";
   margin-right: 10px;
   color: #ffffff !important;
-}
+} */
 /* .content-wrapper {
   min-height: 100vh;
   display: flex;
