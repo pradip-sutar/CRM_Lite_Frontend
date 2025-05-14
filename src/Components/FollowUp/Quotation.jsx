@@ -38,7 +38,7 @@ const [content, setContent] = useState("Today");
   const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
   const [quatationforUser, setQuatationForUser] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({});
-  const [anchorEl, setAnchorEl] = useState(null); // State to control the menu (dropdown)
+  const [anchorEl, setAnchorEl] = useState(null); 
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -64,9 +64,9 @@ const [content, setContent] = useState("Today");
     }
   }, [location.pathname, quotation_id]);
 
-  const fetchQuoteforLogedUser = async (logged_employee_Id) => {
+  const fetchQuoteforLogedUser = async () => {
     try {
-      const data = await getAssignedQuoteforEmployee(logged_employee_Id,logged_employee_Type);
+      const data = await getAssignedQuoteforEmployee();
       console.log(data);
       if (quotation_id) {
         const filteredData = data.filter(
