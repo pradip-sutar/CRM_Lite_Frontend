@@ -318,7 +318,13 @@ const Productviews = () => {
             {(selectedSubProjects?.length > 0 ||
               (selectedProjectDetails.ownership_type === "CP" &&
                 selectedProjectDetails.project_types === "land")) &&
-              <button className="btn btn-primary mt-3">Submit</button>}
+              (userType === "Super Admin" ||
+                hasRightsPermission(
+                  "FollowUp",
+                  "Follow Up",
+                  "write",
+                  Permissions
+                )) && <button className="btn btn-primary mt-3">Submit</button>}
           </form>
         </div>
 

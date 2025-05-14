@@ -19,6 +19,7 @@ import "./CSS/enquiry.css";
 import crmStore from "../../Utils/crmStore";
 import { hasRightsPermission } from "../../Private/premissionChecker";
 import { AddCustomerContact } from "../../services/IVR/apiTeleCalling";
+import { getProductForm } from "../../services/Product/apiProductForm";
 
 const AddEnquiry = () => {
   const [copySuccess, setCopySuccess] = useState(false);
@@ -48,6 +49,16 @@ const AddEnquiry = () => {
   const editData = location.state?.enquiryData || {};
   console.log(editData);
 
+  const [productData, setProductData] = useState([]);
+  const initialUrlforProject = `/api/project_new_handler/`;
+  const fetchData = async () => {
+    const response = await getProductForm(initialUrlforProject);
+    setProductData(response);
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   useEffect(() => {
     if (editData?.enquiry_id) {
       Object.keys(editData).forEach((key) => {
@@ -65,10 +76,6 @@ const AddEnquiry = () => {
       }
     }
   }, [editData, setValue]);
-
-
-
-
 
   const fetchSourceType = async () => {
     try {
@@ -97,8 +104,6 @@ const AddEnquiry = () => {
     }
   };
 
-
-
   const fetchConfirmProject = async () => {
     try {
       const data = await getConfirmPreProject();
@@ -115,8 +120,9 @@ const AddEnquiry = () => {
       return;
     }
 
-    const linkToCopy = `${import.meta.env.VITE_LinkGenerate_Ip
-      }/enquiry/CreateLink/${selectedId}`;
+    const linkToCopy = `${
+      import.meta.env.VITE_LinkGenerate_Ip
+    }/enquiry/CreateLink/${selectedId}`;
 
     navigator.clipboard
       ?.writeText(linkToCopy)
@@ -128,6 +134,8 @@ const AddEnquiry = () => {
   };
 
   const onSubmit = async (data) => {
+    console.log(data);
+    
     data.employee_id = logged_employee_Id;
     try {
       if (editData?.enquiry_id) {
@@ -258,8 +266,9 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="text"
-                            className={`form-control ${errors.customer_name ? "is-invalid" : ""
-                              }`}
+                            className={`form-control ${
+                              errors.customer_name ? "is-invalid" : ""
+                            }`}
                             placeholder="Customer Name"
                             {...register("customer_name", { required: true })}
                           />
@@ -276,8 +285,9 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="number"
-                            className={`form-control ${errors.customer_phone ? "is-invalid" : ""
-                              }`}
+                            className={`form-control ${
+                              errors.customer_phone ? "is-invalid" : ""
+                            }`}
                             placeholder="Customer Phone"
                             {...register("customer_phone", {
                               required: true,
@@ -315,8 +325,9 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="text"
-                            className={`form-control ${errors.customer_address ? "is-invalid" : ""
-                              }`}
+                            className={`form-control ${
+                              errors.customer_address ? "is-invalid" : ""
+                            }`}
                             placeholder="Customer Address"
                             {...register("customer_address")}
                           />
@@ -328,8 +339,9 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <select
                             id="country"
-                            className={`select2 form-select ${errors.customer_country ? "is-invalid" : ""
-                              }`}
+                            className={`select2 form-select ${
+                              errors.customer_country ? "is-invalid" : ""
+                            }`}
                             {...register("customer_country")}
                           >
                             <option value="" selected disabled>
@@ -356,8 +368,9 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="text"
-                            className={`form-control ${errors.customer_state ? "is-invalid" : ""
-                              }`}
+                            className={`form-control ${
+                              errors.customer_state ? "is-invalid" : ""
+                            }`}
                             placeholder="Customer's State"
                             {...register("customer_state")}
                           />
@@ -369,8 +382,9 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <input
                             type="date"
-                            className={`form-control ${errors.date ? "is-invalid" : ""
-                              }`}
+                            className={`form-control ${
+                              errors.date ? "is-invalid" : ""
+                            }`}
                             placeholder="Date"
                             {...register("date")}
                           />
@@ -382,8 +396,9 @@ const AddEnquiry = () => {
                         <div className="form-floating form-floating-outline">
                           <select
                             id="productType"
-                            className={`select2 form-select ${errors.source ? "is-invalid" : ""
-                              }`}
+                            className={`select2 form-select ${
+                              errors.source ? "is-invalid" : ""
+                            }`}
                             {...register("source")}
                           >
                             <option value="" selected disabled>
@@ -404,11 +419,11 @@ const AddEnquiry = () => {
 
                       <div className="col-md-6">
                         <div className="form-floating form-floating-outline">
-
                           <input
                             type="text"
-                            className={`form-control ${errors.project ? "is-invalid" : ""
-                              }`}
+                            className={`form-control ${
+                              errors.project ? "is-invalid" : ""
+                            }`}
                             placeholder="Customer Name"
                             {...register("project", { required: true })}
                           />
@@ -431,13 +446,10 @@ const AddEnquiry = () => {
                             <option value="" selected disabled>
                               Project
                             </option>
-                            {confirmProject?.length > 0 &&
-                              confirmProject?.map((option, index) => (
-                                <option
-                                  key={index}
-                                  value={option?.preproject?.project_id}
-                                >
-                                  {option?.preproject?.project_name}
+                            {productData?.length > 0 &&
+                              productData?.map((option, index) => (
+                                <option key={index} value={option?.project_id}>
+                                  {option?.project_name}
                                 </option>
                               ))}
                           </select>
@@ -446,13 +458,12 @@ const AddEnquiry = () => {
                       </div>
 
                       <div className="col-md-6">
-
                         <div className="form-floating form-floating-outline">
-
                           <input
                             type="text"
-                            className={`form-control ${errors.enquiry_type ? "is-invalid" : ""
-                              }`}
+                            className={`form-control ${
+                              errors.enquiry_type ? "is-invalid" : ""
+                            }`}
                             placeholder="Customer Name"
                             {...register("enquiry_type", { required: true })}
                           />

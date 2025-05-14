@@ -12,7 +12,6 @@ import {
   CardContent,
   Typography,
   TextField,
-  Button,
   IconButton,
   Avatar,
   MenuItem,
@@ -23,6 +22,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Button,
+  Menu,
 } from "@mui/material";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 import {
@@ -48,6 +49,10 @@ import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import AddIcon from "@mui/icons-material/Add";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import CallEnd from "@mui/icons-material/CallEnd";
+import Contacts from "@mui/icons-material/Contacts";
+import NotIntrest from "@mui/icons-material/ProductionQuantityLimits";
+
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
 import ActivityLog from "./ActivityLog";
@@ -79,6 +84,8 @@ import { sendWPMessage } from "../../services/MetaIntigration/apiWhatsapp";
 import { sendEmail } from "../../services/MetaIntigration/apiEmail";
 import { sendMessageData } from "../../services/MetaIntigration/apiMessage";
 import { putEnquiryTable } from "../../services/EnquiryBucket/apiEnquiryTable";
+import { useGetCallStatus } from "../../hooks/FollowUp/useCallStatus";
+import { conversionBypass } from "../../services/FollowUp/AccountProfileview/accountProfileview";
 
 const AccountProfileview = ({ id }) => {
   const userType = crmStore.getState().user.userInfo.userType;
@@ -86,6 +93,7 @@ const AccountProfileview = ({ id }) => {
   const logged_employee_mob = crmStore.getState().user.userInfo.employee_mobno;
   const Permissions = crmStore.getState().permisions.roleAndRights;
   const navigate = useNavigate();
+  const { callStatusData } = useGetCallStatus();
   const [conversionDetail, setConversionDetail] = useState({});
   const [refreshKey, setRefreshKey] = useState(0);
   const {
@@ -94,7 +102,7 @@ const AccountProfileview = ({ id }) => {
     reset,
     formState: { errors },
   } = useForm();
-
+  const [anchorEl, setAnchorEl] = useState(null);
   const {
     activeTab = "Today",
     enquiry_id = null,
@@ -114,7 +122,7 @@ const AccountProfileview = ({ id }) => {
     source = null,
     enquiry_type = null,
   } = useLocation()?.state || {};
-  console.log("confirmProject", confirm_project);
+  console.log(useLocation()?.state);
 
   const [open, setOpen] = useState(false);
   const [fullNameInput, setFullNameInput] = useState(customer_name);
@@ -178,7 +186,7 @@ const AccountProfileview = ({ id }) => {
       );
       reset();
       setRefreshKey(refreshKey + 1);
-      navigate("/followUp",{state:{activeTab}});
+      navigate("/followUp", { state: { activeTab } });
     }
   };
   const fetchConversionDetails = async (customer_id) => {
@@ -189,6 +197,14 @@ const AccountProfileview = ({ id }) => {
   useEffect(() => {
     fetchConversionDetails(customer_id);
   }, [customer_id, customer_phone]);
+
+  const onPercentageChange = async(value) => {
+    console.log("Selected percentage:", value,enquiry_id);
+    const res=await conversionBypass(enquiry_id,value);
+    if(res==201){
+      navigate("/followUp", { state: { activeTab } });
+    }
+  };
 
   const moveToDead = async (Invalid) => {
     console.log(Invalid);
@@ -638,28 +654,85 @@ const AccountProfileview = ({ id }) => {
                           FollowUp List
                         </Typography>
                         <Box className="followup-listInitiate">
-                          {/* <Button
-                            variant="contained"
-                            startIcon={<PersonOutlineOutlinedIcon />}
-                            // onClick={() => setContent("initiated")}
-                            className="initiated"
-                            sx={{
-                              mr: 1,
-                              mb: 2,
-                              backgroundColor: "#dadcff !important",
-                              color: "#666cff",
-                              width: "auto",
-                              height: "25px",
-                              fontSize: { xs: "10px", sm: "12px", md: "13px" },
-                            }}
-                          >
-                            INITIATE
-                          </Button> */}
+                          {(userType === "Super Admin" ||
+                            hasRightsPermission(
+                              "FollowUp",
+                              "Follow Up",
+                              "write",
+                              Permissions
+                            )) && (
+                            <>
+                              {/* Single Button with Menu */}
+                              <Button
+                                variant="contained"
+                                startIcon={<CallEnd />}
+                                className="nonInitiated"
+                                sx={{
+                                  mr: 1,
+                                  mb: 2,
+                                  backgroundColor: "#e7e7ff !important",
+                                  color: "#666cff",
+                                  width: "auto",
+                                  height: "25px",
+                                  fontSize: {
+                                    xs: "10px",
+                                    sm: "12px",
+                                    md: "14px",
+                                  },
+                                }}
+                                onClick={(event) =>
+                                  setAnchorEl(event.currentTarget)
+                                }
+                              >
+                                Call Action
+                              </Button>
+                              <Menu
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={() => setAnchorEl(null)}
+                                PaperProps={{
+                                  sx: {
+                                    backgroundColor: "#e7e7ff", // Match button background
+                                    color: "#666cff", // Match button text color
+                                  },
+                                }}
+                              >
+                                {callStatusData?.map((data) => (
+                                  <MenuItem
+                                    key={data.id}
+                                    onClick={() => {
+                                      onPercentageChange(data.id);
+                                      setAnchorEl(null); // Close menu after selection
+                                    }}
+                                    sx={{
+                                      fontSize: {
+                                        xs: "10px",
+                                        sm: "12px",
+                                        md: "14px",
+                                      }, // Match button font size
+                                      color: "#666cff", // Match button text color
+                                      "&:hover": {
+                                        backgroundColor: "#d5d5ff", // Slightly darker on hover
+                                      },
+                                    }}
+                                  >
+                                    {data.name}
+                                  </MenuItem>
+                                ))}
+                              </Menu>
+                            </>
+                          )}
 
-                          
+                          {(userType === "Super Admin" ||
+                            hasRightsPermission(
+                              "FollowUp",
+                              "Follow Up",
+                              "write",
+                              Permissions
+                            )) && (
                             <Button
                               variant="contained"
-                              startIcon={<PersonOutlineOutlinedIcon />}
+                              startIcon={<Contacts />}
                               className="nonInitiated"
                               sx={{
                                 mr: 1,
@@ -678,11 +751,17 @@ const AccountProfileview = ({ id }) => {
                             >
                               Invalid Number
                             </Button>
-
-                          
+                          )}
+                          {(userType === "Super Admin" ||
+                            hasRightsPermission(
+                              "FollowUp",
+                              "Follow Up",
+                              "write",
+                              Permissions
+                            )) && (
                             <Button
                               variant="contained"
-                              startIcon={<PersonOutlineOutlinedIcon />}
+                              startIcon={<NotIntrest />}
                               className="nonInitiated"
                               sx={{
                                 mr: 1,
@@ -701,6 +780,7 @@ const AccountProfileview = ({ id }) => {
                             >
                               NOT INTERESTED
                             </Button>
+                          )}
                         </Box>
                       </Box>
                       <div style={{ maxHeight: "200px", overflow: "auto" }}>
@@ -1586,7 +1666,13 @@ const AccountProfileview = ({ id }) => {
                                     justifyContent="center"
                                     sx={{ mt: 2 }}
                                   >
-                                    
+                                    {(userType === "Super Admin" ||
+                                      hasRightsPermission(
+                                        "FollowUp",
+                                        "Follow Up",
+                                        "write",
+                                        Permissions
+                                      )) && (
                                       <Button
                                         type="submit"
                                         variant="contained"
@@ -1601,6 +1687,7 @@ const AccountProfileview = ({ id }) => {
                                       >
                                         Submit
                                       </Button>
+                                    )}
                                   </Box>
                                 </CardContent>
                               </Card>
@@ -1629,80 +1716,6 @@ const AccountProfileview = ({ id }) => {
                             enquiry_id={enquiry_id}
                           />
                         </Grid>
-                        {/* <ActivityLog key={refreshKey} enquiry_id={enquiry_id} /> */}
-
-                        {/* Activity Log
-                        <Grid item xs={8}>
-                          <Box
-                            sx={{
-                              mt: {
-                                xs: -6, // for small screens
-                                sm: -8, // for medium screens
-                                md: -10, // for large screens
-                                lg: -12, // for extra-large screens
-                                xl: -13, // for extra-extra-large screens
-                              },
-                            }}
-                          >
-                            <Card>
-                              <CardContent>
-                                <Typography variant="h6">Activity</Typography>
-                                <List>
-                                  {[
-                                    {
-                                      text: "Your order has been placed successfully",
-                                      time: "Tuesday 11:29 AM",
-                                    },
-                                    {
-                                      text: "Pick-up scheduled with courier",
-                                      time: "Wednesday 11:29 AM",
-                                    },
-                                    {
-                                      text: "Item has been picked up by courier",
-                                      time: "Thursday 11:29 AM",
-                                    },
-                                    {
-                                      text: "Package arrived at Amazon facility, NY",
-                                      time: "Saturday 15:20 AM",
-                                    },
-                                    {
-                                      text: "Package has left Amazon facility, NY",
-                                      time: "Today 14:12 PM",
-                                    },
-                                    {
-                                      text: "Package will be delivered by tomorrow",
-                                      time: "Tomorrow",
-                                    },
-                                  ].map((activity, index) => (
-                                    <ListItem key={index}>
-                                      <ListItemIcon>
-                                        <CircleIcon />
-                                      </ListItemIcon>
-                                      <ListItemText
-                                        primary={
-                                          <Typography>
-                                            {activity.text}
-                                          </Typography>
-                                        }
-                                        secondary={
-                                          <Typography
-                                            variant="body2"
-                                            color="textSecondary"
-                                          >
-                                            {activity.time}
-                                          </Typography>
-                                        }
-                                      />
-                                    </ListItem>
-                                  ))}
-                                </List>
-                              </CardContent>
-                            </Card>
-                          </Box>
-                        </Grid> */}
-                        {/* Fourth Grid */}
-
-                        {/* <Grid item xs={4} className="assQoute-section"> */}
                         <Grid
                           item
                           xs={12}
@@ -1751,7 +1764,13 @@ const AccountProfileview = ({ id }) => {
 
                                 {confirm_project?.length > 0 ? (
                                   <>
-                                    
+                                    {(userType === "Super Admin" ||
+                                      hasRightsPermission(
+                                        "FollowUp",
+                                        "Follow Up",
+                                        "write",
+                                        Permissions
+                                      )) && (
                                       <Button
                                         variant="contained"
                                         color="primary"
@@ -1800,8 +1819,15 @@ const AccountProfileview = ({ id }) => {
                                       >
                                         QUOTE
                                       </Button>
+                                    )}
 
-                                   
+                                    {(userType === "Super Admin" ||
+                                      hasRightsPermission(
+                                        "FollowUp",
+                                        "Follow Up",
+                                        "write",
+                                        Permissions
+                                      )) && (
                                       <Button
                                         variant="contained"
                                         color="primary"
@@ -1837,8 +1863,15 @@ const AccountProfileview = ({ id }) => {
                                       >
                                         LEAD
                                       </Button>
+                                    )}
 
-                                    
+                                    {(userType === "Super Admin" ||
+                                      hasRightsPermission(
+                                        "FollowUp",
+                                        "Follow Up",
+                                        "write",
+                                        Permissions
+                                      )) && (
                                       <Button
                                         variant="contained"
                                         color="primary"
@@ -1885,6 +1918,7 @@ const AccountProfileview = ({ id }) => {
                                       >
                                         VISIT
                                       </Button>
+                                    )}
                                   </>
                                 ) : (
                                   <>
@@ -1938,7 +1972,13 @@ const AccountProfileview = ({ id }) => {
                                   Product
                                 </Typography>
 
-                                
+                                {(userType === "Super Admin" ||
+                                  hasRightsPermission(
+                                    "FollowUp",
+                                    "Follow Up",
+                                    "write",
+                                    Permissions
+                                  )) && (
                                   <Button
                                     variant="contained"
                                     color="primary"
@@ -1969,6 +2009,7 @@ const AccountProfileview = ({ id }) => {
                                   >
                                     Details
                                   </Button>
+                                )}
                               </Box>
                               <Avatar
                                 sx={{
@@ -2002,7 +2043,13 @@ const AccountProfileview = ({ id }) => {
                                 >
                                   Behavior Analysis
                                 </Typography>
-                                
+                                {(userType === "Super Admin" ||
+                                  hasRightsPermission(
+                                    "FollowUp",
+                                    "Follow Up",
+                                    "write",
+                                    Permissions
+                                  )) && (
                                   <Button
                                     variant="contained"
                                     color="primary"
@@ -2035,6 +2082,7 @@ const AccountProfileview = ({ id }) => {
                                   >
                                     Details
                                   </Button>
+                                )}
                               </Box>
                               <Avatar
                                 sx={{
@@ -2069,7 +2117,13 @@ const AccountProfileview = ({ id }) => {
                                   History
                                 </Typography>
 
-                                
+                                {(userType === "Super Admin" ||
+                                  hasRightsPermission(
+                                    "FollowUp",
+                                    "Follow Up",
+                                    "write",
+                                    Permissions
+                                  )) && (
                                   <Button
                                     variant="contained"
                                     color="primary"
@@ -2098,6 +2152,7 @@ const AccountProfileview = ({ id }) => {
                                   >
                                     Details
                                   </Button>
+                                )}
                               </Box>
                               <Avatar
                                 sx={{
@@ -2132,7 +2187,13 @@ const AccountProfileview = ({ id }) => {
                                 >
                                   Booking
                                 </Typography>
-                                
+                                {(userType === "Super Admin" ||
+                                  hasRightsPermission(
+                                    "FollowUp",
+                                    "Follow Up",
+                                    "write",
+                                    Permissions
+                                  )) && (
                                   <Button
                                     variant="contained"
                                     color="primary"
@@ -2176,6 +2237,7 @@ const AccountProfileview = ({ id }) => {
                                   >
                                     Booking
                                   </Button>
+                                )}
                               </Box>
                               <Avatar
                                 sx={{

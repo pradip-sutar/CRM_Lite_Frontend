@@ -9,25 +9,25 @@ import {
 } from "@mui/material";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useNavigate } from "react-router-dom";
-import crmStore from "../../Utils/crmStore";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import TourIcon from "@mui/icons-material/Tour";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import "./CSS/initiated.css";
 import NumberedPagination from "../Pagination/NumberedPagination";
 import { fetchPageData } from "../../services/Pagination/Pagination";
+import Loader from "../Loader/Loader";
 
 const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const params = new URLSearchParams(filterUrl?.split("?")[1]);
   const followupCategory = params.get("followup_category");
-  console.log(followupCategory);
   const [flag, setFlag] = useState(0);
-
+  const [loading, setLoading] = useState(false);
   const [enquiryData, setEnquiryData] = useState([]);
 
   const handelFetchData = async () => {
+    setLoading(true);
     let url;
     if (!(followupCategory == "new")) {
       url = `/api/enquiry_table_handler/?followup_category=new`;
@@ -36,6 +36,7 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
     }
     const response = await fetchPageData(`${url}&page=${currentPage}`);
     setEnquiryData(response);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -64,6 +65,7 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {loading && <Loader/>}
       <Box
         sx={{
           p: 2,
@@ -75,10 +77,18 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
         }}
         className="InitiatedComponentbox"
       >
-        <p className="text-end">
-          complete{enquiryData?.completed_enquiries} out Of{" "}
-          {enquiryData?.total_assigned_enquiry}
-        </p>
+        <div className="card shadow-sm border-0 rounded-3 p-3 mb-4">
+          <p className="text-end mb-0 fs-6 fw-medium text-muted">
+            Enquiry Initiate{" "}
+            <span className="badge bg-success rounded-pill mx-1">
+              {enquiryData?.completed_enquiries || 0}
+            </span>{" "}
+            out of{" "}
+            <span className="badge bg-primary rounded-pill">
+              {enquiryData?.total_assigned_enquiry || 0}
+            </span>
+          </p>
+        </div>
         {/* Follow Up Cards */}
         {enquiryData?.data?.length > 0 ? (
           <>
@@ -226,63 +236,63 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
                           </Box>
                         </Box>
                       </Grid>
-                      <Grid
-                        container
-                        spacing={2}
-                        className="InitiatedComponentList"
-                        sx={{ marginTop: "2px" }}
-                      >
-                        <Grid item xs={7}>
-                          <Box mt={2}>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontSize: "0.7rem" }}
-                            >
-                              <strong>About To:-</strong>{" "}
-                              {data.next_discussion_point}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontSize: "0.7rem" }}
-                            >
-                              <strong>Discussed:-</strong>
-                              {data?.action}
-                            </Typography>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={5}>
-                          <Box sx={{ display: "flex", alignItems: "start" }}>
-                            <Typography sx={{ fontSize: "0.7rem" }}>
-                              <strong>Today's Activity:-</strong>
-                            </Typography>
-                            <Typography
-                              sx={{ fontSize: "0.7rem", color: "#666cff" }}
-                            >
-                              {data?.todays_followups_count}
-                            </Typography>
-                          </Box>
+                    </Grid>
+                    <Grid
+                      container
+                      spacing={2}
+                      className="InitiatedComponentList"
+                      sx={{ marginTop: "2px" }}
+                    >
+                      <Grid item xs={7}>
+                        <Box mt={2}>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontSize: "0.7rem" }}
+                          >
+                            <strong>About To:-</strong>{" "}
+                            {data.next_discussion_point}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontSize: "0.7rem" }}
+                          >
+                            <strong>Discussed:-</strong>
+                            {data?.action}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={5}>
+                        <Box sx={{ display: "flex", alignItems: "start" }}>
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            <strong>Today's Activity:-</strong>
+                          </Typography>
+                          <Typography
+                            sx={{ fontSize: "0.7rem", color: "#666cff" }}
+                          >
+                            {data?.todays_followups_count}
+                          </Typography>
+                        </Box>
 
-                          <Box sx={{ display: "flex", alignItems: "start" }}>
-                            <Typography sx={{ fontSize: "0.7rem" }}>
-                              <strong>Enquiry Source:-</strong>
-                            </Typography>
-                            <Typography
-                              sx={{ fontSize: "0.7rem", color: "#666cff" }}
-                            >
-                              {data?.source_name}
-                            </Typography>
-                          </Box>
-                          <Box sx={{ display: "flex", alignItems: "start" }}>
-                            <Typography sx={{ fontSize: "0.7rem" }}>
-                              <strong>Enquiry Date:-</strong>
-                            </Typography>
-                            <Typography
-                              sx={{ fontSize: "0.7rem", color: "#666cff" }}
-                            >
-                              {data?.date}
-                            </Typography>
-                          </Box>
-                        </Grid>
+                        <Box sx={{ display: "flex", alignItems: "start" }}>
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            <strong>Enquiry Source:-</strong>
+                          </Typography>
+                          <Typography
+                            sx={{ fontSize: "0.7rem", color: "#666cff" }}
+                          >
+                            {data?.source_name}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", alignItems: "start" }}>
+                          <Typography sx={{ fontSize: "0.7rem" }}>
+                            <strong>Enquiry Date:-</strong>
+                          </Typography>
+                          <Typography
+                            sx={{ fontSize: "0.7rem", color: "#666cff" }}
+                          >
+                            {data?.date}
+                          </Typography>
+                        </Box>
                       </Grid>
                     </Grid>
                   </CardContent>
@@ -294,7 +304,15 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
           <h3>No Activity till Date </h3>
         )}
       </Box>
-      <Box sx={{ p: 2, borderTop: "1px solid #e0e0e0" }}>
+      <Box
+        sx={{
+          borderTop: "1px solid #e0e0e0",
+          display: "flex",
+          flexDirection: "row-reverse",
+          padding: "1px",
+          top: 0,
+        }}
+      >
         <NumberedPagination
           totalPages={enquiryData?.totalPageCount}
           onPageChange={setCurrentPage}
