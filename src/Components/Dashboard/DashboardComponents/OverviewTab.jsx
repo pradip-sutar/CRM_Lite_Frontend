@@ -306,6 +306,33 @@ const Overview = () => {
 
       {/* First Row: Admin Info and Stats */}
       <div className="row g-3 mb-4">
+
+        <div className='d-flex justify-content-end gap-3'>
+          <div className="mb-3" style={{ width: "200px" }}>
+            <label htmlFor="timePeriod" className="form-label fw-bold">Time Period:</label>
+            <select
+              className="form-select"
+              id="timePeriod"
+            >
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="annually">Annually</option>
+            </select>
+          </div>
+
+          <div className="mb-3" style={{ width: "200px" }}>
+            <label htmlFor="date" className="form-label fw-bold">Date:</label>
+            <input
+              type="date"
+              className="form-control"
+              id="date"
+              name="date"
+            />
+          </div>
+        </div>
+
         <div className="col-12 col-lg-4 col-md-6">
           <div className="card shadow animate-card" style={{ height: "19rem", background: "linear-gradient(135deg, #ffffff, #ffe4ec)", }}>
             <div className="card-body p-4 position-relative">
@@ -557,7 +584,7 @@ const Overview = () => {
               <div className="row text-center mt-4">
                 <div className="col-6 ">
                   <div className='d-flex justify-content-between gap-4'>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",}}>
+                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)", }}>
                       <div className="card-body">
                         <div className="d-flex align-items-center justify-content-center mb-1">
                           <span
@@ -569,7 +596,7 @@ const Overview = () => {
                         <div className="fw-bold fs-5">112</div>
                       </div>
                     </div>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{background: "linear-gradient(135deg, #fddde6, #e8e6f8)"}}>
+                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #fddde6, #e8e6f8)" }}>
                       <div className="card-body">
                         <div className="d-flex align-items-center justify-content-center mb-1">
                           <span
@@ -583,7 +610,7 @@ const Overview = () => {
                     </div>
                   </div>
                   <div className='d-flex justify-content-between gap-4'>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{background: "linear-gradient(135deg, #d0eaff, #ffffff)"}}>
+                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
                       <div className="card-body mb-0">
                         <div className="d-flex align-items-center justify-content-center mb-1">
                           <span
@@ -595,7 +622,7 @@ const Overview = () => {
                         <div className="fw-bold fs-5">12</div>
                       </div>
                     </div>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{background: "linear-gradient(135deg, #f0f7da, #fffde7)"}}>
+                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #f0f7da, #fffde7)" }}>
                       <div className="card-body mb-0">
                         <div className="d-flex align-items-center justify-content-center mb-1">
                           <span
