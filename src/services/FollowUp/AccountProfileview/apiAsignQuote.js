@@ -16,22 +16,15 @@ export const postQuoteAsign = async (data) => {
   }
 };
 
-export const getAssignQuote = async (employee_id,userType) => {
+export const getAssignQuote = async () => {
   try {
     console.log(userType);
-    
-   if (userType==="Super Admin") {
+ 
     const response = await apiGateWay.get(
       `/api/quotation/`
     );
      return response.data;
-   } else {
-    const response = await apiGateWay.get(
-      `/api/quotation/?assigned_employee_id=${employee_id}`
-    );
-    
-    return response.data;
-   }
+   
   } catch (error) {
     if(error.response.status==404){
       toast.info("No quotes assigned found for this employee.");
@@ -39,20 +32,13 @@ export const getAssignQuote = async (employee_id,userType) => {
   }
 };
 
-export const getAssignedQuoteforEmployee = async (employee_id,userType) => {
+export const getAssignedQuoteforEmployee = async () => {
   try {
-   if (userType==="Super Admin") {
     const response = await apiGateWay.get(
       `/api/quotation/`
     );
      return response.data;
-   } else {
-    const response = await apiGateWay.get(
-      `/api/quotation/?created_employee_id=${employee_id}`
-    );
-    
-    return response.data;
-   }
+   
   } catch (error) {
     if (error.response.status == 404) {
       toast.info("No quotes assigned found for this employee.");

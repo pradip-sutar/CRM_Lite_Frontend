@@ -1,7 +1,6 @@
-import { useState } from "react";
-import SubItems from "../sideBarItems/SubItems";
-import { setActiveMenu } from "../../Utils/Slices/systemSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { setActiveMenu } from "../../Utils/Slices/systemSlice";
+import SubItems from "../sideBarItems/SubItems";
 
 function SystemAdmin() {
   const dispatch = useDispatch();
@@ -35,6 +34,22 @@ function SystemAdmin() {
             overflow: hidden;
             padding-left: 2.5rem;
           }
+          .submenu-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding-bottom: 0.3rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submenu-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
 
           .menu-item.open .menu-sub {
             display: block;
@@ -56,10 +71,7 @@ function SystemAdmin() {
             animation-delay: 0.2s;
           }
 
-          .menu-sub li:hover {
-            background-color: #f0f4ff;
-            transform: scale(1.02);
-          }
+        
 
           @keyframes slideDown {
             from {
@@ -99,6 +111,7 @@ function SystemAdmin() {
           }
         `}
       </style>
+
       <div
         onClick={() => {
           dispatch(setActiveMenu("SystemAdmin"));
@@ -108,10 +121,16 @@ function SystemAdmin() {
         <span className="menu-icon tf-icons mdi mdi-account-key"></span>
         <div>System Admin</div>
       </div>
+
       <ul className="menu-sub">
-        <SubItems value="Company Info" to={"systemAdmin/companyInfo"} />
-        <SubItems value="Bank Info" to={"systemAdmin/bankInfo"} />
+        <li className="submenu-card">
+          <SubItems value="Company Info" to={"systemAdmin/companyInfo"} />
+        </li>
+        <li className="submenu-card">
+          <SubItems value="Bank Info" to={"systemAdmin/bankInfo"} />
+        </li>
       </ul>
+
     </li>
   );
 }

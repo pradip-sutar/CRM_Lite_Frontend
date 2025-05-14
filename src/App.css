@@ -67,19 +67,29 @@ body {
 }
 
 .menu-link:hover {
-  /* background-color: #e3e2e2; */
+  /* background: linear-gradient(45deg, #0d6efd, #0b5ed7); */
   color: #ffffff;
 }
 
-.menu-link.selected {
-  background-color: #666cff;
-  border-left: 4px solid #2563eb;
-  color: #ffffff !important;
+
+
+.menu-sub li:hover .menu-link {
+  background: linear-gradient(45deg, #0dadfd, #0d67ef7a);
+  color: #ffffff;
+  border-radius: 6px;
+  transform: translateX(5px);
+  transition: all 0.3s ease;
 }
+
+
+
 
 .sidebar ul li .menu-link.selected {
   color: #ffffff !important;
+   border-left: 4px solid #2563eb;
+  background: linear-gradient(45deg, #0dadfd, #0d67ef7a);
 }
+
 
 .sidebar ul li .menu-link.selected::before {
   content: "•";
