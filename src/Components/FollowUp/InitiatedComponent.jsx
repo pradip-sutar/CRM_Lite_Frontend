@@ -61,6 +61,11 @@ const InitiatedComponent = ({ filterUrl, filterData, activeTab }) => {
     hour12: true,
   };
 
+  function convertToLocalTime(isoString) {
+    const localDate = new Date(isoString);
+    return localDate.toLocaleString() || isoString;
+  }
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box
@@ -93,7 +98,7 @@ const InitiatedComponent = ({ filterUrl, filterData, activeTab }) => {
                       <small>
                         <i className="mdi mdi-calendar-blank-outline mdi-14px" />
                         <span style={{ color: "#636578", marginLeft: "4px" }}>
-                          {data?.next_date_time || ""}
+                          {convertToLocalTime(data?.next_date_time)}
                         </span>
                       </small>
                     </div>
@@ -226,11 +231,17 @@ const InitiatedComponent = ({ filterUrl, filterData, activeTab }) => {
                     >
                       <Grid item xs={7}>
                         <Box mt={2}>
-                          <Typography variant="body2" sx={{ fontSize: "0.7rem" }}>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontSize: "0.7rem" }}
+                          >
                             <strong>About To:-</strong>{" "}
                             {data.next_discussion_point}
                           </Typography>
-                          <Typography variant="body2" sx={{ fontSize: "0.7rem" }}>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontSize: "0.7rem" }}
+                          >
                             <strong>Discussed:-</strong>
                             {data?.action}
                           </Typography>
@@ -279,12 +290,13 @@ const InitiatedComponent = ({ filterUrl, filterData, activeTab }) => {
           <h3>No FollowUp Are Scheduled For Today</h3>
         )}
       </Box>
-      <Box sx={{ p: 2, borderTop: "1px solid #e0e0e0" }}>
-        <NumberedPagination
-          totalPages={enquiryData?.totalPageCount}
-          onPageChange={setCurrentPage}
-        />
-      </Box>
+     <Box sx={{ borderTop: "1px solid #e0e0e0", display: "flex", flexDirection: "row-reverse" ,padding:"1px",top:0}}>
+  <NumberedPagination
+    totalPages={enquiryData?.totalPageCount}
+    onPageChange={setCurrentPage}
+  />
+</Box>
+
     </Box>
   );
 };

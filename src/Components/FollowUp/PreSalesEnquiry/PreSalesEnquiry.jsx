@@ -9,13 +9,13 @@ import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { fetchEmployee } from "../../../services/EmpManagement/apiCompanyProfile";
 import { fetchPageData } from "../../../services/Pagination/Pagination";
+import NumberedPagination from "../../Pagination/NumberedPagination";
 
 function PreSalesEnquiry() {
   const userType = crmStore.getState().user.userInfo.userType;
   const Permissions = crmStore.getState().permisions.roleAndRights;
   const navigate = useNavigate();
   const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
   const [enquirydata, setEnquiryData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -26,12 +26,7 @@ function PreSalesEnquiry() {
     watch,
     setValue,
   } = useForm();
-
-  const [data, setData] = useState([]);
-  const [nextUrl, setNextUrl] = useState(null);
-  const [prevUrl, setPrevUrl] = useState(null);
   const [count, setCount] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState({
     total: 0,
     perPage: 10,
@@ -40,34 +35,21 @@ function PreSalesEnquiry() {
   const initialUrl = `${
     import.meta.env.VITE_URL_BASE
   }/api/enquiry_table_handler/?page=${currentPage}`;
+
+  useEffect(() => {
+    const modifiedUrl = `/api/enquiry_table_handler/?page=${currentPage}`;
+    loadData(modifiedUrl);
+  }, [currentPage]);
+
   const loadData = async (url) => {
-    setLoading(true);
     const result = await fetchPageData(url);
     console.log("result", result);
-
-    setEnquiryData(result.data);
-    setNextUrl(result.nextUrl);
-    setPrevUrl(result.prevUrl);
+    setEnquiryData(result);
     setCount(result.total);
     setPaginationInfo({
       total: result.total || 0,
       perPage: result.perPage || 10,
     });
-    setLoading(false);
-  };
-
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl);
-      setCurrentPage(currentPage - 1);
-    }
   };
 
   const startDate = watch("startDate");
@@ -128,7 +110,13 @@ function PreSalesEnquiry() {
     getEmployee();
   }, []);
 
-  return (
+  return userType === "Super Admin" ||
+    hasRightsPermission(
+      "FollowUp",
+      "Pre Sales Enquiry",
+      "read",
+      Permissions
+    ) ? (
     <div
       className="container-fluid flex-grow-1 container-p-y"
       style={{ minHeight: "84%" }}
@@ -138,7 +126,13 @@ function PreSalesEnquiry() {
           <span className="text-muted fw-light">FollowUp /</span> Pre Sales
           Enquiry
         </h5>
-       
+        {(userType === "Super Admin" ||
+          hasRightsPermission(
+            "FollowUp",
+            "Pre Sales Enquiry",
+            "write",
+            Permissions
+          )) && (
           <div className="mb-2 text-end">
             <button
               className=" btn btn-primary"
@@ -159,6 +153,7 @@ function PreSalesEnquiry() {
               <i className="mdi mdi-plus me-2"></i>Enquiry
             </button>
           </div>
+        )}
       </div>
       <div className="card mx-4">
         <div className="title card-header d-flex justify-content-between align-items-center bg-label-primary py-2">
@@ -190,8 +185,8 @@ function PreSalesEnquiry() {
                 </tr>
               </thead>
               <tbody>
-                {enquirydata?.length > 0 &&
-                  enquirydata?.map((data, index) => (
+                {enquirydata?.data?.length > 0 &&
+                  enquirydata?.data?.map((data, index) => (
                     <tr key={index}>
                       <td>
                         {(currentPage - 1) * paginationInfo.perPage + index + 1}
@@ -211,6 +206,13 @@ function PreSalesEnquiry() {
                       <td>{data.team_name}</td>
                       {/* <td>
                         <td>
+                          {(userType === "Super Admin" ||
+                            hasRightsPermission(
+                              "FollowUp",
+                              "Pre Sales Enquiry",
+                              "edit",
+                              Permissions
+                            )) && (
                             <div
                               onClick={() =>
                                 navigate("/followUp/addpreSaleEnquiry", {
@@ -224,6 +226,7 @@ function PreSalesEnquiry() {
                             >
                               <i className="mdi mdi-pencil-outline"></i>
                             </div>
+                          )}
                         </td>
                       </td> */}
                     </tr>
@@ -234,35 +237,15 @@ function PreSalesEnquiry() {
         </div>
 
         {/* Pagination */}
-        <div className="d-flex justify-content-between align-items-center mt-3">
+        <div className="d-flex justify-content-between align-items-center p-2">
           <div className="text-muted mx-3">
             Showing {paginationInfo.perPage} of {count} entries
-          </div>
-          <ul className="pagination m-0">
-            <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-              <button
-                className="page-link"
-                onClick={handlePrev}
-                disabled={!prevUrl}
-              >
-                Previous
-              </button>
-            </li>
+          </div>  
 
-            <li className="page-item active">
-              <div className="page-link">{currentPage}</div>
-            </li>
-
-            <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-              <button
-                className="page-link"
-                onClick={handleNext}
-                disabled={!nextUrl}
-              >
-                Next
-              </button>
-            </li>
-          </ul>
+          <NumberedPagination
+            totalPages={enquirydata?.totalPageCount}
+            onPageChange={setCurrentPage}
+          />
         </div>
       </div>
       {isModalOpen && (
@@ -374,6 +357,7 @@ function PreSalesEnquiry() {
                     }}
                   />
                 </div>
+                {logged_employee_Type === "Super Admin" && (
                   <div style={{ marginBottom: "15px" }}>
                     <label style={{ display: "block", marginBottom: "5px" }}>
                       Select Employee
@@ -387,6 +371,7 @@ function PreSalesEnquiry() {
                       isSearchable
                     />
                   </div>
+                )}
 
                 <div
                   style={{
@@ -429,6 +414,8 @@ function PreSalesEnquiry() {
         </div>
       )}
     </div>
+  ) : (
+    <ValidationCard />
   );
 }
 

@@ -265,7 +265,13 @@ const LeadAssign = () => {
                 </TableBody>
               </Table>
               {/* Submit Button */}
-              
+              {(userType === "Super Admin" ||
+                hasRightsPermission(
+                  "FollowUp",
+                  "Follow Up",
+                  "write",
+                  Permissions
+                )) && (
                 <Box textAlign="center" marginTop={2}>
                   <Button
                     variant="contained"
@@ -276,6 +282,7 @@ const LeadAssign = () => {
                     Submit
                   </Button>{" "}
                 </Box>
+              )}
             </Paper>
 
             {/* Lead History */}
