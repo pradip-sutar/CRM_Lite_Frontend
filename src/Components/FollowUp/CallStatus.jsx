@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { hasRightsPermission } from "../../Private/premissionChecker";
 import crmStore from "../../Utils/crmStore";
-import ValidationCard from "../../ui/ValidationCard";
 import {
   useGetCallStatus,
   useDeleteCallStatus,
@@ -17,8 +15,7 @@ const CallStatus = () => {
   const { callStatusData, isLoading, error } = useGetCallStatus();
   console.log(callStatusData);
 
-  return userType === "Super Admin" ||
-    hasRightsPermission("Project", "Project type", "read", Permissions) ? (
+  return (
     <>
       <div
         className="container-fluid flex-grow-1 container-p-y"
@@ -28,20 +25,13 @@ const CallStatus = () => {
           <h5 className="breadcrumb ml-2">
             <span className="text-muted fw-light">FollowUp /</span> Call Status
           </h5>
-          {(userType === "Super Admin" ||
-            hasRightsPermission(
-              "Project",
-              "Project type",
-              "write",
-              Permissions
-            )) && (
-            <button
-              className="btn btn-primary btn-sm ms-2 waves-effect waves-light"
-              onClick={() => navigate("/followUp/AddCallStatus")}
-            >
-              <i className="mdi mdi-plus"></i> Add Call Status
-            </button>
-          )}
+
+          <button
+            className="btn btn-primary btn-sm ms-2 waves-effect waves-light"
+            onClick={() => navigate("/followUp/AddCallStatus")}
+          >
+            <i className="mdi mdi-plus"></i> Add Call Status
+          </button>
         </div>
 
         <div className="row">
@@ -82,44 +72,29 @@ const CallStatus = () => {
                             <td>{row.status}</td>
 
                             <td>
-                              {(userType === "Super Admin" ||
-                                hasRightsPermission(
-                                  "Project",
-                                  "Project type",
-                                  "edit",
-                                  Permissions
-                                )) && (
-                                <div
-                                  onClick={() =>
-                                    navigate("/followUp/UpdateCallStatus", {
-                                      state: { data: row },
-                                    })
-                                  }
-                                  className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  data-bs-original-title="Edit"
-                                >
-                                  <i className="mdi mdi-pencil-outline"></i>
-                                </div>
-                              )}
-                              {(userType === "Super Admin" ||
-                                hasRightsPermission(
-                                  "Project",
-                                  "Project type",
-                                  "delete",
-                                  Permissions
-                                )) && (
-                                <button
-                                  className="btn btn-text-danger btn-sm small py-1 px-2"
-                                  data-bs-toggle="tooltip"
-                                  data-bs-placement="top"
-                                  data-bs-original-title="Delete"
-                                  onClick={() => deleteCallStatusReport(row.id)}
-                                >
-                                  <i className="mdi mdi-trash-can" />
-                                </button>
-                              )}
+                              <div
+                                onClick={() =>
+                                  navigate("/followUp/UpdateCallStatus", {
+                                    state: { data: row },
+                                  })
+                                }
+                                className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                data-bs-original-title="Edit"
+                              >
+                                <i className="mdi mdi-pencil-outline"></i>
+                              </div>
+
+                              <button
+                                className="btn btn-text-danger btn-sm small py-1 px-2"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                data-bs-original-title="Delete"
+                                onClick={() => deleteCallStatusReport(row.id)}
+                              >
+                                <i className="mdi mdi-trash-can" />
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -133,8 +108,6 @@ const CallStatus = () => {
         </div>
       </div>
     </>
-  ) : (
-    <ValidationCard />
   );
 };
 export default CallStatus;

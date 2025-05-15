@@ -77,7 +77,7 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
         }}
         className="InitiatedComponentbox"
       >
-        <div className="card shadow-sm border-0 rounded-3 p-3 mb-4">
+        {/* <div className="card shadow-sm border-0 rounded-3 p-3 mb-4">
           <p className="text-end mb-0 fs-6 fw-medium text-muted">
             Enquiry Initiate{" "}
             <span className="badge bg-success rounded-pill mx-1">
@@ -88,7 +88,7 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
               {enquiryData?.total_assigned_enquiry || 0}
             </span>
           </p>
-        </div>
+        </div> */}
         {/* Follow Up Cards */}
         {enquiryData?.data?.length > 0 ? (
           <>

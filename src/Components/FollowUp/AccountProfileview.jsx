@@ -76,7 +76,6 @@ import { movetoDeadTable } from "../../services/EnquiryBucket/apiDeadTable";
 import { Tooltip } from "bootstrap";
 import Swal from "sweetalert2";
 import "./CSS/AccountproView.css";
-import { hasRightsPermission } from "../../Private/premissionChecker";
 import crmStore from "../../Utils/crmStore";
 import { addEmployeetoIVR } from "../../services/IVR/apiTeleCalling";
 import { CalltoCustomer } from "../../services/IVR/apiTeleCalling";
@@ -198,10 +197,10 @@ const AccountProfileview = ({ id }) => {
     fetchConversionDetails(customer_id);
   }, [customer_id, customer_phone]);
 
-  const onPercentageChange = async(value) => {
-    console.log("Selected percentage:", value,enquiry_id);
-    const res=await conversionBypass(enquiry_id,value);
-    if(res==201){
+  const onPercentageChange = async (value) => {
+    console.log("Selected percentage:", value, enquiry_id);
+    const res = await conversionBypass(enquiry_id, value);
+    if (res == 201) {
       navigate("/followUp", { state: { activeTab } });
     }
   };
@@ -654,133 +653,110 @@ const AccountProfileview = ({ id }) => {
                           FollowUp List
                         </Typography>
                         <Box className="followup-listInitiate">
-                          {(userType === "Super Admin" ||
-                            hasRightsPermission(
-                              "FollowUp",
-                              "Follow Up",
-                              "write",
-                              Permissions
-                            )) && (
-                            <>
-                              {/* Single Button with Menu */}
-                              <Button
-                                variant="contained"
-                                startIcon={<CallEnd />}
-                                className="nonInitiated"
-                                sx={{
-                                  mr: 1,
-                                  mb: 2,
-                                  backgroundColor: "#e7e7ff !important",
-                                  color: "#666cff",
-                                  width: "auto",
-                                  height: "25px",
-                                  fontSize: {
-                                    xs: "10px",
-                                    sm: "12px",
-                                    md: "14px",
-                                  },
-                                }}
-                                onClick={(event) =>
-                                  setAnchorEl(event.currentTarget)
-                                }
-                              >
-                                Call Action
-                              </Button>
-                              <Menu
-                                anchorEl={anchorEl}
-                                open={Boolean(anchorEl)}
-                                onClose={() => setAnchorEl(null)}
-                                PaperProps={{
-                                  sx: {
-                                    backgroundColor: "#e7e7ff", // Match button background
+                          <>
+                            {/* Single Button with Menu */}
+                            <Button
+                              variant="contained"
+                              startIcon={<CallEnd />}
+                              className="nonInitiated"
+                              sx={{
+                                mr: 1,
+                                mb: 2,
+                                backgroundColor: "#e7e7ff !important",
+                                color: "#666cff",
+                                width: "auto",
+                                height: "25px",
+                                fontSize: {
+                                  xs: "10px",
+                                  sm: "12px",
+                                  md: "14px",
+                                },
+                              }}
+                              onClick={(event) =>
+                                setAnchorEl(event.currentTarget)
+                              }
+                            >
+                              Call Action
+                            </Button>
+                            <Menu
+                              anchorEl={anchorEl}
+                              open={Boolean(anchorEl)}
+                              onClose={() => setAnchorEl(null)}
+                              PaperProps={{
+                                sx: {
+                                  backgroundColor: "#e7e7ff", // Match button background
+                                  color: "#666cff", // Match button text color
+                                },
+                              }}
+                            >
+                              {callStatusData?.map((data) => (
+                                <MenuItem
+                                  key={data.id}
+                                  onClick={() => {
+                                    onPercentageChange(data.id);
+                                    setAnchorEl(null); // Close menu after selection
+                                  }}
+                                  sx={{
+                                    fontSize: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "14px",
+                                    }, // Match button font size
                                     color: "#666cff", // Match button text color
-                                  },
-                                }}
-                              >
-                                {callStatusData?.map((data) => (
-                                  <MenuItem
-                                    key={data.id}
-                                    onClick={() => {
-                                      onPercentageChange(data.id);
-                                      setAnchorEl(null); // Close menu after selection
-                                    }}
-                                    sx={{
-                                      fontSize: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "14px",
-                                      }, // Match button font size
-                                      color: "#666cff", // Match button text color
-                                      "&:hover": {
-                                        backgroundColor: "#d5d5ff", // Slightly darker on hover
-                                      },
-                                    }}
-                                  >
-                                    {data.name}
-                                  </MenuItem>
-                                ))}
-                              </Menu>
-                            </>
-                          )}
+                                    "&:hover": {
+                                      backgroundColor: "#d5d5ff", // Slightly darker on hover
+                                    },
+                                  }}
+                                >
+                                  {data.name}
+                                </MenuItem>
+                              ))}
+                            </Menu>
+                          </>
 
-                          {(userType === "Super Admin" ||
-                            hasRightsPermission(
-                              "FollowUp",
-                              "Follow Up",
-                              "write",
-                              Permissions
-                            )) && (
-                            <Button
-                              variant="contained"
-                              startIcon={<Contacts />}
-                              className="nonInitiated"
-                              sx={{
-                                mr: 1,
-                                mb: 2,
-                                backgroundColor: "#e7e7ff !important",
-                                color: "#666cff",
-                                width: "auto",
-                                height: "25px",
-                                fontSize: {
-                                  xs: "10px",
-                                  sm: "12px",
-                                  md: "14px",
-                                },
-                              }}
-                              onClick={() => moveToDead(true)}
-                            >
-                              Invalid Number
-                            </Button>
-                          )}
-                          {(userType === "Super Admin" ||
-                            hasRightsPermission(
-                              "FollowUp",
-                              "Follow Up",
-                              "write",
-                              Permissions
-                            )) && (
-                            <Button
-                              variant="contained"
-                              startIcon={<NotIntrest />}
-                              className="nonInitiated"
-                              sx={{
-                                mr: 1,
-                                mb: 2,
-                                backgroundColor: "#e7e7ff !important",
-                                color: "#666cff",
-                                width: "auto",
-                                height: "25px",
-                                fontSize: {
-                                  xs: "10px",
-                                  sm: "12px",
-                                  md: "14px",
-                                },
-                              }}
-                              onClick={() => moveToDead()}
-                            >
-                              NOT INTERESTED
-                            </Button>
-                          )}
+                          <Button
+                            variant="contained"
+                            startIcon={<Contacts />}
+                            className="nonInitiated"
+                            sx={{
+                              mr: 1,
+                              mb: 2,
+                              backgroundColor: "#e7e7ff !important",
+                              color: "#666cff",
+                              width: "auto",
+                              height: "25px",
+                              fontSize: {
+                                xs: "10px",
+                                sm: "12px",
+                                md: "14px",
+                              },
+                            }}
+                            onClick={() => moveToDead(true)}
+                          >
+                            Invalid Number
+                          </Button>
+
+                          <Button
+                            variant="contained"
+                            startIcon={<NotIntrest />}
+                            className="nonInitiated"
+                            sx={{
+                              mr: 1,
+                              mb: 2,
+                              backgroundColor: "#e7e7ff !important",
+                              color: "#666cff",
+                              width: "auto",
+                              height: "25px",
+                              fontSize: {
+                                xs: "10px",
+                                sm: "12px",
+                                md: "14px",
+                              },
+                            }}
+                            onClick={() => moveToDead()}
+                          >
+                            NOT INTERESTED
+                          </Button>
                         </Box>
                       </Box>
                       <div style={{ maxHeight: "200px", overflow: "auto" }}>
@@ -1666,28 +1642,20 @@ const AccountProfileview = ({ id }) => {
                                     justifyContent="center"
                                     sx={{ mt: 2 }}
                                   >
-                                    {(userType === "Super Admin" ||
-                                      hasRightsPermission(
-                                        "FollowUp",
-                                        "Follow Up",
-                                        "write",
-                                        Permissions
-                                      )) && (
-                                      <Button
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{
-                                          borderRadius: "15px",
-                                          backgroundColor: "#666cff",
-                                          "&:hover": {
-                                            backgroundColor: "#4f54c7",
-                                          },
-                                        }}
-                                      >
-                                        Submit
-                                      </Button>
-                                    )}
+                                    <Button
+                                      type="submit"
+                                      variant="contained"
+                                      color="primary"
+                                      sx={{
+                                        borderRadius: "15px",
+                                        backgroundColor: "#666cff",
+                                        "&:hover": {
+                                          backgroundColor: "#4f54c7",
+                                        },
+                                      }}
+                                    >
+                                      Submit
+                                    </Button>
                                   </Box>
                                 </CardContent>
                               </Card>
@@ -1764,161 +1732,137 @@ const AccountProfileview = ({ id }) => {
 
                                 {confirm_project?.length > 0 ? (
                                   <>
-                                    {(userType === "Super Admin" ||
-                                      hasRightsPermission(
-                                        "FollowUp",
-                                        "Follow Up",
-                                        "write",
-                                        Permissions
-                                      )) && (
-                                      <Button
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{
-                                          ml: "auto",
-                                          mr: 1,
-                                          width: {
-                                            xs: "10px",
-                                            sm: "12px",
-                                            md: "auto",
-                                          },
-                                          height: {
-                                            xs: "10px",
-                                            sm: "12px",
-                                            md: "22px",
-                                          },
-                                          backgroundColor: "#666cff",
-                                          "&:hover": {
-                                            backgroundColor: "#4f54c7",
-                                          },
-                                        }}
-                                        onClick={() => {
-                                          navigate(
-                                            "/FollowUp/AccountProfileview/AssignQuote",
-                                            {
-                                              state: {
-                                                team_id,
-                                                enquiry_id,
-                                                customer_id,
-                                                rate,
-                                                stage,
-                                                status,
-                                                project,
-                                                enquiry_type,
-                                                source,
-                                                confirm_project,
-                                                product_details,
-                                                customer_name,
-                                                customer_phone,
-                                                customer_email,
-                                                customer_address,
-                                              },
-                                            }
-                                          );
-                                        }}
-                                      >
-                                        QUOTE
-                                      </Button>
-                                    )}
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      sx={{
+                                        ml: "auto",
+                                        mr: 1,
+                                        width: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "auto",
+                                        },
+                                        height: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "22px",
+                                        },
+                                        backgroundColor: "#666cff",
+                                        "&:hover": {
+                                          backgroundColor: "#4f54c7",
+                                        },
+                                      }}
+                                      onClick={() => {
+                                        navigate(
+                                          "/FollowUp/AccountProfileview/AssignQuote",
+                                          {
+                                            state: {
+                                              team_id,
+                                              enquiry_id,
+                                              customer_id,
+                                              rate,
+                                              stage,
+                                              status,
+                                              project,
+                                              enquiry_type,
+                                              source,
+                                              confirm_project,
+                                              product_details,
+                                              customer_name,
+                                              customer_phone,
+                                              customer_email,
+                                              customer_address,
+                                            },
+                                          }
+                                        );
+                                      }}
+                                    >
+                                      QUOTE
+                                    </Button>
 
-                                    {(userType === "Super Admin" ||
-                                      hasRightsPermission(
-                                        "FollowUp",
-                                        "Follow Up",
-                                        "write",
-                                        Permissions
-                                      )) && (
-                                      <Button
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{
-                                          ml: "auto",
-                                          mr: 1,
-                                          width: {
-                                            xs: "10px",
-                                            sm: "12px",
-                                            md: "80px",
-                                          },
-                                          height: {
-                                            xs: "10px",
-                                            sm: "12px",
-                                            md: "22px",
-                                          },
-                                          backgroundColor: "#666cff",
-                                          "&:hover": {
-                                            backgroundColor: "#4f54c7",
-                                          },
-                                        }}
-                                        onClick={() => {
-                                          navigate(
-                                            "/FollowUp/AccountProfileview/LeadAssign",
-                                            {
-                                              state: {
-                                                team_id,
-                                                enquiry_id,
-                                              },
-                                            }
-                                          );
-                                        }}
-                                      >
-                                        LEAD
-                                      </Button>
-                                    )}
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      sx={{
+                                        ml: "auto",
+                                        mr: 1,
+                                        width: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "80px",
+                                        },
+                                        height: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "22px",
+                                        },
+                                        backgroundColor: "#666cff",
+                                        "&:hover": {
+                                          backgroundColor: "#4f54c7",
+                                        },
+                                      }}
+                                      onClick={() => {
+                                        navigate(
+                                          "/FollowUp/AccountProfileview/LeadAssign",
+                                          {
+                                            state: {
+                                              team_id,
+                                              enquiry_id,
+                                            },
+                                          }
+                                        );
+                                      }}
+                                    >
+                                      LEAD
+                                    </Button>
 
-                                    {(userType === "Super Admin" ||
-                                      hasRightsPermission(
-                                        "FollowUp",
-                                        "Follow Up",
-                                        "write",
-                                        Permissions
-                                      )) && (
-                                      <Button
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{
-                                          ml: "auto",
-                                          width: {
-                                            xs: "10px",
-                                            sm: "12px",
-                                            md: "80px",
-                                          },
-                                          height: {
-                                            xs: "10px",
-                                            sm: "12px",
-                                            md: "22px",
-                                          },
-                                          backgroundColor: "#666cff",
-                                          "&:hover": {
-                                            backgroundColor: "#4f54c7",
-                                          },
-                                        }}
-                                        onClick={() => {
-                                          navigate(
-                                            "/FollowUp/AccountProfileview/AssignVisit",
-                                            {
-                                              state: {
-                                                team_id,
-                                                enquiry_id,
-                                                customer_id,
-                                                rate,
-                                                stage,
-                                                status,
-                                                project,
-                                                enquiry_type,
-                                                source,
-                                                confirm_project,
-                                                product_details,
-                                                customer_name,
-                                                customer_phone,
-                                                customer_email,
-                                              },
-                                            }
-                                          );
-                                        }}
-                                      >
-                                        VISIT
-                                      </Button>
-                                    )}
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      sx={{
+                                        ml: "auto",
+                                        width: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "80px",
+                                        },
+                                        height: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "22px",
+                                        },
+                                        backgroundColor: "#666cff",
+                                        "&:hover": {
+                                          backgroundColor: "#4f54c7",
+                                        },
+                                      }}
+                                      onClick={() => {
+                                        navigate(
+                                          "/FollowUp/AccountProfileview/AssignVisit",
+                                          {
+                                            state: {
+                                              team_id,
+                                              enquiry_id,
+                                              customer_id,
+                                              rate,
+                                              stage,
+                                              status,
+                                              project,
+                                              enquiry_type,
+                                              source,
+                                              confirm_project,
+                                              product_details,
+                                              customer_name,
+                                              customer_phone,
+                                              customer_email,
+                                            },
+                                          }
+                                        );
+                                      }}
+                                    >
+                                      VISIT
+                                    </Button>
                                   </>
                                 ) : (
                                   <>
@@ -1972,44 +1916,36 @@ const AccountProfileview = ({ id }) => {
                                   Product
                                 </Typography>
 
-                                {(userType === "Super Admin" ||
-                                  hasRightsPermission(
-                                    "FollowUp",
-                                    "Follow Up",
-                                    "write",
-                                    Permissions
-                                  )) && (
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{
-                                      ml: "auto",
-                                      width: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "80px",
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    ml: "auto",
+                                    width: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "80px",
+                                    },
+                                    height: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "19px",
+                                    },
+                                    backgroundColor: "#666cff",
+                                    "&:hover": {
+                                      backgroundColor: "#4f54c7",
+                                    },
+                                  }}
+                                  onClick={() => {
+                                    navigate("/FollowUp/Productviews", {
+                                      state: {
+                                        enquiry_id,
                                       },
-                                      height: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "19px",
-                                      },
-                                      backgroundColor: "#666cff",
-                                      "&:hover": {
-                                        backgroundColor: "#4f54c7",
-                                      },
-                                    }}
-                                    onClick={() => {
-                                      navigate("/FollowUp/Productviews", {
-                                        state: {
-                                          enquiry_id,
-                                        },
-                                      });
-                                    }}
-                                  >
-                                    Details
-                                  </Button>
-                                )}
+                                    });
+                                  }}
+                                >
+                                  Details
+                                </Button>
                               </Box>
                               <Avatar
                                 sx={{
@@ -2043,46 +1979,39 @@ const AccountProfileview = ({ id }) => {
                                 >
                                   Behavior Analysis
                                 </Typography>
-                                {(userType === "Super Admin" ||
-                                  hasRightsPermission(
-                                    "FollowUp",
-                                    "Follow Up",
-                                    "write",
-                                    Permissions
-                                  )) && (
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{
-                                      ml: "auto",
-                                      width: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "80px",
+
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    ml: "auto",
+                                    width: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "80px",
+                                    },
+                                    height: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "19px",
+                                    },
+                                    backgroundColor: "#666cff",
+                                    "&:hover": {
+                                      backgroundColor: "#4f54c7",
+                                    },
+                                  }}
+                                  onClick={() => {
+                                    navigate("/FollowUp/Behaviour", {
+                                      state: {
+                                        enquiry_id,
+                                        customer_id,
+                                        confirm_project,
                                       },
-                                      height: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "19px",
-                                      },
-                                      backgroundColor: "#666cff",
-                                      "&:hover": {
-                                        backgroundColor: "#4f54c7",
-                                      },
-                                    }}
-                                    onClick={() => {
-                                      navigate("/FollowUp/Behaviour", {
-                                        state: {
-                                          enquiry_id,
-                                          customer_id,
-                                          confirm_project,
-                                        },
-                                      });
-                                    }}
-                                  >
-                                    Details
-                                  </Button>
-                                )}
+                                    });
+                                  }}
+                                >
+                                  Details
+                                </Button>
                               </Box>
                               <Avatar
                                 sx={{
@@ -2117,42 +2046,34 @@ const AccountProfileview = ({ id }) => {
                                   History
                                 </Typography>
 
-                                {(userType === "Super Admin" ||
-                                  hasRightsPermission(
-                                    "FollowUp",
-                                    "Follow Up",
-                                    "write",
-                                    Permissions
-                                  )) && (
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{
-                                      ml: "auto",
-                                      width: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "80px",
-                                      },
-                                      height: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "19px",
-                                      },
-                                      backgroundColor: " #666cff",
-                                      "&:hover": {
-                                        backgroundColor: "#4f54c7",
-                                      },
-                                    }}
-                                    onClick={() =>
-                                      navigate("/FollowUp/History", {
-                                        state: { customer_id: customer_id },
-                                      })
-                                    }
-                                  >
-                                    Details
-                                  </Button>
-                                )}
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    ml: "auto",
+                                    width: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "80px",
+                                    },
+                                    height: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "19px",
+                                    },
+                                    backgroundColor: " #666cff",
+                                    "&:hover": {
+                                      backgroundColor: "#4f54c7",
+                                    },
+                                  }}
+                                  onClick={() =>
+                                    navigate("/FollowUp/History", {
+                                      state: { customer_id: customer_id },
+                                    })
+                                  }
+                                >
+                                  Details
+                                </Button>
                               </Box>
                               <Avatar
                                 sx={{
@@ -2187,57 +2108,50 @@ const AccountProfileview = ({ id }) => {
                                 >
                                   Booking
                                 </Typography>
-                                {(userType === "Super Admin" ||
-                                  hasRightsPermission(
-                                    "FollowUp",
-                                    "Follow Up",
-                                    "write",
-                                    Permissions
-                                  )) && (
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{
-                                      ml: "auto",
-                                      width: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "80px",
-                                      },
-                                      height: {
-                                        xs: "10px",
-                                        sm: "12px",
-                                        md: "19px",
-                                      },
-                                      backgroundColor: " #666cff",
-                                      "&:hover": {
-                                        backgroundColor: "#4f54c7",
-                                      },
-                                    }}
-                                    onClick={() => {
-                                      navigate("/FollowUp/BookingAllotment", {
-                                        state: {
-                                          enquiry_id,
-                                          customer_id,
-                                          customer_name,
-                                          source,
-                                          enquiry_type,
-                                          project,
-                                        },
-                                      });
-                                      console.log(
+
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    ml: "auto",
+                                    width: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "80px",
+                                    },
+                                    height: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "19px",
+                                    },
+                                    backgroundColor: " #666cff",
+                                    "&:hover": {
+                                      backgroundColor: "#4f54c7",
+                                    },
+                                  }}
+                                  onClick={() => {
+                                    navigate("/FollowUp/BookingAllotment", {
+                                      state: {
                                         enquiry_id,
                                         customer_id,
                                         customer_name,
                                         source,
                                         enquiry_type,
-                                        project
-                                      );
-                                    }}
-                                  >
-                                    Booking
-                                  </Button>
-                                )}
+                                        project,
+                                      },
+                                    });
+                                    console.log(
+                                      enquiry_id,
+                                      customer_id,
+                                      customer_name,
+                                      source,
+                                      enquiry_type,
+                                      project
+                                    );
+                                  }}
+                                >
+                                  Booking
+                                </Button>
                               </Box>
                               <Avatar
                                 sx={{
