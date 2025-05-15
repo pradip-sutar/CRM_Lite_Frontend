@@ -10,7 +10,7 @@ const array = [
 
 function Employee() {
   const dispatch = useDispatch();
-  const activeMenu = useSelector((state) => state.system.activeMenu);
+  const activeMenu = useSelector((state) => state.system?.activeMenu);
 
   return (
     <li className={activeMenu === "Employee Management" ? "menu-item open" : "menu-item"}>

@@ -8,9 +8,9 @@ import 'react-calendar/dist/Calendar.css'
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
-  const logged_userName = crmStore.getState().user.userInfo.employee_name;
-  const loginData = crmStore.getState().user.userInfo;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
+  const logged_userName = crmStore.getState().user?.userInfo?.employee_name;
+  const loginData = crmStore.getState().user?.userInfo;
 
   const [cardName, setCardName] = useState([
     "Pre-Sale Enquiries",

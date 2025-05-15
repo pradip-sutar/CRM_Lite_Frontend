@@ -35,8 +35,9 @@ function Booking() {
   });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const initialUrl = `${import.meta.env.VITE_URL_BASE
-    }/api/booking_form/?page=${currentPage}`;
+  const initialUrl = `${
+    import.meta.env.VITE_URL_BASE
+  }/api/booking_form/?page=${currentPage}`;
 
   const loadData = async (url) => {
     setLoading(true);
@@ -226,9 +227,9 @@ function Booking() {
                           <tr>
                             <th style={{ width: "35px" }}>SL No.</th>
                             <th style={{ width: "200px" }}>Project Name </th>
-                            <th style={{ width: "150px" }}>possession </th>
-                            <th style={{ width: "100px" }}>Type </th>
-                            <th style={{ width: "200px" }}>Name</th>
+                            <th style={{ width: "150px" }}>Quantity </th>
+                            <th style={{ width: "100px" }}>Customer </th>
+                            <th style={{ width: "200px" }}>Amount</th>
                             <th style={{ width: "100px" }}>Action</th>
                           </tr>
                         </thead>
@@ -241,63 +242,39 @@ function Booking() {
                                     index +
                                     1}
                                 </td>
+                                <td>{data?.project_details}</td>
+                                <td>{data?.quantity}</td>
+                                <td>{data?.customer}</td>
+                                <td>{data?.payment_details?.amount}</td>
                                 <td>
-                                  {data?.project_details?.confirm_project}
-                                </td>
-                                <td>{data?.possession_type}</td>
-                                <td>{data?.booking_details?.type}</td>
-                                <td>{data?.applicant_details?.[0]?.name}</td>
-                                <td>
-                                      <div
-                                        onClick={() =>
-                                          navigate("/BookingForm/PDF", {
-                                            state: {
-                                              companyInfo: companyInfo?.brands,
-                                              additional_info:
-                                                data?.additional_info,
-                                              applicant_details:
-                                                data?.applicant_details,
-                                              booking_details:
-                                                data?.booking_details,
-                                              correspondence_address:
-                                                data?.correspondence_address,
-                                              payment_details:
-                                                data?.payment_details,
-                                              permanent_address:
-                                                data?.permanent_address,
-                                              power_of_attorney:
-                                                data?.power_of_attorney,
-                                              project_details:
-                                                data?.project_details,
-                                              source_of_enquiry:
-                                                data?.source_of_enquiry,
-                                              possession_type:
-                                                data?.possession_type,
-                                              type: data?.type,
-                                              employee_id: data?.employee_id,
-                                            },
-                                          })
-                                        }
-                                        className="btn btn-text-primary btn-sm small py-1 px-2 waves-effect waves-light"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-original-title="View"
-                                      >
-                                        <i className="mdi mdi-eye"></i>
-                                      </div>
-                                      <div
-                                        className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-original-title="Edit"
-                                        onClick={() =>
-                                          navigate("/BookingForm/allotment", {
-                                            state: { editData: data },
-                                          })
-                                        }
-                                      >
-                                        <i className="mdi mdi-pencil-outline"></i>
-                                      </div>
+                                  <div
+                                    onClick={() =>
+                                      navigate("/BookingForm/PDF", {
+                                        state: {
+                                        data,companyInfo
+                                        },
+                                      })
+                                    }
+                                    className="btn btn-text-primary btn-sm small py-1 px-2 waves-effect waves-light"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="View"
+                                  >
+                                    <i className="mdi mdi-eye"></i>
+                                  </div>
+                                  <div
+                                    className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="Edit"
+                                    onClick={() =>
+                                      navigate("/BookingForm/allotment", {
+                                        state: { editData: data },
+                                      })
+                                    }
+                                  >
+                                    <i className="mdi mdi-pencil-outline"></i>
+                                  </div>
                                 </td>
                               </tr>
                             );

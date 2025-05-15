@@ -28,13 +28,8 @@ import BankInfoDetails from "./components/system admin/BankInfoDetails";
 import CompanyInfo from "./components/system admin/CompanyInfo";
 import CompanyInfoDetails from "./components/system admin/CompanyInfoDetails";
 
-import Employee from "./Components/EmployeeManagement/Employee"
-import EmployeeProfile from "./Components/EmployeeManagement/EmployeeProfile"
-
-
-
-
-
+import Employee from "./Components/EmployeeManagement/Employee";
+import EmployeeProfile from "./Components/EmployeeManagement/EmployeeProfile";
 
 import DeadTable from "./Components/DeadTable/DeadTable";
 import EnquiryTable from "./components/enquiryBucket/EnquiryTable";
@@ -45,9 +40,9 @@ import Allotment from "./components/BookingForm/allotment";
 import BookingFormPDF from "./components/BookingForm/BookingFormPDF";
 import Booking from "./components/BookingForm/Booking";
 
-import PaymentReciept from "./Components/PaymentReceipt/PaymentReciept"
+import PaymentReciept from "./Components/PaymentReceipt/PaymentReciept";
 
-import Report from "./Components/Report/Report"
+import Report from "./Components/Report/Report";
 
 import Customer from "./components/Customer/Customer";
 import AddCustomerForm from "./components/Customer/AddCustomerForm";
@@ -69,17 +64,17 @@ import LeadAssign from "./Components/FollowUp/LeadAssign";
 import AssignVisit from "./Components/FollowUp/AssignVisit";
 import AssignQuote from "./Components/FollowUp/AssignQuote";
 
-
 import Product from "./Components/Product/Product";
 import AddProductForm from "./Components/Product/AddProductForm";
 
+import Masters from "./Components/BuyersPersona/Masters";
+import Expectation from "./Components/BuyersPersona/Expectation";
+import ProformaInvoice from "./Components/BookingForm/ProformaInvoice";
 
-import Masters from "./Components/BuyersPersona/Masters"
-import Expectation from "./Components/BuyersPersona/Expectation"
-
-
-
-
+const CallStatus = lazy(() => import("./components/FollowUp/CallStatus"));
+const CallStatusMaster = lazy(() =>
+  import("./components/FollowUp/CallStatusMaster")
+);
 
 const Dashboard = lazy(() => {
   console.log("Lazy component is being loaded...");
@@ -100,182 +95,181 @@ const App = () => {
                 <Route path="/unauthorized" element={<Unauthorized />} />
 
                 {/* <Route element={<PrivateRoute />}> */}
-                  <Route element={<AppLayout />}>
-                    {/* <Route element={<FinancialGraph />} path="/dashboard"></Route> */}
+                <Route element={<AppLayout />}>
+                  {/* <Route element={<FinancialGraph />} path="/dashboard"></Route> */}
 
-                    <Route element={<Dashboard />} path="/dashboard"></Route>
+                  <Route element={<Dashboard />} path="/dashboard"></Route>
 
+                  <Route element={<SystemAdmin />}>
+                    <Route
+                      path="systemAdmin/companyInfo"
+                      element={<CompanyInfo />}
+                    />
+                    <Route
+                      path="systemAdmin/companyInfoDetails"
+                      element={<CompanyInfoDetails />}
+                    />
+                    <Route
+                      path="systemAdmin/companyInfoForm"
+                      element={<CompanyForm />}
+                    />
 
-                    <Route element={<SystemAdmin />}>
-                      <Route
-                        path="systemAdmin/companyInfo"
-                        element={<CompanyInfo />}
-                      />
-                      <Route
-                        path="systemAdmin/companyInfoDetails"
-                        element={<CompanyInfoDetails />}
-                      />
-                      <Route
-                        path="systemAdmin/companyInfoForm"
-                        element={<CompanyForm />}
-                      />
+                    <Route path="systemAdmin/bankInfo" element={<BankInfo />} />
 
-                      <Route
-                        path="systemAdmin/bankInfo"
-                        element={<BankInfo />}
-                      />
+                    <Route
+                      path="systemAdmin/bankInfoForm"
+                      element={<BankInfoForm />}
+                    />
 
-                      <Route
-                        path="systemAdmin/bankInfoForm"
-                        element={<BankInfoForm />}
-                      />
+                    <Route
+                      path="systemAdmin/bankdetails"
+                      element={<BankInfoDetails />}
+                    />
 
-                      <Route
-                        path="systemAdmin/bankdetails"
-                        element={<BankInfoDetails />}
-                      />
+                    <Route
+                      path="product/product-details"
+                      element={<Product />}
+                    />
+                    <Route
+                      path="product/product-form"
+                      element={<AddProductForm />}
+                    />
+                    <Route
+                      path="/BuyersPersona/Masters"
+                      element={<Masters />}
+                    />
+                    <Route
+                      path="/BuyersPersona/Expectation"
+                      element={<Expectation />}
+                    />
 
-                      <Route
-                        path="product/product-details"
-                        element={<Product />}
-                      />
-                      <Route
-                        path="product/product-form"
-                        element={<AddProductForm />}
-                      />
-                      <Route
-                        path="/BuyersPersona/Masters"
-                        element={<Masters />}
-                      />
-                      <Route
-                        path="/BuyersPersona/Expectation"
-                        element={<Expectation />}
-                      />
+                    <Route
+                      path="enquiryBucket/deadTable"
+                      element={<DeadTable />}
+                    />
+                    <Route
+                      path="enquiryBucket/enquiryTable"
+                      element={<EnquiryTable />}
+                    />
+                    <Route
+                      path="/enquiryBucket/addEnquiry"
+                      element={<AddEnquiry />}
+                    />
+                    <Route
+                      path="enquiryBucket/sourceType"
+                      element={<SourceType />}
+                    />
 
+                    <Route path="/Booking" element={<Booking />} />
 
-                      <Route
-                        path="enquiryBucket/deadTable"
-                        element={<DeadTable />}
-                      />
-                      <Route
-                        path="enquiryBucket/enquiryTable"
-                        element={<EnquiryTable />}
-                      />
-                      <Route
-                        path="/enquiryBucket/addEnquiry"
-                        element={<AddEnquiry />}
-                      />
-                      <Route
-                        path="enquiryBucket/sourceType"
-                        element={<SourceType />}
-                      />
+                    <Route path="/employee/employee" element={<Employee />} />
+                    <Route
+                      path="/employee/EmployeeProfile"
+                      element={<EmployeeProfile />}
+                    />
 
+                    <Route
+                      path="/BookingForm/allotment"
+                      element={<Allotment />}
+                    />
+                    <Route
+                      path="/FollowUp/BookingAllotment"
+                      element={<Allotment />}
+                    />
+                    <Route
+                      path="/BookingForm/PDF"
+                      element={<ProformaInvoice />}
+                    />
 
-                      <Route path="/Booking" element={<Booking />} />
+                    <Route path="/customer" element={<Customer />} />
 
+                    <Route path="/followUp" element={<FollowUp />} />
+                    <Route
+                      path="/followUp/CallReport"
+                      element={<CallReport />}
+                    />
 
-                      <Route path="/employee/employee" element={<Employee />} />
-                      <Route
-                        path="/employee/EmployeeProfile"
-                        element={<EmployeeProfile />}
-                      />
+                    <Route
+                      path="/followUp/preSalesEnquiry"
+                      element={<PreSalesEnquiry />}
+                    />
 
+                    <Route
+                      path="/followUp/addpreSaleEnquiry"
+                      element={<AddPreSalesEnquiry />}
+                    />
+                    <Route path="/followUp/Quotation" element={<Quotation />} />
+                    <Route
+                      path="/CustomerHistory/Quotation"
+                      element={<Quotation />}
+                    />
 
-                      <Route
-                        path="/BookingForm/allotment"
-                        element={<Allotment />}
-                      />
-                      <Route
-                        path="/FollowUp/BookingAllotment"
-                        element={<Allotment />}
-                      />
-                      <Route
-                        path="/BookingForm/PDF"
-                        element={<BookingFormPDF />}
-                      />
+                    <Route
+                      path="/FollowUp/AccountProfileview"
+                      element={<AccountProfileview />}
+                    />
+                    <Route path="/FollowUp/Behaviour" element={<Behaviour />} />
+                    <Route path="/FollowUp/History" element={<History />} />
+                    <Route
+                      path="/FollowUp/GeneratorPersona"
+                      element={<GeneratorPersona />}
+                    />
+                    <Route
+                      path="/FollowUp/Productviews"
+                      element={<Productviews />}
+                    />
+                    <Route
+                      path="/FollowUp/QuotationDetails"
+                      element={<QuoteDetail />}
+                    />
+                    <Route
+                      path="/FollowUp/version1Detail"
+                      element={<version1Detail />}
+                    />
+                    <Route
+                      path="/FollowUp/VisitDetail/"
+                      element={<VisitDetail />}
+                    />
+                    <Route
+                      path="/FollowUp/AccountProfileview/LeadAssign"
+                      element={<LeadAssign />}
+                    />
+                    <Route
+                      path="/FollowUp/AccountProfileview/AssignVisit"
+                      element={<AssignVisit />}
+                    />
+                    <Route
+                      path="/FollowUp/AccountProfileview/AssignQuote"
+                      element={<AssignQuote />}
+                    />
+                    <Route path="/FollowUp/Visit" element={<Visit />} />
+                    <Route path="/Customer/Visit" element={<Visit />} />
+                    {/* <Route path="/rolesRight/Roles" element={<Roles />} /> */}
 
-                      <Route path="/customer" element={<Customer />} />
-                      
+                    <Route
+                      path="sales/paymentRecipt"
+                      element={<PaymentReciept />}
+                    />
 
+                    <Route path="report" element={<Report />} />
 
-                      <Route path="/followUp" element={<FollowUp />} />
-                      <Route
-                        path="/followUp/CallReport"
-                        element={<CallReport />}
-                      />
+                    <Route
+                      path="/followUp/CallStatus"
+                      element={<CallStatus />}
+                    />
 
-                      <Route
-                        path="/followUp/preSalesEnquiry"
-                        element={<PreSalesEnquiry />}
-                      />
+                    <Route
+                      path="/followUp/AddCallStatus"
+                      element={<CallStatusMaster />}
+                    />
+                  </Route>
 
-                      <Route
-                        path="/followUp/addpreSaleEnquiry"
-                        element={<AddPreSalesEnquiry />}
-                      />
-                      <Route path="/followUp/Quotation" element={<Quotation />} />
-                      <Route
-                        path="/CustomerHistory/Quotation"
-                        element={<Quotation />}
-                      />
+                  <Route
+                    path="/followUp/UpdateCallStatus"
+                    element={<CallStatusMaster />}
+                  />
 
-                      <Route
-                        path="/FollowUp/AccountProfileview"
-                        element={<AccountProfileview />}
-                      />
-                      <Route path="/FollowUp/Behaviour" element={<Behaviour />} />
-                      <Route path="/FollowUp/History" element={<History />} />
-                      <Route
-                        path="/FollowUp/GeneratorPersona"
-                        element={<GeneratorPersona />}
-                      />
-                      <Route
-                        path="/FollowUp/Productviews"
-                        element={<Productviews />}
-                      />
-                      <Route
-                        path="/FollowUp/QuotationDetails"
-                        element={<QuoteDetail />}
-                      />
-                      <Route
-                        path="/FollowUp/version1Detail"
-                        element={<version1Detail />}
-                      />
-                      <Route
-                        path="/FollowUp/VisitDetail/"
-                        element={<VisitDetail />}
-                      />
-                      <Route
-                        path="/FollowUp/AccountProfileview/LeadAssign"
-                        element={<LeadAssign />}
-                      />
-                      <Route
-                        path="/FollowUp/AccountProfileview/AssignVisit"
-                        element={<AssignVisit />}
-                      />
-                      <Route
-                        path="/FollowUp/AccountProfileview/AssignQuote"
-                        element={<AssignQuote />}
-                      />
-                      <Route path="/FollowUp/Visit" element={<Visit />} />
-                      <Route path="/Customer/Visit" element={<Visit />} />
-                      {/* <Route path="/rolesRight/Roles" element={<Roles />} /> */}
-
-
-                      <Route
-                        path="sales/paymentRecipt"
-                        element={<PaymentReciept />}
-                      />
-
-                      <Route
-                        path="report"
-                        element={<Report />}
-                      />
-
-                  
-                    </Route>
-
-                    <Route path="/*" element={<NotFound />} />
+                  <Route path="/*" element={<NotFound />} />
                   {/* </Route> */}
                 </Route>
               </Routes>

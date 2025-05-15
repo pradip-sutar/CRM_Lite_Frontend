@@ -467,12 +467,10 @@ function EnquiryTable() {
                       <th>Source</th>
                       <th>Project</th>
                       <th>Enquiry Type</th>
-                      <th>Member Id</th>
                       <th>Stage</th>
                       <th>Status</th>
                       <th>Activity</th>
                       <th>History</th>
-                      <th>Team</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -500,12 +498,10 @@ function EnquiryTable() {
                           <td>{data.source_name}</td>
                           <td>{data.project_name}</td>
                           <td>{data.enquiry_type_name}</td>
-                          <td>{data.assign}</td>
                           <td>{data.stage}</td>
                           <td>{data.status}</td>
                           <td>{data.activity}</td>
                           <td>{data.history}</td>
-                          <td>{data.team_name}</td>
                           <td>
                             
                               <div

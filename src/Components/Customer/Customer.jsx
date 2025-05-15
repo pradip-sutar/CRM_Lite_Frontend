@@ -14,20 +14,20 @@ function Customer() {
   const logged_employee_Type = crmStore.getState().user.userInfo.userType;
   const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
   const [customers, setCustomers] = useState([]);
-    const [nextUrl, setNextUrl] = useState(null);
-    const [prevUrl, setPrevUrl] = useState(null);
-    const [count, setCount] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [paginationInfo, setPaginationInfo] = useState({
-      total: 0,
-      perPage: 10,
-    });
-    const [currentPage, setCurrentPage] = useState(1);
-    const initialUrl = `${
-      import.meta.env.VITE_URL_BASE
-    }/api/customers/?page=${currentPage}`;
+  const [nextUrl, setNextUrl] = useState(null);
+  const [prevUrl, setPrevUrl] = useState(null);
+  const [count, setCount] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [paginationInfo, setPaginationInfo] = useState({
+    total: 0,
+    perPage: 10,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const initialUrl = `${
+    import.meta.env.VITE_URL_BASE
+  }/api/customers/?page=${currentPage}`;
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
+
   const [employees, setEmployees] = useState([]);
   const {
     register,
@@ -37,40 +37,38 @@ function Customer() {
     clearErrors,
     reset,
     setValue,
-    formState: { errors }, 
+    formState: { errors },
   } = useForm();
   const startDate = watch("startDate");
 
-    const loadData = async (url) => {
-      setLoading(true);
-      const result = await fetchPageData(url);
-      setCustomers(result.data);
-      setNextUrl(result.nextUrl);
-      setPrevUrl(result.prevUrl);
-      setCount(result.total);
-      setPaginationInfo({
-        total: result.total || 0,
-        perPage: result.perPage || 10,
-      });
-      setLoading(false);
-    };
+  const loadData = async (url) => {
+    setLoading(true);
+    const result = await fetchPageData(url);
+    setCustomers(result.data);
+    setNextUrl(result.nextUrl);
+    setPrevUrl(result.prevUrl);
+    setCount(result.total);
+    setPaginationInfo({
+      total: result.total || 0,
+      perPage: result.perPage || 10,
+    });
+    setLoading(false);
+  };
   console.log(customers);
-  
-    const handleNext = () => {
-      if (nextUrl) {
-        loadData(nextUrl);
-        setCurrentPage(currentPage + 1);
-      }
-    };
-  
-    const handlePrev = () => {
-      if (prevUrl) {
-        loadData(prevUrl);
-        setCurrentPage(currentPage - 1);
-      }
-    };
-  
 
+  const handleNext = () => {
+    if (nextUrl) {
+      loadData(nextUrl);
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (prevUrl) {
+      loadData(prevUrl);
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const getEmployee = async () => {
     try {
@@ -124,7 +122,6 @@ function Customer() {
     XLSX.writeFile(workbook, fileName);
   };
 
-
   useEffect(() => {
     loadData(initialUrl);
     getEmployee();
@@ -136,7 +133,7 @@ function Customer() {
       style={{ minHeight: "84%" }}
     >
       <div className="card-header d-flex justify-content-between align-items-center py-2">
-      <h5 className="breadcrumb mx-4">
+        <h5 className="breadcrumb mx-4">
           <span className="text-muted fw-light">Customer /</span> Customer
         </h5>
         <div className="d-flex gap-2">
@@ -146,7 +143,10 @@ function Customer() {
           >
             <i className="mdi mdi-book-open-page-variant me-2"></i> Report
           </button>
-          <button className="btn btn-secondary" onClick={()=>loadData(initialUrl)}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => loadData(initialUrl)}
+          >
             <i className="mdi mdi-refresh me-2"></i> Reset
           </button>
         </div>
@@ -155,92 +155,10 @@ function Customer() {
       <div className="card mx-4">
         <div className="card-header d-flex justify-content-between align-items-center bg-label-primary py-2">
           <h5 className="mb-0">Customer:</h5>
-
-          {/* <div className="d-flex gap-2">
-            <Link
-              to="/customer/addCustomer"
-              className="btn btn-primary btn-sm text-capitalize waves-effect waves-light"
-            >
-              <span className="mdi mdi-plus"></span>Customer
-            </Link>
-          </div> */}
         </div>
         <div className="card-body">
           <div className="table-responsive text-nowrap">
             <div className="dataTables_wrapper dt-bootstrap5 no-footer">
-              {/* <div className="row">
-                <div className="col-sm-12 col-md-4">
-                  <div
-                    className="dataTables_length"
-                    id="DataTables_Table_0_length"
-                  >
-                    <label>
-                      Show{" "}
-                      <select
-                        name="DataTables_Table_0_length"
-                        aria-controls="DataTables_Table_0"
-                        className="form-select form-select-sm"
-                      >
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="75">75</option>
-                        <option value="100">100</option>
-                      </select>{" "}
-                      entries
-                    </label>
-                  </div>
-                </div>
-                <div className="col-sm-12 col-md-5">
-                  <div className="dt-action-buttons text-end pt-3 pt-md-0 my-3">
-                    <div className="dt-buttons">
-                      {" "}
-                      <button
-                        className="dt-button buttons-collection buttons-colvis btn btn-label-primary"
-                        tabIndex="0"
-                        aria-controls="DataTables_Table_0"
-                        type="button"
-                        aria-haspopup="dialog"
-                      >
-                        <span>Column visibility</span>
-                        <span className="dt-down-arrow">▼</span>
-                      </button>{" "}
-                      <button
-                        className="dt-button buttons-collection btn btn-label-primary dropdown-toggle me-2"
-                        tabIndex="0"
-                        aria-controls="DataTables_Table_0"
-                        type="button"
-                        aria-haspopup="dialog"
-                        aria-expanded="false"
-                      >
-                        <span>
-                          <i className="mdi mdi-export-variant me-sm-1"></i>{" "}
-                          <span className="d-none d-sm-inline-block">
-                            Export
-                          </span>
-                        </span>
-                        <span className="dt-down-arrow">▼</span>
-                      </button>{" "}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-sm-12 col-md-3 d-flex justify-content-center justify-content-md-end">
-                  <div
-                    id="DataTables_Table_0_filter"
-                    className="dataTables_filter"
-                  >
-                    <label>
-                      Search:
-                      <input
-                        type="search"
-                        className="form-control form-control-sm"
-                        placeholder=""
-                        aria-controls="DataTables_Table_0"
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div> */}
               <table
                 className="table table-bordered myDataTable dataTable no-footer"
                 id="DataTables_Table_0"
@@ -366,7 +284,9 @@ function Customer() {
                   {customers?.map((customer, index) => (
                     <CustomerRow
                       customer={customer}
-                      index={(currentPage - 1) * paginationInfo.perPage + index + 1}
+                      index={
+                        (currentPage - 1) * paginationInfo.perPage + index + 1
+                      }
                       key={index}
                     />
                   ))}
@@ -376,37 +296,37 @@ function Customer() {
           </div>
         </div>
 
-          {/* Pagination */}
-          <div className="d-flex justify-content-between align-items-center mt-3">
-                <div className="text-muted">
-                  Showing {paginationInfo.perPage} of {count} entries
-                </div>
-                <ul className="pagination m-0">
-                  <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={handlePrev}
-                      disabled={!prevUrl}
-                    >
-                      Previous
-                    </button>
-                  </li>
+        {/* Pagination */}
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <div className="text-muted">
+            Showing {paginationInfo.perPage} of {count} entries
+          </div>
+          <ul className="pagination m-0">
+            <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={handlePrev}
+                disabled={!prevUrl}
+              >
+                Previous
+              </button>
+            </li>
 
-                  <li className="page-item active">
-                    <div className="page-link">{currentPage}</div>
-                  </li>
+            <li className="page-item active">
+              <div className="page-link">{currentPage}</div>
+            </li>
 
-                  <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={handleNext}
-                      disabled={!nextUrl}
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
-              </div>
+            <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={handleNext}
+                disabled={!nextUrl}
+              >
+                Next
+              </button>
+            </li>
+          </ul>
+        </div>
 
         {isModalOpen && (
           <div

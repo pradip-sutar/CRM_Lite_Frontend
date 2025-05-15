@@ -15,11 +15,24 @@ export const postProductForm = async (data) => {
 
 export const getProductForm = async (url) => {
   try {
-    const res = await apiGateWay.get(`${url}`, );
+    const res = await apiGateWay.get(`${url}`);
     return res.data;
   } catch (error) {
     console.log(error);
     toast.error("Error on Post of Product Data");
   }
 };
- 
+
+export const deleteProduct = async (id) => {
+  try {
+    const res = await apiGateWay.delete(
+      `/api/project_new_handler/?project_id=${id}`
+    );
+    if (res.status == 204) {
+      return res.status;
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Error on Delet Product");
+  }
+};

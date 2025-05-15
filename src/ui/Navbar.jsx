@@ -160,12 +160,12 @@ function Navbar() {
               >
                 <div className="p-3">
                   <p className="text-dark fw-bold mb-1">
-                    Name: {userDetails.employee_name}
+                    Name: {userDetails?.employee_name}
                   </p>
                   <p className="text-secondary mb-1">
-                    ID: {userDetails.employee_id}
+                    ID: {userDetails?.employee_id}
                   </p>
-                  <p className="text-secondary mb-2">Mobile No: {userDetails.employee_mobno}</p>
+                  <p className="text-secondary mb-2">Mobile No: {userDetails?.employee_mobno}</p>
                 </div>
                 <hr className="my-2 mx-3 text-secondary" />
                 <div

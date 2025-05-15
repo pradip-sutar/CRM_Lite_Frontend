@@ -54,9 +54,7 @@ function FollowUp() {
   });
   const location = useLocation();
   const currentActiveTab = location?.state?.activeTab || "today";
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [content, setContent] = useState("today");
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
@@ -87,6 +85,8 @@ function FollowUp() {
       console.error("Error fetching source type data:", error);
     }
   };
+
+
 
   const onSubmit = async (data) => {
     data.followup_category = content.toLowerCase();

@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ValidationCard from "../../ui/ValidationCard";
 import crmStore from "../../Utils/crmStore";
-import { getProductForm } from "../../services/Product/apiProductForm";
+import {
+  getProductForm,
+  deleteProduct,
+} from "../../services/Product/apiProductForm";
 
 function Product() {
   const [productData, setProductData] = useState([]);
@@ -12,6 +15,14 @@ function Product() {
     const response = await getProductForm(initialUrl);
     setProductData(response);
   };
+
+  const deleteProductfn = async (id) => {
+    const status = await deleteProduct(id);
+    if (status == 204) {
+      fetchData();
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -99,7 +110,9 @@ function Product() {
                                 <td>{row.cost}</td>
                                 <td>
                                   <img
-                                    src={`${import.meta.env.VITE_URL_BASE}${row.image}`}
+                                    src={`${import.meta.env.VITE_URL_BASE}${
+                                      row.image
+                                    }`}
                                     alt="Product"
                                     style={{ width: 80, height: 40 }}
                                   />
@@ -120,17 +133,7 @@ function Product() {
                                   </div>
 
                                   <div
-                                    onClick={() => {
-                                      setProductData(
-                                        productData.filter(
-                                          (item) => item.id !== row.id
-                                        )
-                                      );
-                                      setPaginationInfo({
-                                        ...paginationInfo,
-                                        total: paginationInfo.total - 1,
-                                      });
-                                    }}
+                                    onClick={() => deleteProductfn(row.project_id)}
                                     className="btn btn-text-danger btn-sm small py-1 px-2"
                                     data-bs-toggle="tooltip"
                                     data-bs-placement="top"

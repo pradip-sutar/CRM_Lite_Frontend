@@ -4,7 +4,7 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const handleClick = (page) => {
-    if (page !== currentPage) {
+    if (page !== currentPage && page >= 1 && page <= totalPages) {
       setCurrentPage(page);
       onPageChange(page);
     }
@@ -15,7 +15,7 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
     const visibleStart = Math.max(2, currentPage - 2);
     const visibleEnd = Math.min(totalPages - 1, currentPage + 2);
 
-    pages.push(1); 
+    pages.push(1);
 
     if (visibleStart > 2) {
       pages.push("start-ellipsis");
@@ -30,7 +30,7 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
     }
 
     if (totalPages > 1) {
-      pages.push(totalPages); 
+      pages.push(totalPages);
     }
 
     return pages;
@@ -39,46 +39,56 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
   const pages = getPageNumbers();
 
   return (
-    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", padding: "10px 0" }}>
-      {pages.map((page, index) =>
-        typeof page === "number" ? (
+    <nav aria-label="Page navigation">
+      <ul className="pagination justify-content-center mt-4">
+        {/* Previous Button */}
+        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
           <button
-            key={page}
-            onClick={() => handleClick(page)}
-            style={{
-              minWidth: "36px",
-              height: "36px",
-              padding: "0 10px",
-              fontSize: "14px",
-              backgroundColor: currentPage === page ? "#333" : "#fff",
-              color: currentPage === page ? "#FFF" : "#333",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              cursor: "pointer",
-              transition: "background-color 0.2s, color 0.2s",
-            }}
+            className="page-link"
+            onClick={() => handleClick(currentPage - 1)}
+            aria-label="Go to previous page"
           >
-            {page}
+            &laquo;
           </button>
-        ) : (
-          <span
-            key={page + index}
-            style={{
-              minWidth: "36px",
-              height: "36px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "14px",
-              color: "#999",
-            }}
+        </li>
+
+        {pages.map((page, index) =>
+          typeof page === "number" ? (
+            <li
+              key={page}
+              className={`page-item ${currentPage === page ? "active" : ""}`}
+            >
+              <button
+                className="page-link"
+                onClick={() => handleClick(page)}
+                aria-current={currentPage === page ? "page" : undefined}
+              >
+                {page}
+              </button>
+            </li>
+          ) : (
+            <li key={page + index} className="page-item disabled">
+              <span className="page-link text-muted">…</span>
+            </li>
+          )
+        )}
+        <li
+          className={`page-item ${
+            currentPage === totalPages ? "disabled" : ""
+          }`}
+        >
+          <button
+            className="page-link"
+            onClick={() => handleClick(currentPage + 1)}
+            aria-label="Go to next page"
           >
-            ...
-          </span>
-        )
-      )}
-    </div>
+            &raquo;
+          </button>
+        </li>
+      </ul>
+    </nav>
   );
 };
 
 export default NumberedPagination;
+ 
