@@ -3,6 +3,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import OverviewTab from "./DashboardComponents/OverviewTab";
 import CallingTab from "./DashboardComponents/CallingTab";
 import PropertiesTab from "./DashboardComponents/PropertiesTab";
+import EmployeesTab from './DashboardComponents/EmployeesTab';
+import StagesTab from './DashboardComponents/StagesTab';
+import VisitTab from './DashboardComponents/VisitTab';
+import QuotationTab from './DashboardComponents/QuotationTab';
+import BookingTab from './DashboardComponents/BookingTab';
 
 const App = () => {
   const [activeComponent, setActiveComponent] = useState('Overview');
@@ -15,7 +20,17 @@ const App = () => {
         return <CallingTab />;
       case 'Properties':
         return <PropertiesTab />;
-      
+      case 'Employees':
+        return <EmployeesTab />;
+      case 'Stages':
+        return <StagesTab />;
+      case 'Visits':
+        return <VisitTab />;
+      case 'Quotations':
+        return <QuotationTab />;
+      case 'Bookings':
+        return <BookingTab />;
+
     }
   };
 

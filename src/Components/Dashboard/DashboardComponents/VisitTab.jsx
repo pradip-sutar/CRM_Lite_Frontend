@@ -1,97 +1,55 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Doughnut, Bar } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
-const EmployeesTab = () => {
+const VisitTab = () => {
     const [employeeStats, setEmployeeStats] = useState([
         {
             id: 1,
-            name: "John Doe",
-            type: "Greenville Apartments",
-            assign: "Yes",
-            date: "2025-05-01",
+            name: "Greenville Apartments",
+            emp: "Rabi",
+            date: "03-12-2024",
+            count: 30,
         },
         {
             id: 2,
-            name: "Jane Smith",
-            type: "Skyline Towers",
-            assign: "No",
-            date: "2025-07-01",
+            name: "Skyline Towers",
+            emp: "Santosh",
+            date: "25-02-2025",
+            count: 20,
         },
     ]);
-    const totalAssignment = 120;
-    const attendanceData = [65, 41, 14];
-    const colors = ["#00C851", "#2E3B5F", "#FFBB33"];
-
-    const data = {
-        labels: ["Assigned", "Unassigned", "Completed"],
-        datasets: [
-            {
-                data: attendanceData,
-                backgroundColor: colors,
-                borderColor: "#fff",
-                borderRadius: 10,
-                borderWidth: 6,
-                cutout: "70%",
-                circumference: 270,
-                rotation: 225,
-            },
-        ],
-    };
-
-    const enquiryoptions = {
-        plugins: {
-            legend: {
-                display: false,
-            },
-            tooltip: {
-                enabled: false,
-            },
-        },
-        cutout: "70%",
-    };
 
     const activityData = {
-        labels: ["2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05"],
+        labels: [
+            "Greenville Apartments",
+            "Skyline Towers",
+            "Golden Residency",
+            "Riverside Villas",
+            "Metro Heights"
+        ],
         datasets: [
             {
-                label: "Calls",
-                data: [350, 295, 310, 280, 320],
-                borderColor: "#1E90FF",
-                backgroundColor: "#007bff",
-                tension: 0.4,
-                pointRadius: 5,
-                borderWidth: 3,
-            },
-            {
                 label: "Visits",
-                data: [22, 150, 25, 120, 123],
-                borderColor: "#2E8B57",
-                backgroundColor: "#2E8B57",
-                tension: 0.4,
-                pointRadius: 5,
-                borderWidth: 3,
-            },
-            {
-                label: "Bookings",
-                data: [10, 8, 129, 9, 320],
-                borderColor: "#DC143C",
-                backgroundColor: "#DC143C",
-                tension: 0.4,
-                pointRadius: 5,
-                borderWidth: 3,
+                data: [15, 10, 20, 12, 18],
+                backgroundColor: "#007bff", // Uniform blue bars
             },
         ],
     };
+
 
     const options = {
         responsive: true,
         plugins: {
             legend: {
                 position: "top",
-                align: "center",
+                labels: {
+                    boxWidth: 12,
+                    boxHeight: 12,
+                    padding: 15,
+                },
             },
             tooltip: {
                 enabled: true,
@@ -104,12 +62,16 @@ const EmployeesTab = () => {
                 },
             },
             y: {
+                beginAtZero: true,
                 grid: {
                     color: "#e7e7e7",
                 },
+                suggestedMax: 20,
             },
         },
     };
+
+
 
     return (
         <div className="container-fluid py-4">
@@ -318,7 +280,7 @@ const EmployeesTab = () => {
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
                     <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Employees</li>
+                    <li className="breadcrumb-item active" aria-current="page">Visit</li>
                 </ol>
             </nav>
 
@@ -335,69 +297,34 @@ const EmployeesTab = () => {
                             <option value="annually">Annually</option>
                         </select>
                     </div>
+
+                    <div className="mb-3" style={{ width: "200px" }}>
+                        <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
+                        <select className="form-select" id="employee">
+                            <option value="raj">Raj Tripathy</option>
+                            <option value="abhishek">Abhishek Rathi</option>
+                            <option value="rahul">Rahul Pani</option>
+                            <option value="pradip">Pradip Sutar</option>
+                            <option value="amit">Amit Das</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
             {/* Charts Section */}
-            <div className="container-fluid ">
-                <div className="row g-3 mb-4 ">
-                    <div className="col-12 col-lg-8 col-md-6">
-                        <div className="card stats-card animate-card">
-                            <div className="card-body p-4">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 className="mb-0">Top Performing Projects</h6>
-                                    <button className="btn btn-outline-primary btn-sm">Export</button>
-                                </div>
-                                <div className="chart-container">
-                                    <Bar data={activityData} options={options} width={200} height={110} />
-                                </div>
+            <div className="row g-3 mb-4">
+                <div className="col-12 ">
+                    <div
+                        className="card shadow animate-card"
+                        style={{ borderRadius: "10px", border: "1px solid #ddd" }}
+                    >
+                        <div className="card-body p-4">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h6 className="mb-0">Property-wise Visits</h6>
+                                <button className="btn btn-outline-primary btn-sm">Export</button>
                             </div>
-                        </div>
-                    </div>
-                    <div className="col-12 col-lg-4 col-md-6">
-                        <div className="card shadow animate-card text-center">
-                            <div className="card-body">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 className="mb-0">Assignment Status</h5>
-                                    <button className="btn btn-outline-primary btn-sm">Export</button>
-                                </div>
-                                <div className="doughnut-chart position-relative mx-auto" style={{ width: 250, height: 260 }}>
-                                    <Doughnut data={data} options={enquiryoptions} />
-                                    <div
-                                        style={{
-                                            position: "absolute",
-                                            top: "50%",
-                                            left: "50%",
-                                            transform: "translate(-50%, -50%)",
-                                            textAlign: "center",
-                                        }}
-                                    >
-                                        <div style={{ color: "#888", fontSize: 14 }}>Total Assignment </div>
-                                        <div style={{ fontSize: 28, fontWeight: 600, color: "#1a1a1a" }}>{totalAssignment}</div>
-                                    </div>
-                                </div>
-                                <div className="mt-2">
-                                    <h6>Status</h6>
-                                    <div className="d-flex flex-column align-items-center">
-                                        {[
-                                            { label: "Assigned", color: "#00C851", value: "59%" },
-                                            { label: "Unassigned", color: "#2E3B5F", value: "35%" },
-                                            { label: "Completed", color: "#FFBB33", value: "26%" },
-                                        ].map((status, index) => (
-                                            <div key={index} className="d-flex justify-content-between w-50 status-item py-1">
-                                                <span className="d-flex align-items-center">
-                                                    <span
-                                                        className="badge rounded-circle me-2"
-                                                        style={{ backgroundColor: status.color, width: 10, height: 10 }}
-                                                    ></span>
-                                                    <span className="badge rounded-circle me-2" style={{ backgroundColor: status.color, width: 10, height: 13 }}>.</span>
-                                                    {status.label}
-                                                </span>
-                                                <span>{status.value}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                            <div className="chart-container" style={{ position: "relative",height: "300px" }}>
+                                <Bar data={activityData} options={options} width={430} height={110} />
                             </div>
                         </div>
                     </div>
@@ -409,7 +336,7 @@ const EmployeesTab = () => {
                 <div className="col-12">
                     <div className="card stats-card">
                         <div className="card-header py-3">
-                            <h5 className="mb-0 fw-bold text-light">Employee Assignments</h5>
+                            <h5 className="mb-0 fw-bold text-light">Visit Details</h5>
                         </div>
                         <div className="card-body p-4">
                             {employeeStats?.length > 0 ? (
@@ -418,10 +345,10 @@ const EmployeesTab = () => {
                                         <thead>
                                             <tr>
                                                 <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                                                <th scope="col">Employee</th>
                                                 <th scope="col">Property</th>
-                                                <th scope="col">Assigned</th>
+                                                <th scope="col">Employee</th>
                                                 <th scope="col">Date</th>
+                                                <th scope="col">Count</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -429,9 +356,9 @@ const EmployeesTab = () => {
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{row?.name}</td>
-                                                    <td>{row?.type}</td>
-                                                    <td>{row?.assign}</td>
+                                                    <td>{row?.emp}</td>
                                                     <td>{row?.date}</td>
+                                                    <td>{row?.count}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -470,4 +397,4 @@ const EmployeesTab = () => {
     );
 };
 
-export default EmployeesTab;
+export default VisitTab;

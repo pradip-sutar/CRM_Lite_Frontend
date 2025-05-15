@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Link  } from "react-router-dom";
 import { Doughnut, Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
@@ -83,7 +84,7 @@ const Overview = () => {
   };
 
   // Enquiry Stages graph
-  const totalAttendance = 120;
+  
   const attendanceData = [59, 31, 10];
   const colors = ["#00C851", "#2E3B5F", "#FFBB33"];
 
@@ -191,6 +192,26 @@ const Overview = () => {
 
           .animate-card {
             animation: fadeIn 0.5s ease-out;
+          }
+
+                    /* Breadcrumb Styling */
+          .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 1.5rem;
+          }
+          .breadcrumb-item a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s ease;
+          }
+          .breadcrumb-item a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+          }
+          .breadcrumb-item.active {
+            color: #6c757d;
+            font-weight: 500;
           }
 
           .card {
@@ -303,6 +324,14 @@ const Overview = () => {
           }
         `}
       </style>
+
+      {/* Breadcrumb Navigation */}
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+          <li className="breadcrumb-item active" aria-current="page">Calling Analytics</li>
+        </ol>
+      </nav>
 
       {/* First Row: Admin Info and Stats */}
       <div className="row g-3 mb-4">
@@ -494,8 +523,8 @@ const Overview = () => {
 
       {/* Second Row: Activity Trend and Enquiry Stages */}
       <div className="row g-3 mb-4">
-        <div className="col-12 col-lg-9 col-md-6">
-          <div className="card shadow animate-card">
+        <div className="col-12 col-lg-9 col-md-6" >
+          <div className="card shadow animate-card" >
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Activity Trend</h5>
@@ -508,7 +537,7 @@ const Overview = () => {
           </div>
         </div>
         <div className="col-12 col-lg-3 col-md-6">
-          <div className="card shadow animate-card text-center">
+          <div className="card shadow animate-card text-center" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Enquiry Stages</h5>
