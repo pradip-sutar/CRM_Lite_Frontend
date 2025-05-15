@@ -1,6 +1,8 @@
 
 
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 function Employee() {
   const dispatch = useDispatch();
