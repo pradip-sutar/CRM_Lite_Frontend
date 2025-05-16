@@ -26,7 +26,7 @@ const CustomTabs = styled(Tabs)({
 });
 
 const EmployeeProfile = () => {
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const [copySuccess, setCopySuccess] = useState(false);
 
   const handleCopy = () => {

@@ -12,10 +12,10 @@ import { fetchPageData } from "../../../services/Pagination/Pagination";
 import NumberedPagination from "../../Pagination/NumberedPagination";
 
 function PreSalesEnquiry() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const navigate = useNavigate();
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const [enquirydata, setEnquiryData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -110,13 +110,7 @@ function PreSalesEnquiry() {
     getEmployee();
   }, []);
 
-  return userType === "Super Admin" ||
-    hasRightsPermission(
-      "FollowUp",
-      "Pre Sales Enquiry",
-      "read",
-      Permissions
-    ) ? (
+  return (
     <div
       className="container-fluid flex-grow-1 container-p-y"
       style={{ minHeight: "84%" }}
@@ -240,7 +234,7 @@ function PreSalesEnquiry() {
         <div className="d-flex justify-content-between align-items-center p-2">
           <div className="text-muted mx-3">
             Showing {paginationInfo.perPage} of {count} entries
-          </div>  
+          </div>
 
           <NumberedPagination
             totalPages={enquirydata?.totalPageCount}
@@ -414,8 +408,6 @@ function PreSalesEnquiry() {
         </div>
       )}
     </div>
-  ) : (
-    <ValidationCard />
   );
 }
 

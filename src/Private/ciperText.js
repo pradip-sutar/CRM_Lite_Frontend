@@ -1,28 +1,27 @@
 import { createTransform } from "redux-persist";
 import CryptoJS from "crypto-js";
 
-const SECRET_KEY = import.meta.env.REACT_APP_cryptography_key;
-
+const secretKey = "your-secret-key";
 
 const ciperText = createTransform(
-  (inboundState) => {
-
+  (inboundState, key) => {
     try {
-      const stringifiedState = JSON.stringify(inboundState);
-      return CryptoJS.AES.encrypt(stringifiedState, SECRET_KEY).toString();
-    } catch (error) {
-      console.error("Error encrypting state", error);
+      const stringified = JSON.stringify(inboundState);
+      return CryptoJS.AES.encrypt(stringified, secretKey).toString();
+    } catch (e) {
+      console.error("Encryption failed:", e);
       return inboundState;
     }
   },
-  (outboundState) => {
+
+  (outboundState, key) => {
     try {
-      const bytes = CryptoJS.AES.decrypt(outboundState, SECRET_KEY);
-      const decryptedState = bytes.toString(CryptoJS.enc.Utf8);
-      return JSON.parse(decryptedState);
-    } catch (error) {
-      console.error("Error decrypting state", error);
-      return outboundState;
+      const bytes = CryptoJS.AES.decrypt(outboundState, secretKey);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      return JSON.parse(decrypted);
+    } catch (e) {
+      console.error("Decryption failed:", e);
+      return {};
     }
   }
 );

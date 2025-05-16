@@ -7,7 +7,7 @@ const steps = ["Bank Info", "EPFO Info", "Insurance Info"];
 
 const Bankothers = () => {
 
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const {
     register,
     handleSubmit,

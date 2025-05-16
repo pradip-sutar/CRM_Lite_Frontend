@@ -4,8 +4,9 @@ import { toast } from "react-toastify";
 export const apiPostProductView = async (data, enquiry_id) => {
   try {
     const response = await apiGateWay.put(
-      `/api/project_subproject_product_update/?enquiry_id=${enquiry_id}`,
-      data
+      `/api/project_subproject_product_update/?enquiry_id=${enquiry_id}`,{
+        "confirm_project":data
+      }
     );
 
     if (response.status == 200) {

@@ -11,10 +11,10 @@ import { fetchEmployee } from "../../services/EmpManagement/apiCompanyProfile";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 
 function Booking() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [companyInfo, setCompanyInfo] = useState({});
   const [row, setRow] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);

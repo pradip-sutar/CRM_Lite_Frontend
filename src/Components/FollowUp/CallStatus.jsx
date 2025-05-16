@@ -8,8 +8,8 @@ import {
 
 const CallStatus = () => {
   const { deleteCallStatusReport } = useDeleteCallStatus();
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [projectType, setProjectType] = useState([]);
   const navigate = useNavigate();
   const { callStatusData, isLoading, error } = useGetCallStatus();

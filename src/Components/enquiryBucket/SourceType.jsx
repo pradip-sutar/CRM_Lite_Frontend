@@ -11,8 +11,8 @@ import "./CSS/enquiry.css";
 import crmStore from "../../Utils/crmStore";
 
 function SourceType() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [sourseTypeModal, setSourceTypeModal] = useState(false);
   const [sourceType, setSourceType] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);

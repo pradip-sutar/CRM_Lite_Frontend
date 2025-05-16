@@ -23,8 +23,8 @@ import { useGetQuotationTable } from "../../hooks/Quotation/useQuotationTable";
 import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
 const PendingQuoteActivity = () => {
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_customer_id = crmStore.getState().user.userInfo.customer_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_customer_id = crmStore.getState().user?.userInfo?.customer_id;
   console.log(logged_customer_id);
   
   const navigate = useNavigate();

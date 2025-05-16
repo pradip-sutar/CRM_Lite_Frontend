@@ -26,8 +26,8 @@ function EnquiryTable() {
   );
   const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
 
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const {
     register,
     watch,
@@ -47,8 +47,8 @@ function EnquiryTable() {
   const [selectedTeamMember, setSelectedTeamMember] = useState("");
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [enquirydata, setEnquiryData] = useState([]);
   const [nextUrl, setNextUrl] = useState(null);
   const [prevUrl, setPrevUrl] = useState(null);

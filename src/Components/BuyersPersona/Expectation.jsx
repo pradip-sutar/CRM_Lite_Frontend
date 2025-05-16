@@ -21,8 +21,8 @@ import "./Expectation.css";
 import { getProductForm } from "../../services/Product/apiProductForm";
 
 const Expectation = () => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [personas, setPersonas] = useState([]);
   const [project, setProject] = useState([]);
   const [getexpectations, setGetExpectations] = useState({});

@@ -23,7 +23,7 @@ import html2pdf from "html2pdf.js";
 import { postSchedule } from "../../services/FollowUp/AccountProfileview/accountProfileview";
 const VisitVersion = ({ row, companyInfo, onNavigate }) => {
   console.log(row);
-  const logged_employee_name = crmStore.getState().user.userInfo.employee_name;
+  const logged_employee_name = crmStore.getState().user?.userInfo?.employee_name;
 
   const { control, getValue } = useForm();
   const [isReadOnly, setIsReadOnly] = useState(false);

@@ -5,8 +5,8 @@ import crmStore from "../../Utils/crmStore";
 import { hasRightsPermission } from "../../Private/premissionChecker";
 
 function Report() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [reportData, setReportData] = useState([
     {
       id: 1,

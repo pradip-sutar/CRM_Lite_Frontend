@@ -26,10 +26,10 @@ import crmStore from "../../Utils/crmStore";
 import { hasRightsPermission } from "../../Private/premissionChecker";
 import { useLocation } from "react-router-dom";
 const LeadAssign = () => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const location = useLocation();
   const { team_id, enquiry_id } = location?.state || {};
   const [teamMembers, setTeamMembers] = useState([]);

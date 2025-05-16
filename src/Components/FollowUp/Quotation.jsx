@@ -15,30 +15,26 @@ import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 import { toast } from "react-toastify";
 import { hasRightsPermission } from "../../Private/premissionChecker";
 import ValidationCard from "../../ui/ValidationCard";
-import { Grid,Box, Typography,Button } from "@mui/material";
-import PendingActionsIcon from '@mui/icons-material/PendingActions';
-import TodayIcon from '@mui/icons-material/Today';
-import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import { Grid, Box, Typography, Button } from "@mui/material";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import TodayIcon from "@mui/icons-material/Today";
+import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import InitiatedQuoteComponent from "./InitiatedQuoteComponent";
 import PendingQuoteActivity from "./PendingQuoteActivity";
 import UpcomingQuoteActivity from "./UpcomingQuoteActivity";
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import ListofQuoteActivity from "./ListofQuoteActivity";
-import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
+import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
 
 function Quotation() {
+  const [content, setContent] = useState("Today");
 
-const [content, setContent] = useState("Today");
-
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [quatationforUser, setQuatationForUser] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({});
-  const [anchorEl, setAnchorEl] = useState(null); 
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,13 +43,12 @@ const [content, setContent] = useState("Today");
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
+
   const location = useLocation();
   console.log(location);
   const navigate = useNavigate();
   const quotation_id = location?.state?.quotation_id || null;
   console.log(quotation_id);
-  
 
   useEffect(() => {
     if (
@@ -99,8 +94,7 @@ const [content, setContent] = useState("Today");
     fetchCompanyInfo();
   }, [logged_employee_Id]);
 
-  return userType === "Super Admin" ||
-    hasRightsPermission("FollowUp", "Quotation", "read", Permissions) ? (
+  return (
     <div
       className="container-xxl flex-grow-1 container-p-y"
       style={{ minHeight: "84%" }}
@@ -230,224 +224,222 @@ const [content, setContent] = useState("Today");
                   <strong> Quotation List:</strong>
                 </Typography>
                 <Box className="followup-listInitiate mt-4">
-                <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
-        <Button
-          variant="contained"
-          startIcon={<PendingActionsIcon />}
-          onClick={() => setContent("Pending")}
-          className="nonInitiated"
-          sx={{
-            mr: 1,
-            mb: 2,
-            backgroundColor: "#e7e7ff !important",
-            color: "#666cff",
-            width: "auto",
-            height: "25px",
-            fontSize: { xs: "10px", sm: "12px", md: "14px" },
-          }}
-        >
-          Pending
-        </Button>
-        <Button
-          variant="contained"
-          startIcon={<TodayIcon />}
-          onClick={() => setContent("Today")}
-          className="nonInitiated"
-          sx={{
-            mr: 1,
-            mb: 2,
-            backgroundColor: "#e7e7ff !important",
-            color: "#666cff",
-            width: "auto",
-            height: "25px",
-            fontSize: { xs: "10px", sm: "12px", md: "14px" },
-          }}
-        >
-          Today
-        </Button>
-        <Button
-          variant="contained"
-          startIcon={<AccessAlarmIcon />}
-          onClick={() => setContent("UpComing")}
-          className="UpComing"
-          sx={{
-            mr: 1,
-            mb: 2,
-            backgroundColor: "#dadcff !important",
-            color: "#666cff",
-            width: "auto",
-            height: "25px",
-            fontSize: { xs: "10px", sm: "12px", md: "13px" },
-          }}
-        >
-          Upcoming
-        </Button>
-        <Button
-          variant="contained"
-          startIcon={<FormatListBulletedIcon />}
-          onClick={() => setContent("AllList")}
-          className="nonInitiated"
-          sx={{
-            mr: 1,
-            mb: 2,
-            backgroundColor: "#e7e7ff !important",
-            color: "#666cff",
-            width: "auto",
-            height: "25px",
-            fontSize: { xs: "10px", sm: "12px", md: "14px" },
-          }}
-        >
-          List
-        </Button>
-      </Box>
+                  <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<PendingActionsIcon />}
+                      onClick={() => setContent("Pending")}
+                      className="nonInitiated"
+                      sx={{
+                        mr: 1,
+                        mb: 2,
+                        backgroundColor: "#e7e7ff !important",
+                        color: "#666cff",
+                        width: "auto",
+                        height: "25px",
+                        fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                      }}
+                    >
+                      Pending
+                    </Button>
+                    <Button
+                      variant="contained"
+                      startIcon={<TodayIcon />}
+                      onClick={() => setContent("Today")}
+                      className="nonInitiated"
+                      sx={{
+                        mr: 1,
+                        mb: 2,
+                        backgroundColor: "#e7e7ff !important",
+                        color: "#666cff",
+                        width: "auto",
+                        height: "25px",
+                        fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                      }}
+                    >
+                      Today
+                    </Button>
+                    <Button
+                      variant="contained"
+                      startIcon={<AccessAlarmIcon />}
+                      onClick={() => setContent("UpComing")}
+                      className="UpComing"
+                      sx={{
+                        mr: 1,
+                        mb: 2,
+                        backgroundColor: "#dadcff !important",
+                        color: "#666cff",
+                        width: "auto",
+                        height: "25px",
+                        fontSize: { xs: "10px", sm: "12px", md: "13px" },
+                      }}
+                    >
+                      Upcoming
+                    </Button>
+                    <Button
+                      variant="contained"
+                      startIcon={<FormatListBulletedIcon />}
+                      onClick={() => setContent("AllList")}
+                      className="nonInitiated"
+                      sx={{
+                        mr: 1,
+                        mb: 2,
+                        backgroundColor: "#e7e7ff !important",
+                        color: "#666cff",
+                        width: "auto",
+                        height: "25px",
+                        fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                      }}
+                    >
+                      List
+                    </Button>
+                  </Box>
 
-      {/* Show the "MORE" button and dropdown for screens up to 576px (xs) */}
-      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-        <Button
-          variant="contained"
-          startIcon={<ExpandCircleDownIcon />}
-          onClick={handleClick}
-          sx={{
-            mr: 1,
-            mb: 2,
-            backgroundColor: "#e7e7ff !important",
-            color: "#666cff",
-            width: "auto",
-            height: "25px",
-            fontSize: { xs: "10px", sm: "12px", md: "14px" },
-          }}
-        >
-         
-          MORE
-        </Button>
+                  {/* Show the "MORE" button and dropdown for screens up to 576px (xs) */}
+                  <Box sx={{ display: { xs: "block", sm: "none" } }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<ExpandCircleDownIcon />}
+                      onClick={handleClick}
+                      sx={{
+                        mr: 1,
+                        mb: 2,
+                        backgroundColor: "#e7e7ff !important",
+                        color: "#666cff",
+                        width: "auto",
+                        height: "25px",
+                        fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                      }}
+                    >
+                      MORE
+                    </Button>
 
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          PaperProps={{
-            sx: {
-              borderRadius: 2,
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            },
-          }}
-        >
-          <MenuItem
-            onClick={() => {
-              setContent("Pending");
-              handleClose();
-            }}
-            sx={{
-              padding: '8px 16px',
-              '&:hover': {
-                backgroundColor: '#e7e7ff',
-              },
-            }}
-          >
-            <Button
-              variant="contained"
-              startIcon={<PendingActionsIcon />}
-              className="nonInitiated"
-              sx={{
-                backgroundColor: "#e7e7ff !important",
-                color: "#666cff",
-                width: "100%",
-                height: "25px",
-                fontSize: { xs: "10px", sm: "12px", md: "14px" },
-              }}
-            >
-              Pending
-            </Button>
-          </MenuItem>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleClose}
+                      PaperProps={{
+                        sx: {
+                          borderRadius: 2,
+                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                        },
+                      }}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          setContent("Pending");
+                          handleClose();
+                        }}
+                        sx={{
+                          padding: "8px 16px",
+                          "&:hover": {
+                            backgroundColor: "#e7e7ff",
+                          },
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          startIcon={<PendingActionsIcon />}
+                          className="nonInitiated"
+                          sx={{
+                            backgroundColor: "#e7e7ff !important",
+                            color: "#666cff",
+                            width: "100%",
+                            height: "25px",
+                            fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                          }}
+                        >
+                          Pending
+                        </Button>
+                      </MenuItem>
 
-          <MenuItem
-            onClick={() => {
-              setContent("Today");
-              handleClose();
-            }}
-            sx={{
-              padding: '8px 16px',
-              '&:hover': {
-                backgroundColor: '#e7e7ff',
-              },
-            }}
-          >
-            <Button
-              variant="contained"
-              startIcon={<TodayIcon />}
-              className="nonInitiated"
-              sx={{
-                backgroundColor: "#e7e7ff !important",
-                color: "#666cff",
-                width: "100%",
-                height: "25px",
-                fontSize: { xs: "10px", sm: "12px", md: "14px" },
-              }}
-            >
-              Today
-            </Button>
-          </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          setContent("Today");
+                          handleClose();
+                        }}
+                        sx={{
+                          padding: "8px 16px",
+                          "&:hover": {
+                            backgroundColor: "#e7e7ff",
+                          },
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          startIcon={<TodayIcon />}
+                          className="nonInitiated"
+                          sx={{
+                            backgroundColor: "#e7e7ff !important",
+                            color: "#666cff",
+                            width: "100%",
+                            height: "25px",
+                            fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                          }}
+                        >
+                          Today
+                        </Button>
+                      </MenuItem>
 
-          <MenuItem
-            onClick={() => {
-              setContent("UpComing");
-              handleClose();
-            }}
-            sx={{
-              padding: '8px 16px',
-              '&:hover': {
-                backgroundColor: '#dadcff',
-              },
-            }}
-          >
-            <Button
-              variant="contained"
-              startIcon={<AccessAlarmIcon />}
-              className="UpComing"
-              sx={{
-                backgroundColor: "#dadcff !important",
-                color: "#666cff",
-                width: "100%",
-                height: "25px",
-                fontSize: { xs: "10px", sm: "12px", md: "13px" },
-              }}
-            >
-              Upcoming
-            </Button>
-          </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          setContent("UpComing");
+                          handleClose();
+                        }}
+                        sx={{
+                          padding: "8px 16px",
+                          "&:hover": {
+                            backgroundColor: "#dadcff",
+                          },
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          startIcon={<AccessAlarmIcon />}
+                          className="UpComing"
+                          sx={{
+                            backgroundColor: "#dadcff !important",
+                            color: "#666cff",
+                            width: "100%",
+                            height: "25px",
+                            fontSize: { xs: "10px", sm: "12px", md: "13px" },
+                          }}
+                        >
+                          Upcoming
+                        </Button>
+                      </MenuItem>
 
-          <MenuItem
-            onClick={() => {
-              setContent("AllList");
-              handleClose();
-            }}
-            sx={{
-              padding: '8px 16px',
-              '&:hover': {
-                backgroundColor: '#e7e7ff',
-              },
-            }}
-          >
-            <Button
-              variant="contained"
-              startIcon={<FormatListBulletedIcon />}
-              className="nonInitiated"
-              sx={{
-                backgroundColor: "#e7e7ff !important",
-                color: "#666cff",
-                width: "100%",
-                height: "25px",
-                fontSize: { xs: "10px", sm: "12px", md: "14px" },
-              }}
-            >
-              List
-            </Button>
-          </MenuItem>
-        </Menu>
-      </Box>
-    </Box>
+                      <MenuItem
+                        onClick={() => {
+                          setContent("AllList");
+                          handleClose();
+                        }}
+                        sx={{
+                          padding: "8px 16px",
+                          "&:hover": {
+                            backgroundColor: "#e7e7ff",
+                          },
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          startIcon={<FormatListBulletedIcon />}
+                          className="nonInitiated"
+                          sx={{
+                            backgroundColor: "#e7e7ff !important",
+                            color: "#666cff",
+                            width: "100%",
+                            height: "25px",
+                            fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                          }}
+                        >
+                          List
+                        </Button>
+                      </MenuItem>
+                    </Menu>
+                  </Box>
+                </Box>
               </Box>
-           
             </div>
             {/* Initiate and Not */}
             {content === "Today" && <InitiatedQuoteComponent />}
@@ -458,8 +450,6 @@ const [content, setContent] = useState("Today");
         </Grid>
       </div>
     </div>
-  ) : (
-    <ValidationCard />
   );
 }
 

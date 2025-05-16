@@ -30,9 +30,9 @@ import MenuItem from "@mui/material/MenuItem";
 import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
 
 function Visit() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [visitForUser, setVisitForUser] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({});
   const navigate = useNavigate();

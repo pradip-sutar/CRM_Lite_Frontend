@@ -45,13 +45,13 @@ const AssignQuote = () => {
     customer_email = "",
     customer_address = "",
   } = useLocation()?.state || {};
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [teamMembers, setTeamMembers] = useState([]);
   const [assignedData, setAssignedData] = useState([]);
   const { handleSubmit, control, watch, setValue, reset } = useForm();
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
 
   const fetchAssignQuotes = async () => {
     try {
