@@ -4,23 +4,108 @@ import { Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
-const QuotationTab = () => {
-    const [employeeStats, setEmployeeStats] = useState([
+const CommissionTab = () => {
+    const [bookingData, setBookingData] = useState([
         {
             id: 1,
-            name: "Greenville Apartments",
-            emp: "Rabi",
+            property: "Greenville Apartments",
+            employee: "Rabi",
+            customer: "Amit Sharma",
             date: "03-12-2024",
-            count: 30,
+            amount: 30000,
+            commission: 1500,
         },
         {
             id: 2,
-            name: "Skyline Towers",
-            emp: "Santosh",
+            property: "Skyline Towers",
+            employee: "Santosh",
+            customer: "Priya Singh",
             date: "25-02-2025",
-            count: 20,
+            amount: 20000,
+            commission: 1000,
+        },
+        {
+            id: 3,
+            property: "Golden Residency",
+            employee: "Raj Tripathy",
+            customer: "Vikram Patel",
+            date: "10-05-2025",
+            amount: 45000,
+            commission: 2250,
         },
     ]);
+
+    const commissionData = {
+        labels: [
+            "Raj Kumar",
+            "Priya Singh",
+            "Vikram Mehta",
+            "Sneha Gupta",
+            "Rahul Verma"
+        ],
+        datasets: [
+            {
+                label: "Earned",
+                data: [85000, 78000, 112000, 136000, 72000],
+                backgroundColor: "#007bff", // Blue
+            },
+            {
+                label: "Released",
+                data: [67000, 63000, 82000, 95000, 61000],
+                backgroundColor: "#2e7d32", // Green
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: "top",
+                labels: {
+                    boxWidth: 12,
+                    boxHeight: 12,
+                    padding: 15,
+                },
+            },
+            tooltip: {
+                enabled: true,
+                callbacks: {
+                    label: function (context) {
+                        let label = context.dataset.label || '';
+                        if (label) label += ': ';
+                        if (context.parsed.y !== null) {
+                            label += new Intl.NumberFormat('en-IN', {
+                                style: 'currency',
+                                currency: 'INR',
+                                maximumFractionDigits: 0
+                            }).format(context.parsed.y);
+                        }
+                        return label;
+                    }
+                }
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    color: "#e7e7e7",
+                },
+            },
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: "#e7e7e7",
+                },
+                ticks: {
+                    callback: function (value) {
+                        return new Intl.NumberFormat('en-IN').format(value);
+                    }
+                }
+            },
+        },
+    };
+
 
     const activityData = {
         labels: [
@@ -33,14 +118,13 @@ const QuotationTab = () => {
         datasets: [
             {
                 label: "Visits",
-                data: [15, 10, 20, 12, 18],
+                data: [500000, 400000, 600000, 700000, 450000],
                 backgroundColor: "#007bff", // Uniform blue bars
             },
         ],
     };
 
-
-    const options = {
+    const activityOptions = {
         responsive: true,
         plugins: {
             legend: {
@@ -74,7 +158,7 @@ const QuotationTab = () => {
 
 
     return (
-        <div className="container-fluid">
+        <div className="container-fluid py-4">
             <style>
                 {`
           /* Card Styling */
@@ -168,6 +252,26 @@ const QuotationTab = () => {
             animation: fadeIn 1s ease-in;
           }
 
+          /* Breadcrumb Styling */
+          .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+            margin-bottom: 1.5rem;
+          }
+          .breadcrumb-item a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s ease;
+          }
+          .breadcrumb-item a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+          }
+          .breadcrumb-item.active {
+            color: #6c757d;
+            font-weight: 500;
+          }
+
           /* Chart Card Animation */
           .animate-card {
             animation: slideUp 0.5s ease-in-out;
@@ -256,20 +360,71 @@ const QuotationTab = () => {
         `}
             </style>
 
+            {/* Breadcrumb Navigation */}
+            <nav aria-label="breadcrumb">
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+                    <li className="breadcrumb-item active" aria-current="page">Commissions</li>
+                </ol>
+            </nav>
+
+            {/* Filters Section */}
+            <div className="row g-3 mb-4">
+                <div className="d-flex justify-content-end gap-3">
+                    <div className="mb-3" style={{ width: "200px" }}>
+                        <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
+                        <select className="form-select" id="timePeriod">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="annually">Annually</option>
+                        </select>
+                    </div>
+
+                    <div className="mb-3" style={{ width: "200px" }}>
+                        <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
+                        <select className="form-select" id="employee">
+                            <option value="raj">Raj Tripathy</option>
+                            <option value="abhishek">Abhishek Rathi</option>
+                            <option value="rahul">Rahul Pani</option>
+                            <option value="pradip">Pradip Sutar</option>
+                            <option value="amit">Amit Das</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             {/* Charts Section */}
             <div className="row g-3 mb-4">
-                <div className="col-12 ">
+                <div className="col-12 col-md-6">
                     <div
                         className="card shadow animate-card"
                         style={{ borderRadius: "10px", border: "1px solid #ddd" }}
                     >
                         <div className="card-body p-4">
                             <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h6 className="mb-0">Property-wise Quotations</h6>
+                                <h6 className="mb-0">Employee-wise Commissions</h6>
                                 <button className="btn btn-outline-primary btn-sm">Export</button>
                             </div>
-                            <div className="chart-container" style={{ position: "relative",height: "300px" }}>
-                                <Bar data={activityData} options={options} width={430} height={110} />
+                            <div className="chart-container" style={{ position: "relative", height: "300px" }}>
+                                <Bar data={commissionData} options={options} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-12 col-lg-6 col-md-6">
+                    <div
+                        className="card shadow animate-card"
+                        style={{ borderRadius: "10px", border: "1px solid #ddd" }}
+                    >
+                        <div className="card-body p-4">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h6 className="mb-0">Owner-wise Commissions</h6>
+                                <button className="btn btn-outline-primary btn-sm">Export</button>
+                            </div>
+                            <div className="chart-container" style={{ position: "relative", height: "300px" }}>
+                                <Bar data={activityData} options={activityOptions} width={250} height={150} />
                             </div>
                         </div>
                     </div>
@@ -281,29 +436,29 @@ const QuotationTab = () => {
                 <div className="col-12">
                     <div className="card stats-card">
                         <div className="card-header py-3">
-                            <h5 className="mb-0 fw-bold text-light">Quotation Details</h5>
+                            <h5 className="mb-0 fw-bold text-light">Recent Bookings</h5>
                         </div>
                         <div className="card-body p-4">
-                            {employeeStats?.length > 0 ? (
+                            {bookingData?.length > 0 ? (
                                 <div className="table-responsive">
                                     <table className="table table-hover table-bordered align-middle">
                                         <thead>
                                             <tr>
                                                 <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                                                <th scope="col">Property</th>
                                                 <th scope="col">Employee</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Count</th>
+                                                <th scope="col">Earned</th>
+                                                <th scope="col">Due</th>
+                                                <th scope="col">Released</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {employeeStats?.map((row, index) => (
+                                            {bookingData?.map((row, index) => (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
-                                                    <td>{row?.name}</td>
-                                                    <td>{row?.emp}</td>
-                                                    <td>{row?.date}</td>
-                                                    <td>{row?.count}</td>
+                                                    <td>{row?.employee}</td>
+                                                    <td>₹{row?.commission?.toLocaleString("en-IN")}</td>
+                                                    <td>₹{(row?.amount - row?.commission)?.toLocaleString("en-IN")}</td>
+                                                    <td>₹{(row?.commission * 0.8)?.toLocaleString("en-IN")}</td> {/* Assuming 80% of Earned is Released */}
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -316,10 +471,10 @@ const QuotationTab = () => {
                                 </div>
                             )}
 
-                            {employeeStats?.length > 0 && (
+                            {bookingData?.length > 0 && (
                                 <div className="d-flex justify-content-between align-items-center mt-4">
                                     <div className="text-muted">
-                                        Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                                        Showing 1 to {bookingData.length} of {bookingData.length} entries
                                     </div>
                                     <ul className="pagination mb-0">
                                         <li className="page-item disabled">
@@ -342,4 +497,4 @@ const QuotationTab = () => {
     );
 };
 
-export default QuotationTab;
+export default CommissionTab;

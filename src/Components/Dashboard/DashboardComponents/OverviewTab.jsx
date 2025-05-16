@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Link  } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Doughnut, Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
@@ -84,7 +84,7 @@ const Overview = () => {
   };
 
   // Enquiry Stages graph
-  
+
   const attendanceData = [59, 31, 10];
   const colors = ["#00C851", "#2E3B5F", "#FFBB33"];
 
@@ -121,35 +121,50 @@ const Overview = () => {
     labels: [""],
     datasets: [
       {
-        label: "Fulltime",
-        data: [74],
-        backgroundColor: "#FFC107",
+        label: "Active Calls",
+        data: [65],
+        backgroundColor: "#4caf50", // green
         barPercentage: 1,
         categoryPercentage: 1,
       },
       {
-        label: "Contract",
-        data: [31],
-        backgroundColor: "#455A64",
+        label: "New Calls",
+        data: [40],
+        backgroundColor: "#2196f3", // blue
         barPercentage: 1,
         categoryPercentage: 1,
       },
       {
-        label: "Probation",
-        data: [34],
-        backgroundColor: "#f44336",
+        label: "Non Valid Calls",
+        data: [22],
+        backgroundColor: "#ff9800", // orange
         barPercentage: 1,
         categoryPercentage: 1,
       },
       {
-        label: "WFH",
-        data: [15],
-        backgroundColor: "#FF69B4",
+        label: "Unanswered Calls",
+        data: [18],
+        backgroundColor: "#9c27b0", // purple
+        barPercentage: 1,
+        categoryPercentage: 1,
+      },
+      {
+        label: "Dead Calls",
+        data: [12],
+        backgroundColor: "#f44336", // red
+        barPercentage: 1,
+        categoryPercentage: 1,
+      },
+      {
+        label: "Non Active Calls",
+        data: [8],
+        backgroundColor: "#795548", // brown
         barPercentage: 1,
         categoryPercentage: 1,
       },
     ],
   };
+
 
   const empOptions = {
     indexAxis: "y",
@@ -176,7 +191,7 @@ const Overview = () => {
   };
 
   return (
-    <div className="container-fluid py-4">
+    <div className="container-fluid p-0 pr-1">
       <style>
         {`
           /* Animations */
@@ -194,25 +209,6 @@ const Overview = () => {
             animation: fadeIn 0.5s ease-out;
           }
 
-                    /* Breadcrumb Styling */
-          .breadcrumb {
-            background-color: transparent;
-            padding: 0;
-            margin-bottom: 1.5rem;
-          }
-          .breadcrumb-item a {
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.2s ease;
-          }
-          .breadcrumb-item a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-          }
-          .breadcrumb-item.active {
-            color: #6c757d;
-            font-weight: 500;
-          }
 
           .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -303,6 +299,13 @@ const Overview = () => {
               font-size: 2rem !important;
             }
           }
+            @media (min-width: 992px) {
+  .col-lg-5th {
+    flex: 0 0 20%;
+    max-width: 20%;
+  }
+}
+
 
           @media (max-width: 576px) {
             .doughnut-chart {
@@ -325,63 +328,48 @@ const Overview = () => {
         `}
       </style>
 
-      {/* Breadcrumb Navigation */}
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">Calling Analytics</li>
-        </ol>
-      </nav>
 
-      {/* First Row: Admin Info and Stats */}
       <div className="row g-3 mb-4">
+        <div className="col-12 ">
+          <div
+            className="card shadow animate-card"
+            style={{ height: "8rem", background: "linear-gradient(135deg, #dfe9f3, #ffffff)" }}
+          >
+            <div className="card-body p-4">
+              <div className="d-flex align-items-center mb-3 justify-content-between">
+                <div className='d-flex align-items-center mb-3 '>
+                  <div
+                    className="avatar-circle d-flex align-items-center justify-content-center rounded-circle text-white fw-bold me-3"
+                    style={{
+                      width: "4rem",
+                      height: "4rem",
+                      backgroundColor: randomColor,
+                      fontSize: "2.5rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    Pr
+                  </div>
+                  <div>
+                    <h3 className="card-title mt-1"><span className='fw-bold'>Welcome Back</span>, Pradip</h3>
+                    <p >Wishing You A Great Day Ahead</p>
+                  </div>
+                </div>
 
-        <div className='d-flex justify-content-end gap-3'>
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="timePeriod" className="form-label fw-bold">Time Period:</label>
-            <select
-              className="form-select"
-              id="timePeriod"
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="annually">Annually</option>
-            </select>
-          </div>
-
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="date" className="form-label fw-bold">Date:</label>
-            <input
-              type="date"
-              className="form-control"
-              id="date"
-              name="date"
-            />
-          </div>
-        </div>
-
-        <div className="col-12 col-lg-4 col-md-6">
-          <div className="card shadow animate-card" style={{ height: "19rem", background: "linear-gradient(135deg, #ffffff, #ffe4ec)", }}>
-            <div className="card-body p-4 position-relative">
-              <h3 className="card-title mb-3 d-flex align-items-center gap-2">
-                Hi, Admin
-              </h3>
-              <div
-                className="avatar-circle position-absolute end-0 mt-4 me-4 d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
-                style={{
-                  width: "5rem",
-                  height: "5rem",
-                  backgroundColor: randomColor,
-                }}
-              >
-                <div style={{ textAlign: "center", fontSize: "2.5rem" }}>
-                  Dk
+                <div className='text-end'>
+                  <button
+                    className='btn btn-capsul'
+                    style={{
+                      color: "white",
+                      background: "linear-gradient(135deg, #e1eec5, #f05053)",
+                      border: "none"
+                    }}
+                  >
+                    View Profile
+                  </button>
                 </div>
               </div>
-              <p className="mb-3">Wishing You A Great Day Ahead</p>
-              <ul className="list-unstyled mb-0">
+              {/* <ul className="list-unstyled mb-0">
                 <li className="mb-2">
                   <span className="h5 me-1 fw-bold">Name:</span>
                   <span>Jiban Mahakud</span>
@@ -402,117 +390,211 @@ const Overview = () => {
                   <span className="h5 me-1 fw-bold">Email:</span>
                   <span>assssssssss@gmail.com</span>
                 </li>
-              </ul>
+              </ul> */}
             </div>
           </div>
         </div>
-        <div className="col-12 col-lg-8 col-md-6">
-          <div className="card shadow animate-card">
-            <div className="card-body p-4">
-              <div className="row g-3">
+      </div>
 
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #d0eaff, #ffffff)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Total Projects</h6>
-                      <h4 className="fw-bold mb-2">5</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+      {/* card section */}
+
+      <div className="col-12">
+        <div className="card shadow animate-card">
+          <div className="card-body p-4">
+            <div className="row g-3">
+
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #d0eaff, #ffffff)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Products</h6>
+                    <h4 className="fw-bold mb-2">15</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #fff6b7, #fcd9b8)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Total Calls</h6>
-                      <h4 className="fw-bold mb-2">1562</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #fff6b7, #fcd9b8)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Enquiries</h6>
+                    <h4 className="fw-bold mb-2">562</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #fddde6, #e8e6f8)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Valid Numbers</h6>
-                      <h4 className="fw-bold mb-2">1293</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #fddde6, #e8e6f8)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Active Enquiries</h6>
+                    <h4 className="fw-bold mb-2">293</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #d4fc79, #96e6a1)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Answered Calls</h6>
-                      <h4 className="fw-bold mb-2">895</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #d4fc79, #96e6a1)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Not Interested</h6>
+                    <h4 className="fw-bold mb-2">85</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Visits</h6>
-                      <h4 className="fw-bold mb-2">75</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Invalid Enquiries</h6>
+                    <h4 className="fw-bold mb-2">75</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #d4fcf9, #c2e9fb)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Quotations</h6>
-                      <h4 className="fw-bold mb-2">54</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #d4fcf9, #c2e9fb)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Hot Enquiries</h6>
+                    <h4 className="fw-bold mb-2">510</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #ffe0e0, #ffdadf)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Bookings</h6>
-                      <h4 className="fw-bold mb-2">5</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #ffe0e0, #ffdadf)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Warm Enquiries</h6>
+                    <h4 className="fw-bold mb-2">145</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #f0f7da, #fffde7)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Commissions</h6>
-                      <h4 className="fw-bold mb-2">₹48200</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #f0f7da, #fffde7)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Cold Enquiries</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #f0f7f4, #d9e4dd)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Fresh Enquiries</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Quotes</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #84fab0, #8fd3f4)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Leads</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #fceabb, #f8b500)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Prospects</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #c2e9fb, #e2ebf0)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Schedules</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #ffdde1, #ee9ca7)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Booking</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #f4f4f4, #e2e2e2)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Sales</h6>
+                    <h4 className="fw-bold mb-2">₹1,680,000</h4>
+                    {/* <span className="text-success small">{stat.change} from last period</span> */}
                   </div>
                 </div>
               </div>
@@ -520,6 +602,7 @@ const Overview = () => {
           </div>
         </div>
       </div>
+
 
       {/* Second Row: Activity Trend and Enquiry Stages */}
       <div className="row g-3 mb-4">
@@ -537,13 +620,13 @@ const Overview = () => {
           </div>
         </div>
         <div className="col-12 col-lg-3 col-md-6">
-          <div className="card shadow animate-card text-center" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
+          <div className="card shadow animate-card text-center" >
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Enquiry Stages</h5>
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
-              <div className="doughnut-chart position-relative" style={{ width: 250, height: 200, marginLeft: "1rem" }}>
+              <div className="doughnut-chart position-relative" style={{ width: 250, height: 200, marginLeft: "1.5rem" }}>
                 <Doughnut data={data} options={enquiryoptions} />
                 {/* <div
                   style={{
@@ -585,7 +668,7 @@ const Overview = () => {
         </div>
       </div>
 
-      {/* Third Row: Trending Properties and Conversion Funnel */}
+      {/* Third Row: Trending Properties and FollowUp Status */}
       <div className="row g-3">
         <div className="col-12 col-lg-7 col-md-6">
           <div className="card shadow animate-card">
@@ -595,77 +678,104 @@ const Overview = () => {
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
               <div className="chart-container">
-                <Bar data={activityData} options={options} height={200} width={450} />
+                <Bar data={activityData} options={options} height={236} width={450} />
               </div>
             </div>
           </div>
         </div>
+
         <div className="col-12 col-lg-5 col-md-6">
           <div className="card shadow animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Conversion Funnel</h5>
+                <h5 className="mb-0">Enquiry Distribution</h5>
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
+
+              {/* Chart stays as-is */}
               <div className="chart-container" style={{ height: "20px", borderRadius: "10px", overflow: "hidden" }}>
                 <Bar data={empData} options={empOptions} height={20} />
               </div>
+
+              {/* Updated Cards Below */}
               <div className="row text-center mt-4">
-                <div className="col-6 ">
-                  <div className='d-flex justify-content-between gap-4'>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)", }}>
-                      <div className="card-body">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#FF5722", width: "10px", height: "13px" }}
-                          >.</span>
-                          Total Calls (48%)
+                <div className="col-12">
+                  <div className="row g-3">
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#4caf50", width: "10px", height: "13px" }}></span>
+                            Active Calls (45%)
+                          </div>
+                          <div className="fw-bold fs-5">65</div>
                         </div>
-                        <div className="fw-bold fs-5">112</div>
                       </div>
                     </div>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #fddde6, #e8e6f8)" }}>
-                      <div className="card-body">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#455A64", width: "10px", height: "13px" }}
-                          >.</span>
-                          Answer Calls (20%)
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#2196f3", width: "10px", height: "13px" }}></span>
+                            New Calls (28%)
+                          </div>
+                          <div className="fw-bold fs-5">40</div>
                         </div>
-                        <div className="fw-bold fs-5">23</div>
                       </div>
                     </div>
-                  </div>
-                  <div className='d-flex justify-content-between gap-4'>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
-                      <div className="card-body mb-0">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#f44336", width: "10px", height: "13px" }}
-                          >.</span>
-                          Visits (22%)
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fff4e6, #ffe0b2)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#ff9800", width: "10px", height: "13px" }}></span>
+                            Non Valid Calls (15%)
+                          </div>
+                          <div className="fw-bold fs-5">22</div>
                         </div>
-                        <div className="fw-bold fs-5">12</div>
                       </div>
                     </div>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #f0f7da, #fffde7)" }}>
-                      <div className="card-body mb-0">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#FF69B4", width: "10px", height: "13px" }}
-                          >.</span>
-                          Booking (10%)
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fddde6, #e8e6f8)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#9c27b0", width: "10px", height: "13px" }}></span>
+                            Unanswered Calls (12%)
+                          </div>
+                          <div className="fw-bold fs-5">18</div>
                         </div>
-                        <div className="fw-bold fs-5">4</div>
                       </div>
                     </div>
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fdecea, #fbc9c9)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#f44336", width: "10px", height: "13px" }}></span>
+                            Dead Calls (8%)
+                          </div>
+                          <div className="fw-bold fs-5">12</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #d7ccc8, #efebe9)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#795548", width: "10px", height: "13px" }}></span>
+                            Non Active Calls (5%)
+                          </div>
+                          <div className="fw-bold fs-5">8</div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
