@@ -85,12 +85,16 @@ import { sendMessageData } from "../../services/MetaIntigration/apiMessage";
 import { putEnquiryTable } from "../../services/EnquiryBucket/apiEnquiryTable";
 import { useGetCallStatus } from "../../hooks/FollowUp/useCallStatus";
 import { conversionBypass } from "../../services/FollowUp/AccountProfileview/accountProfileview";
+import { postQuoteAsign } from "../../services/FollowUp/AccountProfileview/apiAsignQuote";
+import { postAssignVisit } from "../../services/FollowUp/AccountProfileview/apiAssignVisit";
 
 const AccountProfileview = ({ id }) => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const logged_employee_name = crmStore.getState().user.userInfo.employee_name;
-  const logged_employee_mob = crmStore.getState().user.userInfo.employee_mobno;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_name =
+    crmStore.getState().user?.userInfo?.employee_name;
+  const logged_employee_mob =
+    crmStore.getState().user?.userInfo?.employee_mobno;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const navigate = useNavigate();
   const { callStatusData } = useGetCallStatus();
   const [conversionDetail, setConversionDetail] = useState({});
@@ -365,6 +369,55 @@ const AccountProfileview = ({ id }) => {
       await sendMessageData(to, normalmessage);
     } catch (error) {
       console.error("Failed to send message:", error);
+    }
+  };
+
+  const handelQuoteClick = async () => {
+    const res = await postQuoteAsign(enquiry_id);
+    if (res == 201) {
+      navigate("/FollowUp/AccountProfileview/AssignQuote", {
+        state: {
+          team_id,
+          enquiry_id,
+          customer_id,
+          rate,
+          stage,
+          status,
+          project,
+          enquiry_type,
+          source,
+          confirm_project,
+          product_details,
+          customer_name,
+          customer_phone,
+          customer_email,
+          customer_address,
+        },
+      });
+    }
+  };
+
+  const handelVisit = async () => {
+    const res = await postAssignVisit(enquiry_id);
+    if (res == 201) {
+      navigate("/FollowUp/AccountProfileview/AssignVisit", {
+        state: {
+          team_id,
+          enquiry_id,
+          customer_id,
+          rate,
+          stage,
+          status,
+          project,
+          enquiry_type,
+          source,
+          confirm_project,
+          product_details,
+          customer_name,
+          customer_phone,
+          customer_email,
+        },
+      });
     }
   };
 
@@ -1710,7 +1763,7 @@ const AccountProfileview = ({ id }) => {
                                       },
                                     }}
                                   >
-                                    Assign
+                                    Create
                                   </Typography>
                                   <Box mt={-3} mb={1}>
                                     <Avatar
@@ -1730,7 +1783,7 @@ const AccountProfileview = ({ id }) => {
                                   </Box>
                                 </Grid>
 
-                                {confirm_project?.length > 0 ? (
+                                {!(confirm_project == null) ? (
                                   <>
                                     <Button
                                       variant="contained"
@@ -1753,35 +1806,12 @@ const AccountProfileview = ({ id }) => {
                                           backgroundColor: "#4f54c7",
                                         },
                                       }}
-                                      onClick={() => {
-                                        navigate(
-                                          "/FollowUp/AccountProfileview/AssignQuote",
-                                          {
-                                            state: {
-                                              team_id,
-                                              enquiry_id,
-                                              customer_id,
-                                              rate,
-                                              stage,
-                                              status,
-                                              project,
-                                              enquiry_type,
-                                              source,
-                                              confirm_project,
-                                              product_details,
-                                              customer_name,
-                                              customer_phone,
-                                              customer_email,
-                                              customer_address,
-                                            },
-                                          }
-                                        );
-                                      }}
+                                      onClick={() => handelQuoteClick()}
                                     >
                                       QUOTE
                                     </Button>
 
-                                    <Button
+                                    {/* <Button
                                       variant="contained"
                                       color="primary"
                                       sx={{
@@ -1815,7 +1845,7 @@ const AccountProfileview = ({ id }) => {
                                       }}
                                     >
                                       LEAD
-                                    </Button>
+                                    </Button> */}
 
                                     <Button
                                       variant="contained"
@@ -1837,29 +1867,7 @@ const AccountProfileview = ({ id }) => {
                                           backgroundColor: "#4f54c7",
                                         },
                                       }}
-                                      onClick={() => {
-                                        navigate(
-                                          "/FollowUp/AccountProfileview/AssignVisit",
-                                          {
-                                            state: {
-                                              team_id,
-                                              enquiry_id,
-                                              customer_id,
-                                              rate,
-                                              stage,
-                                              status,
-                                              project,
-                                              enquiry_type,
-                                              source,
-                                              confirm_project,
-                                              product_details,
-                                              customer_name,
-                                              customer_phone,
-                                              customer_email,
-                                            },
-                                          }
-                                        );
-                                      }}
+                                      onClick={() => handelVisit()}
                                     >
                                       VISIT
                                     </Button>

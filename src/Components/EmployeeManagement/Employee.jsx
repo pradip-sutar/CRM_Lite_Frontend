@@ -17,8 +17,8 @@ import { employeeReport } from "../../services/Reports/apiEmpolyeeReport";
 import toast from "react-hot-toast";
 
 const Employee = () => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allDepartment, setallDepartment] = useState([]);

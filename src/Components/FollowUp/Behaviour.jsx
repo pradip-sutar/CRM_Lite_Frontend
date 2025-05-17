@@ -10,8 +10,8 @@ import { hasRightsPermission } from "../../Private/premissionChecker";
 import crmStore from "../../Utils/crmStore";
 import { useConversionDetails } from "../../hooks/FollowUp/useAccountProfileView";
 const Behaviour = () => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const navigate = useNavigate();
   const [personas, setPersonas] = useState([]);
   const {
@@ -70,7 +70,7 @@ const Behaviour = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    
+
     const formatedData = {
       project_id: confirm_project,
       customer_id: customer_id,
@@ -202,7 +202,7 @@ const Behaviour = () => {
                               <Controller
                                 name={`personas[${categoryIndex}].subcatagory[${subCategoryIndex}].value`}
                                 control={control}
-                                defaultValue= {0}
+                                defaultValue={0}
                                 render={({ field }) => (
                                   <TextField
                                     {...field}

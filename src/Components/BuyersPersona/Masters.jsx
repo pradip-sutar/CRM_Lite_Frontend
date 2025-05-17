@@ -8,8 +8,8 @@ import { getPerosna } from "../../services/BuyersPersona/apiPersonaMaster";
 import crmStore from "../../Utils/crmStore";
 import toast from "react-hot-toast";
 const Masters = () => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       categories: [

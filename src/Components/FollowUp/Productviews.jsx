@@ -2,10 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getConfirmPreProject } from "../../services/apiPreProject";
-import { getSubProject } from "../../services/Project/apiProjectDetails";
 import { apiPostProductView } from "../../services/FollowUp/AccountProfileview/apiProductView";
-import { getHouseList } from "../../services/Project/SubProject/apiSubProject";
 import {
   Paper,
   TableBody,
@@ -15,154 +12,48 @@ import {
   TableRow,
 } from "@mui/material";
 import { Table } from "react-bootstrap";
+import { getProductForm } from "../../services/Product/apiProductForm";
 import { apiGetProductView } from "../../services/FollowUp/AccountProfileview/apiProductView";
-import crmStore from "../../Utils/crmStore";
-import { hasRightsPermission } from "../../Private/premissionChecker";
 
 const Productviews = () => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
   const location = useLocation();
   const { enquiry_id = "" } = location.state || {};
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, reset, control } = useForm();
-  const [projects, setProjects] = useState([]);
-  const [subProjects, setSubProjects] = useState([]);
-  const [subProjectHouseList, setSubProjectHouseList] = useState({});
-  const [selectedSubProjects, setSelectedSubProjects] = useState([]);
+  const { handleSubmit, watch, control } = useForm();
   const [assignedData, setAssignedData] = useState([]);
-  const [selectedProjectDetails, setSelectedProjectDetails] = useState({});
   const choosedProject = watch("confirm_project");
   console.log(choosedProject);
 
-  const getProductView = async () => {
-    try {
-      const data = await apiGetProductView(enquiry_id);
-      setAssignedData(data);
-      reset({
-        confirm_project: {
-          value: data.confirm_project,
-          label: data.confirm_project_name,
-        },
-      });
-    } catch (error) {
-      console.error("Error fetching product view:", error);
-    }
+  const [productData, setProductData] = useState([]);
+  const initialUrl = `/api/project_new_handler/`;
+
+  const fetchData = async () => {
+    const response = await getProductForm(initialUrl);
+    console.log(response);
+    setProductData(
+      response.map((data, index) => ({
+        value: data.project_name,
+        id: data.project_id,
+      }))
+    );
+  };
+
+  const fetchAssignedData = async () => {
+    const response = await apiGetProductView(enquiry_id);
+    setAssignedData(response);
   };
 
   useEffect(() => {
-    getProductView();
+    fetchData();
+    fetchAssignedData();
   }, []);
-
-  const fetchConfirmProject = async () => {
-    try {
-      const data = await getConfirmPreProject();
-      setProjects(
-        data.map((project) => ({
-          value: project?.preproject?.project_id,
-          label: project?.preproject?.project_name,
-          ownership_type: project?.preproject?.ownership_type, // Store ownership_type
-          project_types: project?.preproject?.project_types, // Store project_types
-        }))
-      );
-    } catch (error) {
-      console.error("Error fetching confirmed projects:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchConfirmProject();
-  }, []);
-
-  const fetchSubProjects = async (projectId) => {
-    try {
-      const data = await getSubProject(projectId);
-      setSubProjects(
-        data.map((subProject) => ({
-          value: subProject.code,
-          label: subProject.name,
-        }))
-      );
-    } catch (error) {
-      console.error("Error fetching subprojects:", error);
-    }
-  };
-
-  const fetchHouse = async (subProjectId) => {
-    try {
-      const result = await getHouseList(subProjectId);
-      setSubProjectHouseList((prev) => ({
-        ...prev,
-        [subProjectId]: {
-          products: result.map((product) => ({
-            value: product.house_number,
-            label: `${product.varient_name} - ${product.house_number}`,
-            status: product.status,
-          })),
-          selectedProducts: [],
-        },
-      }));
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  const handleProjectChange = (selectedOption) => {
-    console.log(selectedOption);
-
-    setSelectedProjectDetails({
-      ownership_type: selectedOption?.ownership_type,
-      project_types: selectedOption?.project_types,
-    });
-    if (
-      selectedOption?.ownership_type !== "CP" ||
-      selectedOption?.project_types !== "land"
-    ) {
-      fetchSubProjects(selectedOption.value);
-    } else {
-      setSubProjects([]); // Clear subprojects if conditions are met
-      setSelectedSubProjects([]); // Clear selected subprojects
-    }
-  };
-  useEffect(() => {
-    if (choosedProject) {
-      handleProjectChange(choosedProject);
-    }
-  }, [choosedProject]);
-
-  const handleSubProjectChange = (selectedOptions) => {
-    const selectedIds = selectedOptions.map((option) => option.value);
-
-    selectedIds.forEach((subProjectId) => {
-      if (!selectedSubProjects.includes(subProjectId)) {
-        setSelectedSubProjects((prev) => [...prev, subProjectId]);
-        fetchHouse(subProjectId);
-      }
-    });
-  };
-
-  const handleProductChange = (subProjectId, selectedOptions) => {
-    const selectedProducts = selectedOptions.map((option) => option.value);
-
-    setSubProjectHouseList((prev) => ({
-      ...prev,
-      [subProjectId]: {
-        ...prev[subProjectId],
-        selectedProducts,
-      },
-    }));
-  };
 
   const onSubmit = async (data) => {
-    data.product_details = selectedSubProjects.map((subProjectId) => ({
-      subProjectId,
-      selectedProducts:
-        subProjectHouseList[subProjectId]?.selectedProducts || [],
-    }));
-    data.confirm_project = data.confirm_project.value;
-
     try {
-      const res = await apiPostProductView(data, enquiry_id);
+      const res = await apiPostProductView(
+        data?.confirm_project?.id,
+        enquiry_id
+      );
       if (res === 200) {
         navigate("/FollowUp");
       }
@@ -194,7 +85,6 @@ const Productviews = () => {
         <div className="card-body" style={{ overflowY: "auto" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="row g-4">
-              {/* Confirmed Projects */}
               <div className="col-md-4">
                 <label>Project</label>
                 <Controller
@@ -205,12 +95,15 @@ const Productviews = () => {
                     <div>
                       <Select
                         {...field}
-                        options={projects}
-                        onChange={(selectedOption) => {
-                          field.onChange(selectedOption);
-                        }}
+                        options={productData}
+                        value={field.value || null} // ensures proper clearing
+                        onChange={(selectedOption) =>
+                          field.onChange(selectedOption)
+                        }
                         placeholder="Select Project"
                         isClearable
+                        getOptionLabel={(e) => e?.value || ""}
+                        getOptionValue={(e) => e?.index?.toString() || ""}
                       />
                       {error && (
                         <span className="text-danger">{error.message}</span>
@@ -219,112 +112,9 @@ const Productviews = () => {
                   )}
                 />
               </div>
-              {/* Subprojects (Conditionally Rendered) */}
-              {selectedProjectDetails.ownership_type !== "CP" ||
-              selectedProjectDetails.project_types !== "land" ? (
-                <div className="col-md-4">
-                  <label>Subprojects</label>
-                  <Select
-                    options={subProjects}
-                    onChange={handleSubProjectChange}
-                    placeholder="Select Subprojects"
-                    isMulti
-                    value={subProjects.filter((option) =>
-                      selectedSubProjects.includes(option.value)
-                    )}
-                  />
-                </div>
-              ) : null}
-              {/* Products for Selected Subprojects */}
-              {selectedSubProjects.map((subProjectId) => (
-                <div className="col-md-4" key={subProjectId}>
-                  <label>Products for Subproject {subProjectId}</label>
-                  <Select
-                    options={subProjectHouseList[subProjectId]?.products || []}
-                    onChange={(selectedOptions) =>
-                      handleProductChange(subProjectId, selectedOptions)
-                    }
-                    isMulti
-                    placeholder="Select Products"
-                    value={subProjectHouseList[subProjectId]?.products?.filter(
-                      (product) =>
-                        subProjectHouseList[
-                          subProjectId
-                        ]?.selectedProducts?.includes(product.value)
-                    )}
-                    styles={{
-                      option: (provided, { data }) => ({
-                        ...provided,
-                        backgroundColor:
-                          data.status === "Available"
-                            ? "#d4edda"
-                            : data.status === "sold"
-                            ? "#f8d7da"
-                            : data.status === "hold"
-                            ? "#fff3cd"
-                            : "#fff",
-                        color:
-                          data.status === "Available"
-                            ? "#155724"
-                            : data.status === "sold"
-                            ? "#721c24"
-                            : data.status === "hold"
-                            ? "#856404"
-                            : "#000",
-                      }),
-                      multiValue: (provided, { data }) => ({
-                        ...provided,
-                        backgroundColor:
-                          data.status === "Available"
-                            ? "#d4edda"
-                            : data.status === "sold"
-                            ? "#f8d7da"
-                            : data.status === "hold"
-                            ? "#fff3cd"
-                            : "#ddd",
-                      }),
-                      multiValueLabel: (provided, { data }) => ({
-                        ...provided,
-                        color:
-                          data.status === "Available"
-                            ? "#155724"
-                            : data.status === "sold"
-                            ? "#721c24"
-                            : data.status === "hold"
-                            ? "#856404"
-                            : "#000",
-                      }),
-                      multiValueRemove: (provided, { data }) => ({
-                        ...provided,
-                        color:
-                          data.status === "Available"
-                            ? "#155724"
-                            : data.status === "sold"
-                            ? "#721c24"
-                            : data.status === "hold"
-                            ? "#856404"
-                            : "#000",
-                        ":hover": {
-                          backgroundColor: "#ccc",
-                          color: "#000",
-                        },
-                      }),
-                    }}
-                  />
-                </div>
-              ))}
             </div>
 
-            {(selectedSubProjects?.length > 0 ||
-              (selectedProjectDetails.ownership_type === "CP" &&
-                selectedProjectDetails.project_types === "land")) &&
-              (userType === "Super Admin" ||
-                hasRightsPermission(
-                  "FollowUp",
-                  "Follow Up",
-                  "write",
-                  Permissions
-                )) && <button className="btn btn-primary mt-3">Submit</button>}
+            <button className="btn btn-primary mt-3">Submit</button>
           </form>
         </div>
 
@@ -376,30 +166,6 @@ const Productviews = () => {
                   >
                     Project
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: 20,
-                      textAlign: "center",
-                      border: "1px solid rgb(143 143 143)",
-                      color: "rgb(126 126 126 / 87%)",
-                    }}
-                    className="Font-Assign"
-                  >
-                    Sub-Project
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: 20,
-                      textAlign: "center",
-                      border: "1px solid rgb(143 143 143)",
-                      color: "rgb(126 126 126 / 87%)",
-                    }}
-                    className="Font-Assign"
-                  >
-                    Products
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -423,24 +189,6 @@ const Productviews = () => {
                         className="Font-Assign"
                       >
                         {assignedData.confirm_project_name}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          textAlign: "center",
-                          border: "1px solid rgb(143 143 143)",
-                        }}
-                        className="Font-Assign"
-                      >
-                        {product.subproject_name}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          textAlign: "center",
-                          border: "1px solid rgb(143 143 143)",
-                        }}
-                        className="Font-Assign"
-                      >
-                        {`${product.variant_name} - ${product.house_no} (${product.product_type_name})`}
                       </TableCell>
                     </TableRow>
                   ))

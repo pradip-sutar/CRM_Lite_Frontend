@@ -4,8 +4,8 @@ import crmStore from "../../Utils/crmStore";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 function PaymentReciept() {
   const navigate = useNavigate();
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [paymentReciept, setPaymentReciept] = useState([]);
 
   const [nextUrl, setNextUrl] = useState(null);

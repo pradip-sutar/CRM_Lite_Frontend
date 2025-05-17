@@ -7,7 +7,7 @@ const systemSlice = createSlice({
   },
   reducers: {
     setActiveMenu: (state, action) => { 
-      state.activeMenu = state.activeMenu === action.payload ? null : action.payload;
+      state.activeMenu = state.activeMenu === action.payload ? {} : action.payload;
     },
   },
 });

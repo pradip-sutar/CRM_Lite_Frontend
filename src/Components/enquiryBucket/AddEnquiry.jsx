@@ -23,9 +23,9 @@ import { getProductForm } from "../../services/Product/apiProductForm";
 
 const AddEnquiry = () => {
   const [copySuccess, setCopySuccess] = useState(false);
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const navigate = useNavigate();
   const location = useLocation();
   const {

@@ -12,10 +12,10 @@ import ValidationCard from "../../ui/ValidationCard";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 
 function DeadTable() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const { register, handelSubmit, watch } = useForm();
   const [selectedRows, setSelectedRows] = useState([]);
   const [deadData, setDeadData] = useState([]);

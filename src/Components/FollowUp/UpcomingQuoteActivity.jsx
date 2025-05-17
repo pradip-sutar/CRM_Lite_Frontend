@@ -24,8 +24,8 @@ import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
 //This Component is used for UpcomingActivity of Activities
 const UpcomingActivity = () => {
-  const logged_employee_Id = crmStore.getState().user.userInfo.customer_id;
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.customer_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const navigate = useNavigate();
   const { quotationTable } = useGetQuotationTable(logged_employee_Id,logged_employee_Type);
 
@@ -48,7 +48,7 @@ const UpcomingActivity = () => {
   useEffect(() => {
       const today = new Date().setHours(0, 0, 0, 0);
 
-      const filteredData = quotationTable.filter((row) => {
+      const filteredData = quotationTable?.filter((row) => {
         const rowDate = new Date(row?.date).setHours(0, 0, 0, 0);
 
         return rowDate > today;

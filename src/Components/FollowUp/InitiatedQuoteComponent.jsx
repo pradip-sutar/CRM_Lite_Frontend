@@ -25,8 +25,8 @@ import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 //This Component is used for UpcomingActivity of Activities
 const InitiatedQuoteComponent = () => {
   const navigate = useNavigate();
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.customer_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.customer_id;
   const { quotationTable } = useGetQuotationTable(logged_employee_Id,logged_employee_Type);
 
     const [quatationData, setQuatationData] = useState([]);

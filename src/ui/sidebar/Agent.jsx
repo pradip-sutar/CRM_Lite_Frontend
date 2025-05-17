@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 function Agent() {
   const dispatch = useDispatch();
   const activeMenu = useSelector((state) => state.system.activeMenu);
-  const userType = crmStore.getState().user.userInfo.userType;
-  const permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const permissions = crmStore.getState().permisions?.roleAndRights;
   const [show, setShow] = useState(false);
   return (
     <li className={activeMenu === "Agent Management" ? "menu-item open" : "menu-item"}>

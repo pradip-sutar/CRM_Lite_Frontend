@@ -10,8 +10,8 @@ import crmStore from "../../Utils/crmStore";
 import ValidationCard from "../../ui/ValidationCard";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 function BankInfo() {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [bankdata, setBankData] = useState([]);
   const [nextUrl, setNextUrl] = useState(null);
   const [prevUrl, setPrevUrl] = useState(null);

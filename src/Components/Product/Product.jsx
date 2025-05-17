@@ -133,7 +133,9 @@ function Product() {
                                   </div>
 
                                   <div
-                                    onClick={() => deleteProductfn(row.project_id)}
+                                    onClick={() =>
+                                      deleteProductfn(row.project_id)
+                                    }
                                     className="btn btn-text-danger btn-sm small py-1 px-2"
                                     data-bs-toggle="tooltip"
                                     data-bs-placement="top"

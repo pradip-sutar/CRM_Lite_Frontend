@@ -86,8 +86,6 @@ function FollowUp() {
     }
   };
 
-
-
   const onSubmit = async (data) => {
     data.followup_category = content.toLowerCase();
     console.log(data);

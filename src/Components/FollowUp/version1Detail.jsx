@@ -26,7 +26,7 @@ import { GenerateVersionQuotation } from "../../services/FollowUp/apiQuotation";
 import { postQuotationPdf } from "../../services/FollowUp/apiQuotation";
 import { postSchedule } from "../../services/FollowUp/AccountProfileview/accountProfileview";
 const SignatureSection = ({ handleChange, isReadOnly }) => {
-  const logged_employee_name = crmStore.getState().user.userInfo.employee_name;
+  const logged_employee_name = crmStore.getState().user?.userInfo?.employee_name;
   return (
     <Grid container spacing={6}>
       {/* Left side */}

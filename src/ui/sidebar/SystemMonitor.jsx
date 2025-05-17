@@ -4,8 +4,8 @@ import { hasTabPermission } from "../../Private/premissionChecker";
 import crmStore from "../../Utils/crmStore";
 
 const SystemMonitor = () => {
-    const userType = crmStore.getState().user.userInfo.userType;
-    const permissions = crmStore.getState().permisions.roleAndRights;
+    const userType = crmStore.getState().user?.userInfo?.userType;
+    const permissions = crmStore.getState().permisions?.roleAndRights;
     return (
       <li className="menu-item">
         {(userType === "Super Admin" ||

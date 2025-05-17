@@ -11,8 +11,8 @@ import Select from "react-select";
 import { fetchEmployee } from "../../services/EmpManagement/apiCompanyProfile";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 function Customer() {
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [customers, setCustomers] = useState([]);
   const [nextUrl, setNextUrl] = useState(null);
   const [prevUrl, setPrevUrl] = useState(null);
@@ -23,9 +23,11 @@ function Customer() {
     perPage: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
+
   const initialUrl = `${
     import.meta.env.VITE_URL_BASE
   }/api/customers/?page=${currentPage}`;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [employees, setEmployees] = useState([]);

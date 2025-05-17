@@ -23,8 +23,8 @@ import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
 //This Component is used for UpcomingActivity of Activities
 const ListofActivity = () => {
-  const logged_employee_Id = crmStore.getState().user.userInfo.customer_id;
-  const logged_employee_Type = crmStore.getState().user.userInfo.userType;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.customer_id;
+  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const navigate = useNavigate();
   const { quotationTable } = useGetQuotationTable(logged_employee_Id,logged_employee_Type);
    const [companyInfo, setCompanyInfo] = useState({});

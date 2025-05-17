@@ -33,9 +33,9 @@ import crmStore from "../../Utils/crmStore";
 import { hasRightsPermission } from "../../Private/premissionChecker";
 import "./CSS/AssignQuote.css";
 const AssignVisit = () => {
-  const userType = crmStore.getState().user.userInfo.userType;
-  const Permissions = crmStore.getState().permisions.roleAndRights;
-  const logged_employee_Id = crmStore.getState().user.userInfo.employee_id;
+  const userType = crmStore.getState().user?.userInfo?.userType;
+  const Permissions = crmStore.getState().permisions?.roleAndRights;
+  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const {
     team_id = null,
     enquiry_id = null,
