@@ -5,78 +5,90 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElemen
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
 const BookingTab = () => {
-    const [employeeStats, setEmployeeStats] = useState([
-        {
-            id: 1,
-            name: "Greenville Apartments",
-            emp: "Rabi",
-            date: "03-12-2024",
-            count: 30,
+  const [bookingData, setBookingData] = useState([
+    {
+      id: 1,
+      property: "Greenville Apartments",
+      employee: "Rabi",
+      customer: "Amit Sharma",
+      date: "03-12-2024",
+      amount: 30000,
+      commission: 1500,
+    },
+    {
+      id: 2,
+      property: "Skyline Towers",
+      employee: "Santosh",
+      customer: "Priya Singh",
+      date: "25-02-2025",
+      amount: 20000,
+      commission: 1000,
+    },
+    {
+      id: 3,
+      property: "Golden Residency",
+      employee: "Raj Tripathy",
+      customer: "Vikram Patel",
+      date: "10-05-2025",
+      amount: 45000,
+      commission: 2250,
+    },
+  ]);
+
+  const activityData = {
+    labels: [
+      "Greenville Apartments",
+      "Skyline Towers",
+      "Golden Residency",
+      "Riverside Villas",
+      "Metro Heights"
+    ],
+    datasets: [
+      {
+        label: "Visits",
+        data: [15, 10, 20, 12, 18],
+        backgroundColor: "#007bff", // Uniform blue bars
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          boxWidth: 12,
+          boxHeight: 12,
+          padding: 15,
         },
-        {
-            id: 2,
-            name: "Skyline Towers",
-            emp: "Santosh",
-            date: "25-02-2025",
-            count: 20,
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          color: "#e7e7e7",
         },
-    ]);
-
-    const activityData = {
-        labels: [
-            "Greenville Apartments",
-            "Skyline Towers",
-            "Golden Residency",
-            "Riverside Villas",
-            "Metro Heights"
-        ],
-        datasets: [
-            {
-                label: "Visits",
-                data: [15, 10, 20, 12, 18],
-                backgroundColor: "#007bff", // Uniform blue bars
-            },
-        ],
-    };
-
-
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "top",
-                labels: {
-                    boxWidth: 12,
-                    boxHeight: 12,
-                    padding: 15,
-                },
-            },
-            tooltip: {
-                enabled: true,
-            },
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "#e7e7e7",
         },
-        scales: {
-            x: {
-                grid: {
-                    color: "#e7e7e7",
-                },
-            },
-            y: {
-                beginAtZero: true,
-                grid: {
-                    color: "#e7e7e7",
-                },
-                suggestedMax: 20,
-            },
-        },
-    };
+        suggestedMax: 20,
+      },
+    },
+  };
 
 
 
-    return (
-        <div className="container-fluid py-4">
-            <style>
-                {`
+  return (
+    <div className="container-fluid">
+      <style>
+        {`
           /* Card Styling */
           .stats-card {
             border: none;
@@ -168,26 +180,6 @@ const BookingTab = () => {
             animation: fadeIn 1s ease-in;
           }
 
-          /* Breadcrumb Styling */
-          .breadcrumb {
-            background-color: transparent;
-            padding: 0;
-            margin-bottom: 1.5rem;
-          }
-          .breadcrumb-item a {
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.2s ease;
-          }
-          .breadcrumb-item a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-          }
-          .breadcrumb-item.active {
-            color: #6c757d;
-            font-weight: 500;
-          }
-
           /* Chart Card Animation */
           .animate-card {
             animation: slideUp 0.5s ease-in-out;
@@ -274,140 +266,109 @@ const BookingTab = () => {
             }
           }
         `}
-            </style>
+      </style>
 
-            {/* Breadcrumb Navigation */}
-            <nav aria-label="breadcrumb">
-                <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-                    <li className="breadcrumb-item active" aria-current="page">Bookings</li>
-                </ol>
-            </nav>
-
-            {/* Filters Section */}
-            <div className="row g-3 mb-4">
-                <div className="d-flex justify-content-end gap-3">
-                    <div className="mb-3" style={{ width: "200px" }}>
-                        <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
-                        <select className="form-select" id="timePeriod">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="quarterly">Quarterly</option>
-                            <option value="annually">Annually</option>
-                        </select>
-                    </div>
-
-                    <div className="mb-3" style={{ width: "200px" }}>
-                        <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
-                        <select className="form-select" id="employee">
-                            <option value="raj">Raj Tripathy</option>
-                            <option value="abhishek">Abhishek Rathi</option>
-                            <option value="rahul">Rahul Pani</option>
-                            <option value="pradip">Pradip Sutar</option>
-                            <option value="amit">Amit Das</option>
-                        </select>
-                    </div>
-                </div>
+      {/* Charts Section */}
+      <div className="row g-3 mb-4">
+        <div className="col-12 col-lg-6 col-md-6" >
+          <div className="card shadow animate-card" >
+            <div className="card-body p-4">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0">Booking Trends</h5>
+                <button className="btn btn-outline-primary btn-sm">Export</button>
+              </div>
+              <div className="chart-container">
+                <Line data={activityData} options={options} height={160} />
+              </div>
             </div>
-
-            {/* Charts Section */}
-            <div className="row g-3 mb-4">
-                <div className="col-12 col-lg-6 col-md-6" >
-                    <div className="card shadow animate-card" >
-                        <div className="card-body p-4">
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h5 className="mb-0">Booking Trends</h5>
-                                <button className="btn btn-outline-primary btn-sm">Export</button>
-                            </div>
-                            <div className="chart-container">
-                                <Line data={activityData} options={options} height={160} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-12 col-lg-6 col-md-6">
-                    <div
-                        className="card shadow animate-card"
-                        style={{ borderRadius: "10px", border: "1px solid #ddd" }}
-                    >
-                        <div className="card-body p-4">
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h6 className="mb-0">Top Booked Projects</h6>
-                                <button className="btn btn-outline-primary btn-sm">Export</button>
-                            </div>
-                            <div className="chart-container" style={{ position: "relative", height: "300px" }}>
-                                <Bar data={activityData} options={options} width={250} height={150} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Table Section */}
-            <div className="row">
-                <div className="col-12">
-                    <div className="card stats-card">
-                        <div className="card-header py-3">
-                            <h5 className="mb-0 fw-bold text-light">Recent Bookings</h5>
-                        </div>
-                        <div className="card-body p-4">
-                            {employeeStats?.length > 0 ? (
-                                <div className="table-responsive">
-                                    <table className="table table-hover table-bordered align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                                                <th scope="col">Property</th>
-                                                <th scope="col">Employee</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Count</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {employeeStats?.map((row, index) => (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{row?.name}</td>
-                                                    <td>{row?.emp}</td>
-                                                    <td>{row?.date}</td>
-                                                    <td>{row?.count}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ) : (
-                                <div className="text-center py-5 no-data">
-                                    <i className="bi bi-exclamation-circle me-2"></i>
-                                    No Employee Stats Found
-                                </div>
-                            )}
-
-                            {employeeStats?.length > 0 && (
-                                <div className="d-flex justify-content-between align-items-center mt-4">
-                                    <div className="text-muted">
-                                        Showing 1 to {employeeStats.length} of {employeeStats.length} entries
-                                    </div>
-                                    <ul className="pagination mb-0">
-                                        <li className="page-item disabled">
-                                            <a className="page-link" href="#">Previous</a>
-                                        </li>
-                                        <li className="page-item active">
-                                            <a className="page-link" href="#">1</a>
-                                        </li>
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-    );
+        <div className="col-12 col-lg-6 col-md-6">
+          <div
+            className="card shadow animate-card"
+            style={{ borderRadius: "10px", border: "1px solid #ddd" }}
+          >
+            <div className="card-body p-4">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="mb-0">Top Booked Projects</h6>
+                <button className="btn btn-outline-primary btn-sm">Export</button>
+              </div>
+              <div className="chart-container" style={{ position: "relative", height: "300px" }}>
+                <Bar data={activityData} options={options} width={250} height={150} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Table Section */}
+      <div className="row">
+        <div className="col-12">
+          <div className="card stats-card">
+            <div className="card-header py-3">
+              <h5 className="mb-0 fw-bold text-light">Recent Bookings</h5>
+            </div>
+            <div className="card-body p-4">
+              {bookingData?.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-hover table-bordered align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                        <th scope="col">Property</th>
+                        <th scope="col">Employee</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Commission</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bookingData?.map((row, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{row?.property}</td>
+                          <td>{row?.employee}</td>
+                          <td>{row?.customer}</td>
+                          <td>{row?.date}</td>
+                          <td>₹{row?.amount?.toLocaleString("en-IN")}</td>
+                          <td>₹{row?.commission?.toLocaleString("en-IN")}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-5 no-data">
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  No Employee Stats Found
+                </div>
+              )}
+
+              {bookingData?.length > 0 && (
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  <div className="text-muted">
+                    Showing 1 to {bookingData.length} of {bookingData.length} entries
+                  </div>
+                  <ul className="pagination mb-0">
+                    <li className="page-item disabled">
+                      <a className="page-link" href="#">Previous</a>
+                    </li>
+                    <li className="page-item active">
+                      <a className="page-link" href="#">1</a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="#">Next</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default BookingTab;

@@ -1,4 +1,4 @@
-import { Link  } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
@@ -14,6 +14,12 @@ const Properties = () => {
       visit: 30,
       quotations: 100,
       booking: 20,
+      date: "2025-05-15",
+      customerName: "Rajesh Kumar",
+      amount: 45000,
+      stage: "Opportunity",
+      status: "Hot",
+
     },
     {
       id: 2,
@@ -23,38 +29,37 @@ const Properties = () => {
       visit: 20,
       quotations: 160,
       booking: 20,
+      date: "2025-05-14",
+      customerName: "Anita Sharma",
+      amount: 32000,
+      stage: "Lead",
+      status: "Warm",
     },
   ]);
 
   const activityData = {
-    labels: ["2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05"],
+    labels: ["Enquiry", "Quote", "Schedule", "Sales"],
     datasets: [
       {
-        label: "Calls",
-        data: [350, 295, 310, 280, 320],
-        borderColor: "#1E90FF",
+        label: "Project A",
+        data: [60, 30, 20, 10],
         backgroundColor: "#007bff",
-        tension: 0.4,
-        pointRadius: 5,
-        borderWidth: 3,
+        borderColor: "#1E90FF",
+        borderWidth: 1,
       },
       {
-        label: "Visits",
-        data: [22, 150, 25, 120, 123],
+        label: "Project B",
+        data: [50, 25, 15, 18],
+        backgroundColor: "#28a745",
         borderColor: "#2E8B57",
-        backgroundColor: "#2E8B57",
-        tension: 0.4,
-        pointRadius: 5,
-        borderWidth: 3,
+        borderWidth: 1,
       },
       {
-        label: "Bookings",
-        data: [10, 8, 129, 9, 320],
-        borderColor: "#DC143C",
-        backgroundColor: "#DC143C",
-        tension: 0.4,
-        pointRadius: 5,
-        borderWidth: 3,
+        label: "Project C",
+        data: [40, 35, 25, 20],
+        backgroundColor: "#ffc107",
+        borderColor: "#FFA500",
+        borderWidth: 1,
       },
     ],
   };
@@ -75,17 +80,44 @@ const Properties = () => {
         grid: {
           color: "#e7e7e7",
         },
+        title: {
+          display: true,
+          text: "Activity Type",
+        },
       },
       y: {
         grid: {
           color: "#e7e7e7",
         },
+        title: {
+          display: true,
+          text: "Count",
+        },
       },
     },
   };
 
+
+  // Tab Button
+  const [activeTab, setActiveTab] = useState("Product");
+  const buttons = ["Product", "Sales", "Quote", "Schedule"]
+  const getStatusBadgeClass = (status) => {
+    switch (status?.toLowerCase()) {
+      case "hot":
+        return "bg-danger-subtle text-danger fw-semibold px-3 py-1 rounded-pill";
+      case "warm":
+        return "bg-warning-subtle text-warning fw-semibold px-3 py-1 rounded-pill";
+      case "cold":
+        return "bg-primary-subtle text-primary fw-semibold px-3 py-1 rounded-pill";
+      default:
+        return "bg-secondary-subtle text-secondary fw-semibold px-3 py-1 rounded-pill";
+    }
+  };
+
+
+
   return (
-    <div className="container-fluid py-4">
+    <div className="container-fluid p-0 pr-1">
       <style>
         {`
           /* Card Styling */
@@ -179,26 +211,6 @@ const Properties = () => {
             animation: fadeIn 1s ease-in;
           }
 
-          /* Breadcrumb Styling */
-          .breadcrumb {
-            background-color: transparent;
-            padding: 0;
-            margin-bottom: 1.5rem;
-          }
-          .breadcrumb-item a {
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.2s ease;
-          }
-          .breadcrumb-item a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-          }
-          .breadcrumb-item.active {
-            color: #6c757d;
-            font-weight: 500;
-          }
-
           /* Chart Card Animation */
           .animate-card {
             animation: slideUp 0.5s ease-in-out;
@@ -287,54 +299,18 @@ const Properties = () => {
         `}
       </style>
 
-      {/* Breadcrumb Navigation */}
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">Properties</li>
-        </ol>
-      </nav>
-
-      {/* Filters Section */}
-      <div className="row g-3 mb-4">
-        <div className="d-flex justify-content-end gap-3">
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
-            <select className="form-select" id="timePeriod">
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="annually">Annually</option>
-            </select>
-          </div>
-        </div>
-      </div>
 
       {/* Charts Section */}
       <div className="row g-3 mb-4">
-        <div className="col-12 col-md-6">
+        <div className="col-12 col-md-12">
           <div className="card stats-card animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="mb-0">Top Performing Projects</h6>
+                <h6 className="mb-0">Top Performing Product</h6>
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
               <div className="chart-container">
-                <Bar data={activityData} options={options} height={150} />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-12 col-md-6">
-          <div className="card stats-card animate-card">
-            <div className="card-body p-4">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="mb-0">Project Upload Trend</h6>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
-              </div>
-              <div className="chart-container">
-                <Line data={activityData} options={options} height={150} />
+                <Bar data={activityData} options={options} height={80} />
               </div>
             </div>
           </div>
@@ -342,71 +318,309 @@ const Properties = () => {
       </div>
 
       {/* Table Section */}
-      <div className="row">
-        <div className="col-12">
-          <div className="card stats-card">
-            <div className="card-header py-3">
-              <h5 className="mb-0 fw-bold text-light">Project Details</h5>
-            </div>
-            <div className="card-body p-4">
-              {employeeStats?.length > 0 ? (
-                <div className="table-responsive">
-                  <table className="table table-hover table-bordered align-middle">
-                    <thead>
-                      <tr>
-                        <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                        <th scope="col">Project Name</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Enquiries</th>
-                        <th scope="col">Visits</th>
-                        <th scope="col">Quotations</th>
-                        <th scope="col">Bookings</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {employeeStats?.map((row, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{row?.name}</td>
-                          <td>{row?.type}</td>
-                          <td>{row?.enquiries}</td>
-                          <td>{row?.visit}</td>
-                          <td>{row?.quotations}</td>
-                          <td>{row?.booking}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center py-5 no-data">
-                  <i className="bi bi-exclamation-circle me-2"></i>
-                  No Employee Stats Found
-                </div>
-              )}
 
-              {employeeStats?.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center mt-4">
-                  <div className="text-muted">
-                    Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+      <div className="d-flex gap-3 mb-4">
+        {buttons?.map((tab) => (
+          <button
+            key={tab}
+            className={`btn ${activeTab === tab ? "btn-primary" : "btn-outline-primary"}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+
+      {activeTab === "Product" && (
+        <div className="row">
+          <div className="col-12">
+            <div className="card stats-card">
+              <div className="card-header py-3">
+                <h5 className="mb-0 fw-bold text-light">Product Details</h5>
+              </div>
+              <div className="card-body p-4">
+                {employeeStats?.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-hover table-bordered align-middle">
+                      <thead>
+                        <tr>
+                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col">Product Name</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Enquiries</th>
+                          <th scope="col">Visits</th>
+                          <th scope="col">Quotations</th>
+                          <th scope="col">Bookings</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {employeeStats?.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{row?.name}</td>
+                            <td>{row?.type}</td>
+                            <td>{row?.enquiries}</td>
+                            <td>{row?.visit}</td>
+                            <td>{row?.quotations}</td>
+                            <td>{row?.booking}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
-                </div>
-              )}
+                ) : (
+                  <div className="text-center py-5 no-data">
+                    <i className="bi bi-exclamation-circle me-2"></i>
+                    No Employee Stats Found
+                  </div>
+                )}
+
+                {employeeStats?.length > 0 && (
+                  <div className="d-flex justify-content-between align-items-center mt-4">
+                    <div className="text-muted">
+                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                    </div>
+                    <ul className="pagination mb-0">
+                      <li className="page-item disabled">
+                        <a className="page-link" href="#">Previous</a>
+                      </li>
+                      <li className="page-item active">
+                        <a className="page-link" href="#">1</a>
+                      </li>
+                      <li className="page-item">
+                        <a className="page-link" href="#">Next</a>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {activeTab === "Sales" && (
+        <div className="row">
+          <div className="col-12">
+            <div className="card stats-card">
+              <div className="card-header py-3">
+                <h5 className="mb-0 fw-bold text-light">Sales List</h5>
+              </div>
+              <div className="card-body p-4">
+                {employeeStats?.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-hover table-bordered align-middle">
+                      <thead>
+                        <tr>
+                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col">Product Name</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Customer Name</th>
+                          <th scope="col">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {employeeStats?.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{row?.name}</td>
+                            <td>{row?.date}</td>
+                            <td>{row?.customerName}</td>
+                            <td>₹{row?.amount?.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-5 no-data">
+                    <i className="bi bi-exclamation-circle me-2"></i>
+                    No Product Stats Found
+                  </div>
+                )}
+
+                {employeeStats?.length > 0 && (
+                  <div className="d-flex justify-content-between align-items-center mt-4">
+                    <div className="text-muted">
+                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                    </div>
+                    <ul className="pagination mb-0">
+                      <li className="page-item disabled">
+                        <a className="page-link" href="#">Previous</a>
+                      </li>
+                      <li className="page-item active">
+                        <a className="page-link" href="#">1</a>
+                      </li>
+                      <li className="page-item">
+                        <a className="page-link" href="#">Next</a>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "Quote" && (
+        <div className="row">
+          <div className="col-12">
+            <div className="card stats-card">
+              <div className="card-header py-3">
+                <h5 className="mb-0 fw-bold text-light">Quote List</h5>
+              </div>
+              <div className="card-body p-4">
+                {employeeStats?.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-hover table-bordered align-middle">
+                      <thead>
+                        <tr>
+                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col">Product Name</th>
+                          <th scope="col">Latest Date</th>
+                          <th scope="col">Enquiry Stage</th>
+                          <th scope="col">Enquiry Status</th>
+                          <th scope="col">Enquiry Name</th>
+                          <th scope="col">Quote ID</th>
+                          <th scope="col">Version</th>
+                          <th scope="col">Quote Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {employeeStats?.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{row?.name}</td>
+                            <td>{row?.date}</td>
+                            <td>{row?.stage}</td>
+                            <td>
+                              <span className={`badge-pill ${getStatusBadgeClass(row?.status)}`}>{row?.status}</span>
+                            </td>
+                            <td>{row?.customerName}</td>
+                            <td>{`QID-${row?.id}`}</td>
+                            <td>{`v${row?.version || 1}`}</td>
+                            <td>₹{row?.amount?.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-5 no-data">
+                    <i className="bi bi-exclamation-circle me-2"></i>
+                    No Quote Data Found
+                  </div>
+                )}
+
+                {employeeStats?.length > 0 && (
+                  <div className="d-flex justify-content-between align-items-center mt-4">
+                    <div className="text-muted">
+                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                    </div>
+                    <ul className="pagination mb-0">
+                      <li className="page-item disabled">
+                        <a className="page-link" href="#">Previous</a>
+                      </li>
+                      <li className="page-item active">
+                        <a className="page-link" href="#">1</a>
+                      </li>
+                      <li className="page-item">
+                        <a className="page-link" href="#">Next</a>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "Schedule" && (
+        <div className="row">
+          <div className="col-12">
+            <div className="card stats-card">
+              <div className="card-header py-3">
+                <h5 className="mb-0 fw-bold text-light">Schedule List</h5>
+              </div>
+              <div className="card-body p-4">
+                {employeeStats?.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-hover table-bordered align-middle">
+                      <thead>
+                        <tr>
+                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col">Product Name</th>
+                          <th scope="col">Latest Date</th>
+                          <th scope="col">Enquiry Stage</th>
+                          <th scope="col">Enquiry Status</th>
+                          <th scope="col">Enquiry Name</th>
+                          <th scope="col">Schedule ID</th>
+                          <th scope="col">Version</th>
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {employeeStats?.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{row?.name}</td>
+                            <td>{row?.date}</td>
+                            <td>{row?.stage}</td>
+                            <td>
+                              <span className={`badge-pill ${getStatusBadgeClass(row?.status)}`}>
+                                {row?.status}
+                              </span>
+                            </td>
+                            <td>{row?.customerName}</td>
+                            <td>{`SID-${row?.id}`}</td>
+                            <td>{`v${row?.version || 1}`}</td>
+                            <td>
+                              <span className="badge bg-success-subtle text-success fw-semibold px-3 py-1 rounded-pill">
+                                Confirmed
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-5 no-data">
+                    <i className="bi bi-exclamation-circle me-2"></i>
+                    No Schedule Data Found
+                  </div>
+                )}
+
+                {employeeStats?.length > 0 && (
+                  <div className="d-flex justify-content-between align-items-center mt-4">
+                    <div className="text-muted">
+                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                    </div>
+                    <ul className="pagination mb-0">
+                      <li className="page-item disabled">
+                        <a className="page-link" href="#">Previous</a>
+                      </li>
+                      <li className="page-item active">
+                        <a className="page-link" href="#">1</a>
+                      </li>
+                      <li className="page-item">
+                        <a className="page-link" href="#">Next</a>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      )}
+
+
+
     </div>
   );
 };
