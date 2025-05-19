@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import OverviewTab from "./DashboardComponents/OverviewTab";
 import CallingTab from "./DashboardComponents/CallingTab";
@@ -10,20 +10,52 @@ import QuotationTab from './DashboardComponents/QuotationTab';
 import BookingTab from './DashboardComponents/BookingTab';
 import CommissionTab from './DashboardComponents/CommissionTab';
 import CollectionTab from './DashboardComponents/CollectionTab';
+import { getOverView } from '../../services/Dashboard/DashboardComponents/OverviewTab';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const [activeComponent, setActiveComponent] = useState('Overview');
+  const [filterOverviewData, setFilterOverviewData] = useState(null);
+  const [start_date, setStartDate] = useState('');
+  const [end_date, setEndDate] = useState('');
+
+  const fetchFilterOverViewData = async (start_date, end_date) => {
+    try {
+      const response = await getOverView({ start_date, end_date });
+      console.log(response);
+      setFilterOverviewData(response);
+    } catch (error) {
+      console.error("Error fetching OverView data", error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch initial data without dates or with default dates
+    fetchFilterOverViewData();
+  }, []);
+
+  const handleSearch = () => {
+    if (start_date && end_date) {
+      fetchFilterOverViewData(start_date, end_date);
+    } else {
+      toast.error("Please select both start and end dates");
+    }
+  };
+
+  const handleReset = () => {
+    setStartDate('');
+    setEndDate('');
+    fetchFilterOverViewData();
+  };
 
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Overview':
-        return <OverviewTab />;
+        return <OverviewTab filterOverviewData={filterOverviewData} />;
       case 'FollowUp':
         return <CallingTab />;
       case 'Product':
         return <PropertiesTab />;
-      // case 'Employees':
-      //   return <EmployeesTab />;
       case 'Stages':
         return <StagesTab />;
       case 'Visits':
@@ -34,33 +66,44 @@ const Dashboard = () => {
         return <BookingTab />;
       case 'Collections':
         return <CollectionTab />;
-
     }
   };
-
 
   const renderFilters = () => (
     <div>
       {activeComponent === "Overview" && (
-        <div className="d-flex justify-content-end gap-3 pr-2">
+        <div className="d-flex justify-content-end gap-3 pr-2 align-items-end">
           <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="timePeriod" className="form-label fw-bold">Time Period:</label>
-            <select className="form-select" id="timePeriod">
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="annually">Annually</option>
-            </select>
-          </div>
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="date" className="form-label fw-bold">Date:</label>
+            <label htmlFor="start_date" className="form-label fw-bold">Start Date:</label>
             <input
               type="date"
               className="form-control"
-              id="date"
-              name="date"
+              id="start_date"
+              name="start_date"
+              value={start_date}
+              onChange={(e) => setStartDate(e.target.value)}
             />
+          </div>
+          <div className="mb-3" style={{ width: "200px" }}>
+            <label htmlFor="end_date" className="form-label fw-bold">End Date:</label>
+            <input
+              type="date"
+              className="form-control"
+              id="end_date"
+              name="end_date"
+              value={end_date}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+          <div className="mb-3 d-flex gap-2">
+            <button className="btn btn-primary" onClick={handleSearch}>
+              Search
+            </button>
+            <div>
+              <button className="btn btn-light" onClick={handleReset}>
+                Reset
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -244,17 +287,10 @@ const Dashboard = () => {
     </div>
   );
 
-
   const buttons = [
     'Overview', 'FollowUp', 'Product', 'Stages', 'Visits',
     'Quotations', 'Bookings', 'Collections'
   ];
-
-  // const buttons = [
-  //   'Overview', 'Calling', 'Product', 'Employees', 'Stages', 'Visits',
-  //   'Quotations', 'Bookings', 'Commissions', 'Attendance', 'Collections',
-  //   'Uploads', 'Assignments'
-  // ];
 
   return (
     <div className="container-fluid p-0 ps-lg-4">
