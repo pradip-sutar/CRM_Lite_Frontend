@@ -3,12 +3,8 @@ import { toast } from "react-toastify";
 
 export const GenerateVersionQuotation = async (id) => {
   try {
-    const response = await apiGateWay.put(
-      `/api/update_quotation/?id=${id}`
-    );
+    const response = await apiGateWay.put(`/api/update_quotation/?id=${id}`);
     if (response.status === 200) {
-      toast.success("Version Quotation generated successfully! ");
-      toast.success("Wait am Processing Your PDF! ");
       return response.data;
     }
   } catch (error) {
@@ -18,17 +14,12 @@ export const GenerateVersionQuotation = async (id) => {
 
 export const postQuotationPdf = async (data) => {
   try {
-    const response = await apiGateWay.post(
-      `/api/store_quotation_pdf/`,
-      data
-    );
+    const response = await apiGateWay.post(`/api/store_quotation_pdf/`, data);
     console.log(response);
     if (response.status === 201) {
       toast.success("PDF generated successfully! ");
       return response.status;
     }
-
-    
   } catch (error) {
     toast.error("Failed to generate PDF! ");
   }
@@ -41,7 +32,6 @@ export const getPreviousVersionData = async (enquiry_id) => {
     );
     return response.data;
   } catch (error) {
-   console.log(error);
-   
+    console.log(error);
   }
 };

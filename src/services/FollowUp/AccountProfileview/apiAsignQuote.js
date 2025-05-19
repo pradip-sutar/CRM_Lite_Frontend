@@ -18,7 +18,6 @@ export const postQuoteAsign = async (data) => {
 
 export const getAssignQuote = async () => {
   try {
-    console.log(userType);
  
     const response = await apiGateWay.get(
       `/api/quotation/`
@@ -29,6 +28,7 @@ export const getAssignQuote = async () => {
     if(error.response.status==404){
       toast.info("No quotes assigned found for this employee.");
     }
+    console.log(error);
   }
 };
 

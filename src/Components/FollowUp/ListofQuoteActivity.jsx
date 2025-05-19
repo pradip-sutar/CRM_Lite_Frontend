@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -23,26 +23,22 @@ import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
 //This Component is used for UpcomingActivity of Activities
 const ListofActivity = () => {
-  const logged_employee_Id = crmStore.getState().user?.userInfo?.customer_id;
-  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const navigate = useNavigate();
-  const { quotationTable } = useGetQuotationTable(logged_employee_Id,logged_employee_Type);
-   const [companyInfo, setCompanyInfo] = useState({});
-
+  const { quotationTable } = useGetQuotationTable();
+  const [companyInfo, setCompanyInfo] = useState({});
   const [quatationData, setQuatationData] = useState([]);
+  const fetchCompanyInfo = async () => {
+    try {
+      const response = await getCompanyInfo();
+      console.log(response);
 
-    const fetchCompanyInfo = async () => {
-      try {
-        const response = await getCompanyInfo();
-        console.log(response);
-  
-        if (response.length > 0) {
-          setCompanyInfo(response[0]);
-        }
-      } catch (error) {
-        console.log(error);
+      if (response.length > 0) {
+        setCompanyInfo(response[0]);
       }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (quotationTable) {
@@ -59,9 +55,9 @@ const ListofActivity = () => {
     minute: "2-digit",
     hour12: true,
   };
-    useEffect(() => {
-      fetchCompanyInfo();
-    }, []);
+  useEffect(() => {
+    fetchCompanyInfo();
+  }, []);
 
   return (
     <Box
@@ -277,29 +273,6 @@ const ListofActivity = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={3}>
-                    <Box sx={{ display: "flex", alignItems: "start" }}>
-                      <Avatar
-                        sx={{
-                          backgroundColor: "#7695FF",
-                          color: "#ffffff",
-                          mr: 2,
-                        }}
-                      >
-                        <AssignmentTurnedInIcon />
-                      </Avatar>
-                      <Box>
-                        <Typography sx={{ fontSize: "0.7rem" }}>
-                          <strong>Assigned</strong>
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: "0.7rem", color: "#666cff" }}
-                        >
-                          {row?.created_by_name}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
                 </Grid>
 
                 <Grid item xs={3}>
@@ -310,18 +283,16 @@ const ListofActivity = () => {
                       marginTop: "10px",
                     }}
                   >
-                    
                     <button
-                          onClick={() => {
-                            navigate("/FollowUp/QuotationDetails", {
-                              state: { row, companyInfo },
-                               
-                            });
-                          }}
-                          className="bg-primary text-white p-1"
-                        >
-                          Quote
-                        </button>
+                      onClick={() => {
+                        navigate("/FollowUp/QuotationDetails", {
+                          state: { row, companyInfo },
+                        });
+                      }}
+                      className="bg-primary text-white p-1"
+                    >
+                      Quote
+                    </button>
                   </Box>
                 </Grid>
               </CardContent>

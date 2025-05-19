@@ -117,87 +117,6 @@ function Quotation() {
       </div>
 
       <div className="card mx-4">
-        {/* <div className="title card-header d-flex justify-content-between align-items-center bg-label-primary py-2">
-          <h5 className="mb-0">Quotation :</h5>
-        </div> */}
-        {/* <div className="text-nowrap p-3">
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: "#e7e7e7" }}>
-                  <TableCell>SL No</TableCell>
-                  <TableCell>Customer Id</TableCell>
-                  <TableCell>Enquiry ID</TableCell>
-                  <TableCell>Quote ID</TableCell>
-                  <TableCell>Version</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Stage</TableCell>
-                  <TableCell>Project</TableCell>
-                  
-
-                  <TableCell>Quotation</TableCell>
-                  <TableCell>Follow up Status</TableCell>
-                  <TableCell>Mode</TableCell>
-                  <TableCell>Who Assigned</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {quatationforUser?.length > 0 &&
-                  quatationforUser?.map((row, index) => (
-                    <TableRow key={index + 1}>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {index + 1}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.customer_id}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.enquiry_id}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.quote_id}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.version}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.date}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.stage}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.project}
-                      </TableCell>
-                     
-
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        <button
-                          onClick={() => {
-                            navigate("/FollowUp/QuotationDetails", {
-                              state: { row, companyInfo },
-                            });
-                          }}
-                        >
-                          Quote
-                        </button>
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.follow_up_status}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.mode}
-                      </TableCell>
-                      <TableCell sx={{ borderRight: "1px solid #e7e7e7" }}>
-                        {row.created_by_name}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div> */}
-
         <Grid item xs={9} className="followup-section table-resposive">
           <Box className="followup-box">
             <div>
@@ -224,20 +143,26 @@ function Quotation() {
                   <strong> Quotation List:</strong>
                 </Typography>
                 <Box className="followup-listInitiate mt-4">
-                  <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+                  <Box sx={{ display: { xs: "none", sm: "flex",gap:"10px" } }}>
                     <Button
                       variant="contained"
                       startIcon={<PendingActionsIcon />}
                       onClick={() => setContent("Pending")}
                       className="nonInitiated"
                       sx={{
-                        mr: 1,
-                        mb: 2,
-                        backgroundColor: "#e7e7ff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "Pending"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "Pending" ? "#fff" : "#666cff",
+                        whiteSpace: "nowrap",
                         width: "auto",
                         height: "25px",
-                        fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                        fontSize: {
+                          xs: "10px",
+                          sm: "12px",
+                          md: "14px",
+                        },
                       }}
                     >
                       Pending
@@ -248,13 +173,19 @@ function Quotation() {
                       onClick={() => setContent("Today")}
                       className="nonInitiated"
                       sx={{
-                        mr: 1,
-                        mb: 2,
-                        backgroundColor: "#e7e7ff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "Today"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "Today" ? "#fff" : "#666cff",
+                        whiteSpace: "nowrap",
                         width: "auto",
                         height: "25px",
-                        fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                        fontSize: {
+                          xs: "10px",
+                          sm: "12px",
+                          md: "14px",
+                        },
                       }}
                     >
                       Today
@@ -265,13 +196,19 @@ function Quotation() {
                       onClick={() => setContent("UpComing")}
                       className="UpComing"
                       sx={{
-                        mr: 1,
-                        mb: 2,
-                        backgroundColor: "#dadcff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "UpComing"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "UpComing" ? "#fff" : "#666cff",
+                        whiteSpace: "nowrap",
                         width: "auto",
                         height: "25px",
-                        fontSize: { xs: "10px", sm: "12px", md: "13px" },
+                        fontSize: {
+                          xs: "10px",
+                          sm: "12px",
+                          md: "14px",
+                        },
                       }}
                     >
                       Upcoming
@@ -282,13 +219,19 @@ function Quotation() {
                       onClick={() => setContent("AllList")}
                       className="nonInitiated"
                       sx={{
-                        mr: 1,
-                        mb: 2,
-                        backgroundColor: "#e7e7ff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "AllList"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "AllList" ? "#fff" : "#666cff",
+                        whiteSpace: "nowrap",
                         width: "auto",
                         height: "25px",
-                        fontSize: { xs: "10px", sm: "12px", md: "14px" },
+                        fontSize: {
+                          xs: "10px",
+                          sm: "12px",
+                          md: "14px",
+                        },
                       }}
                     >
                       List

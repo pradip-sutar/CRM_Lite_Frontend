@@ -22,41 +22,37 @@ import SignalWifiStatusbar4BarIcon from "@mui/icons-material/SignalWifiStatusbar
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
-//This Component is used for UpcomingActivity of Activities
 const UpcomingActivity = () => {
-  const logged_employee_Id = crmStore.getState().user?.userInfo?.customer_id;
-  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const navigate = useNavigate();
-  const { quotationTable } = useGetQuotationTable(logged_employee_Id,logged_employee_Type);
+  const { quotationTable } = useGetQuotationTable();
 
   const [quatationData, setQuatationData] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({});
-  
-      const fetchCompanyInfo = async () => {
-           try {
-             const response = await getCompanyInfo();
-             console.log(response);
-       
-             if (response.length > 0) {
-               setCompanyInfo(response[0]);
-             }
-           } catch (error) {
-             console.log(error);
-           }
-         };
+
+  const fetchCompanyInfo = async () => {
+    try {
+      const response = await getCompanyInfo();
+      console.log(response);
+
+      if (response.length > 0) {
+        setCompanyInfo(response[0]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-      const today = new Date().setHours(0, 0, 0, 0);
+    const today = new Date().setHours(0, 0, 0, 0);
 
-      const filteredData = quotationTable?.filter((row) => {
-        const rowDate = new Date(row?.date).setHours(0, 0, 0, 0);
+    const filteredData = quotationTable?.filter((row) => {
+      const rowDate = new Date(row?.date).setHours(0, 0, 0, 0);
 
-        return rowDate > today;
-      });
+      return rowDate > today;
+    });
 
-      setQuatationData(filteredData);
-      console.log(filteredData);
-    
+    setQuatationData(filteredData);
+    console.log(filteredData);
   }, [quotationTable]);
 
   const options = {
@@ -69,8 +65,8 @@ const UpcomingActivity = () => {
     hour12: true,
   };
   useEffect(() => {
-          fetchCompanyInfo();
-        }, []);
+    fetchCompanyInfo();
+  }, []);
 
   return (
     <Box
@@ -286,29 +282,7 @@ const UpcomingActivity = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={3}>
-                    <Box sx={{ display: "flex", alignItems: "start" }}>
-                      <Avatar
-                        sx={{
-                          backgroundColor: "#7695FF",
-                          color: "#ffffff",
-                          mr: 2,
-                        }}
-                      >
-                        <AssignmentTurnedInIcon />
-                      </Avatar>
-                      <Box>
-                        <Typography sx={{ fontSize: "0.7rem" }}>
-                          <strong>Assigned</strong>
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: "0.7rem", color: "#666cff" }}
-                        >
-                          {row?.created_by_name}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
+                  
                 </Grid>
 
                 <Grid item xs={3}>
@@ -319,17 +293,16 @@ const UpcomingActivity = () => {
                       marginTop: "10px",
                     }}
                   >
-                    
                     <button
-                          onClick={() => {
-                            navigate("/FollowUp/QuotationDetails", {
-                              state: { row, companyInfo },
-                            });
-                          }}
-                          className="bg-primary text-white p-1"
-                        >
-                          Quote
-                        </button>
+                      onClick={() => {
+                        navigate("/FollowUp/QuotationDetails", {
+                          state: { row, companyInfo },
+                        });
+                      }}
+                      className="bg-primary text-white p-1"
+                    >
+                      Quote
+                    </button>
                   </Box>
                 </Grid>
               </CardContent>

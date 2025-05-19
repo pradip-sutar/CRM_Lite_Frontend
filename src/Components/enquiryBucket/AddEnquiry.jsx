@@ -135,7 +135,7 @@ const AddEnquiry = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    
+
     data.employee_id = logged_employee_Id;
     try {
       if (editData?.enquiry_id) {
@@ -425,14 +425,9 @@ const AddEnquiry = () => {
                               errors.project ? "is-invalid" : ""
                             }`}
                             placeholder="Customer Name"
-                            {...register("project", { required: true })}
+                            {...register("project")}
                           />
                           <label htmlFor="productType">Product Type</label>
-                          {errors.project && (
-                            <div className="invalid-feedback">
-                              {errors.project.message}
-                            </div>
-                          )}
                         </div>
                       </div>
 
@@ -465,13 +460,11 @@ const AddEnquiry = () => {
                               errors.enquiry_type ? "is-invalid" : ""
                             }`}
                             placeholder="Customer Name"
-                            {...register("enquiry_type", { required: true })}
+                            {...register("enquiry_type")}
                           />
                           <label htmlFor="productType">Enquiry Type</label>
                           {errors.enquiry_type && (
-                            <div className="invalid-feedback">
-                              {errors.enquiry_type.message}
-                            </div>
+                            <div className="invalid-feedback"></div>
                           )}
                         </div>
                       </div>

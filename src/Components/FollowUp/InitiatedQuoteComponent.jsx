@@ -22,33 +22,34 @@ import SignalWifiStatusbar4BarIcon from "@mui/icons-material/SignalWifiStatusbar
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
-//This Component is used for UpcomingActivity of Activities
 const InitiatedQuoteComponent = () => {
   const navigate = useNavigate();
   const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const logged_employee_Id = crmStore.getState().user?.userInfo?.customer_id;
-  const { quotationTable } = useGetQuotationTable(logged_employee_Id,logged_employee_Type);
+  const { quotationTable } = useGetQuotationTable();
+  console.log(quotationTable);
 
-    const [quatationData, setQuatationData] = useState([]);
-   const [companyInfo, setCompanyInfo] = useState({});
+  const [quatationData, setQuatationData] = useState([]);
+  const [companyInfo, setCompanyInfo] = useState({});
 
-    const fetchCompanyInfo = async () => {
-         try {
-           const response = await getCompanyInfo();
-           console.log(response);
-     
-           if (response.length > 0) {
-             setCompanyInfo(response[0]);
-           }
-         } catch (error) {
-           console.log(error);
-         }
-       };
+  const fetchCompanyInfo = async () => {
+    try {
+      const response = await getCompanyInfo();
+      console.log(response);
+
+      if (response.length > 0) {
+        setCompanyInfo(response[0]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     const currentDate = new Date().toDateString();
     const filteredData = quotationTable?.filter((row) => {
       const rowDate = new Date(row?.date).toDateString();
+      console.log(row?.date);
       return rowDate === currentDate;
     });
 
@@ -64,9 +65,9 @@ const InitiatedQuoteComponent = () => {
     minute: "2-digit",
     hour12: true,
   };
-   useEffect(() => {
-        fetchCompanyInfo();
-      }, []);
+  useEffect(() => {
+    fetchCompanyInfo();
+  }, []);
 
   return (
     <Box
@@ -282,29 +283,7 @@ const InitiatedQuoteComponent = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={3}>
-                    <Box sx={{ display: "flex", alignItems: "start" }}>
-                      <Avatar
-                        sx={{
-                          backgroundColor: "#7695FF",
-                          color: "#ffffff",
-                          mr: 2,
-                        }}
-                      >
-                        <AssignmentTurnedInIcon />
-                      </Avatar>
-                      <Box>
-                        <Typography sx={{ fontSize: "0.7rem" }}>
-                          <strong>Assigned</strong>
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: "0.7rem", color: "#666cff" }}
-                        >
-                          {row?.created_by_name}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
+                  
                 </Grid>
 
                 <Grid item xs={3}>
@@ -315,17 +294,16 @@ const InitiatedQuoteComponent = () => {
                       marginTop: "10px",
                     }}
                   >
-                    
                     <button
-                          onClick={() => {
-                            navigate("/FollowUp/QuotationDetails", {
-                              state: { row, companyInfo },
-                            });
-                          }}
-                          className="bg-primary text-white p-1"
-                        >
-                          Quote
-                        </button>
+                      onClick={() => {
+                        navigate("/FollowUp/QuotationDetails", {
+                          state: { row, companyInfo },
+                        });
+                      }}
+                      className="bg-primary text-white p-1"
+                    >
+                      Quote
+                    </button>
                   </Box>
                 </Grid>
               </CardContent>
