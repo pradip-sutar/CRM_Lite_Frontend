@@ -496,8 +496,8 @@ function EnquiryTable() {
                           <td>{data.customer_phone}</td>
                           <td>{data.date}</td>
                           <td>{data.source_name}</td>
-                          <td>{data.project_name}</td>
-                          <td>{data.enquiry_type_name}</td>
+                          <td>{data.confirm_project_name}</td>
+                          <td>{data.enquiry_type}</td>
                           <td>{data.stage}</td>
                           <td>{data.status}</td>
                           <td>{data.activity}</td>

@@ -86,150 +86,153 @@ const Invoice = ({ data, companyInfo }) => {
 
   return (
     <div
-      className="container border bg-white py-4 px-3"
+      className="container border bg-white  p-4"
       style={{ maxWidth: "800px" }}
     >
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center flex-wrap border-bottom pb-3 mb-4">
         <img
-          src={`${import.meta.env.VITE_URL_BASE}${
-            companyInfo?.brands?.[0]?.brand_logo
-          }`}
+          src={`${import.meta.env.VITE_URL_BASE}${companyInfo?.brands?.[0]?.brand_logo
+            }`}
           alt="Company Logo"
           style={{ maxWidth: "120px", height: "auto" }}
         />
         <div className="text-end">
-          <h2 className="fw-bold mb-1 text-dark">PROFORMA INVOICE</h2>
+          <h2 className="fw-bold mb-1" style={{ color: "orange" }}>PROFORMA INVOICE</h2>
           <h5 className="text-primary mb-0">
             {companyInfo?.name || "Company Name"}
           </h5>
         </div>
       </div>
 
-      {/* Invoice To */}
-      <div className="row mb-4">
-        <div className="col-md-6">
-          <h5 className="fw-semibold text-dark mb-2">INVOICE TO:</h5>
-          <div className="text-muted small">
-            <div>{data?.customer_name}</div>
-            <div>{data?.designaion} Managing Director</div>
-            <div>{data?.companyname} Triptales Commercials Pvt. Ltd.</div>
-            <div>Phone: {data?.customer_mob || "+919776793112"}</div>
-            <div>Email: {data?.customer_email || "info@dialurban.com"}</div>
-            <div>Address: {data?.customer_address}</div>
-            <div>{data?.customer_pin} Rashulgarh, Bhubaneswar - 751010</div>
-            <div>GST: {data?.customer_gst_no || "21AAECH7025B1ZA"}</div>
-          </div>
-        </div>
-        <div className="col-md-6 text-md-end">
-          <p className="text-dark">
-            <strong>Booking ID:</strong> {data.id}
-            <br />
-            <strong>Invoice Date:</strong> {formattedDate}
-          </p>
-        </div>
+
+
+
+      <div className="d-flex justify-content-between ps-2">
+
+        <p> <strong className="text-dark">Booking ID:</strong> {data?.id}</p>
+
+        <p> <strong className="text-dark">Invoice Date:</strong> {formattedDate}</p>
+
       </div>
 
-      {/* Payment Method */}
-      <div className="mb-4">
-        <h5 className="fw-semibold text-dark">PAYMENT METHOD</h5>
-        <div className="text-muted small">
-          {data.payment_details?.mode_of_payment && (
-            <>
-              Mode: {data.payment_details.mode_of_payment}
-              <br />
-            </>
-          )}
-          {data.payment_details?.bankMode && (
-            <>
-              Bank Mode: {data.payment_details.bankMode}
-              <br />
-            </>
-          )}
-          {/* Handle specific bank modes */}
-          {["Cheque/Draft", "NEFT/RTGS", "Credit/Debit", "UPI"].includes(
-            data.payment_details?.bankMode
-          ) && (
-            <>
-              {data.payment_details?.TransactionNo && (
+      <div className="d-flex justify-content-between">
+        {/* Invoice To */}
+        <div className="col-md-6 mb-2 ps-2">
+          <h5 className="fw-semibold text-dark mb-2">INVOICE TO:</h5>
+          <div className="text-muted small">
+            <div className="fw-bold text-dark fs-4">{data?.customer_name}</div>
+            <div className="text-dark">{data?.designaion} Managing Director</div>
+            <div className="text-dark">{data?.companyname} Triptales Commercials Pvt. Ltd.</div>
+            <div className="text-dark">Phone: {data?.customer_mob || "+919776793112"}</div>
+            <div className="text-dark">Email: {data?.customer_email || "info@dialurban.com"}</div>
+            <div className="text-dark">Address: {data?.customer_address}</div>
+            <div className="text-dark">{data?.customer_pin} Rashulgarh, Bhubaneswar - 751010</div>
+            <div className="text-dark">GST: {data?.customer_gst_no || "21AAECH7025B1ZA"}</div>
+          </div>
+        </div>
+
+        {/* Payment Method */}
+        <div className="mb-4">
+          <h5 className="fw-semibold text-dark">PAYMENT METHOD</h5>
+          <div className="text-dark small">
+            {data?.payment_details?.mode_of_payment && (
+              <>
+                Mode: {data?.payment_details.mode_of_payment}
+                <br />
+              </>
+            )}
+            {data?.payment_details?.bankMode && (
+              <>
+                Bank Mode: {data?.payment_details.bankMode}
+                <br />
+              </>
+            )}
+            {/* Handle specific bank modes */}
+            {["Cheque/Draft", "NEFT/RTGS", "Credit/Debit", "UPI"].includes(
+              data?.payment_details?.bankMode
+            ) && (
                 <>
-                  Transaction No: {data.payment_details.TransactionNo}
-                  <br />
+                  {data?.payment_details?.TransactionNo && (
+                    <>
+                      Transaction No: {data?.payment_details.TransactionNo}
+                      <br />
+                    </>
+                  )}
+                  {data?.payment_details?.chequeOrDraftNo && (
+                    <>
+                      Cheque/Draft No: {data?.payment_details.chequeOrDraftNo}
+                      <br />
+                    </>
+                  )}
+                  {data?.payment_details?.amount && (
+                    <>
+                      Amount: ₹{data?.payment_details.amount}
+                      <br />
+                    </>
+                  )}
+                  {data?.payment_details?.date && (
+                    <>
+                      Date: {data?.payment_details.date}
+                      <br />
+                    </>
+                  )}
+                  {data?.payment_details?.accountNo && (
+                    <>
+                      Account No: {data?.payment_details.accountNo}
+                      <br />
+                    </>
+                  )}
+                  {data?.payment_details?.ifsc && (
+                    <>
+                      IFSC: {data?.payment_details.ifsc}
+                      <br />
+                    </>
+                  )}
+                  {data?.payment_details?.bank && (
+                    <>
+                      Bank: {data?.payment_details.bank}
+                      <br />
+                    </>
+                  )}
+                  {data?.payment_details?.branch && (
+                    <>
+                      Branch: {data?.payment_details.branch}
+                      <br />
+                    </>
+                  )}
                 </>
               )}
-              {data.payment_details?.chequeOrDraftNo && (
-                <>
-                  Cheque/Draft No: {data.payment_details.chequeOrDraftNo}
-                  <br />
-                </>
-              )}
-              {data.payment_details?.amount && (
-                <>
-                  Amount: ₹{data.payment_details.amount}
-                  <br />
-                </>
-              )}
-              {data.payment_details?.date && (
-                <>
-                  Date: {data.payment_details.date}
-                  <br />
-                </>
-              )}
-              {data.payment_details?.accountNo && (
-                <>
-                  Account No: {data.payment_details.accountNo}
-                  <br />
-                </>
-              )}
-              {data.payment_details?.ifsc && (
-                <>
-                  IFSC: {data.payment_details.ifsc}
-                  <br />
-                </>
-              )}
-              {data.payment_details?.bank && (
-                <>
-                  Bank: {data.payment_details.bank}
-                  <br />
-                </>
-              )}
-              {data.payment_details?.branch && (
-                <>
-                  Branch: {data.payment_details.branch}
-                  <br />
-                </>
-              )}
-            </>
-          )}
-          {data.payment_details?.mode_of_payment === "Cash" && (
-            <>
-              Amount: ₹{data.payment_details.amount}
-              <br />
-            </>
-          )}
+            {data?.payment_details?.mode_of_payment === "Cash" && (
+              <>
+                Amount: ₹{data?.payment_details.amount}
+                <br />
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Table */}
       <table className="table table-bordered text-center mb-4">
-        <thead className="table-light">
-          <tr className="text-dark">
-            <th>Sl No.</th>
-            <th>Product ID</th>
-            <th>DESCRIPTION</th>
-            <th>PRICE</th>
-            <th>QTY</th>
-            <th>SUBTOTAL</th>
+        <thead style={{ background: "orange" }}>
+          <tr>
+            <th style={{ color: "white", fontWeight: "bold" }}>Sl No.</th>
+            <th style={{ color: "white", fontWeight: "bold" }}>Product ID</th>
+            <th style={{ color: "white", fontWeight: "bold" }}>DESCRIPTION</th>
+            <th style={{ color: "white", fontWeight: "bold" }}>PRICE</th>
+            <th style={{ color: "white", fontWeight: "bold" }}>QTY</th>
+            <th style={{ color: "white", fontWeight: "bold" }}>SUBTOTAL</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>1</td>
-            <td>{data.project_details}</td>
-            <td>{data.description}</td>
-            <td>₹{data.cost}</td>
-            <td>{data.quantity}</td>
-            <td>₹{(data.cost || 1) * (data.quantity || 1)}</td>
+            <td>{data?.project_details}</td>
+            <td>{data?.description}</td>
+            <td>₹{data?.cost}</td>
+            <td>{data?.quantity}</td>
+            <td>₹{(data?.cost || 1) * (data?.quantity || 1)}</td>
           </tr>
         </tbody>
       </table>
@@ -237,7 +240,7 @@ const Invoice = ({ data, companyInfo }) => {
       {/* Amount in Words */}
       <div className="mb-4 text-dark">
         <strong>IN WORDS:</strong> RUPEES{" "}
-        {convertToWords((data.cost || 1) * (data.quantity || 1))} ONLY
+        {convertToWords((data?.cost || 1) * (data?.quantity || 1))} ONLY
       </div>
 
       {/* Note */}
@@ -249,24 +252,39 @@ const Invoice = ({ data, companyInfo }) => {
 
       {/* Summary */}
       <div className="text-end mb-4 text-dark">
-        <div>Sub-total: ₹{(data.cost || 1) * (data.quantity || 1)}</div>
+        <div>Sub-total: ₹{(data?.cost || 1) * (data?.quantity || 1)}</div>
         <div>
-          GST ({data.product_gst || 1}%): ₹
+          GST ({data?.product_gst || 1}%): ₹
           {(
-            (data.cost || 1) *
-            (data.quantity || 1) *
-            ((data.product_gst || 1) / 100)
+            (data?.cost || 1) *
+            (data?.quantity || 1) *
+            ((data?.product_gst || 1) / 100)
           ).toFixed(2)}
         </div>
-        <h5 className="fw-bold">
-          Total: ₹
-          {(
-            (Number(data.cost) || 1) * (Number(data.quantity) || 1) +
-            (Number(data.cost) || 1) *
-              (Number(data.quantity) || 1) *
-              ((Number(data.product_gst) || 0) / 100)
-          ).toFixed(2)}
-        </h5>
+        <div >
+          <div className="d-flex">
+            <h5
+              className="p-2 rounded ms-auto"
+              style={{
+                color: "white",
+                background: "orange",
+                fontWeight: "bold",
+                width: "10rem",
+                height: "2rem",
+                textAlign: "end"
+              }}
+            >
+              Total: ₹
+              {(
+                (Number(data?.cost) || 1) * (Number(data?.quantity) || 1) +
+                (Number(data?.cost) || 1) *
+                (Number(data?.quantity) || 1) *
+                ((Number(data?.product_gst) || 0) / 100)
+              ).toFixed(2)}
+            </h5>
+          </div>
+
+        </div>
       </div>
 
       {/* Footer */}
@@ -277,9 +295,8 @@ const Invoice = ({ data, companyInfo }) => {
       {/* Brand Footer */}
       <div className="text-center bg-light py-3 border-top mt-4">
         <img
-          src={`${import.meta.env.VITE_URL_BASE}${
-            companyInfo?.brands?.[0]?.brand_logo
-          }`}
+          src={`${import.meta.env.VITE_URL_BASE}${companyInfo?.brands?.[0]?.brand_logo
+            }`}
           alt="Company Logo"
           style={{ maxWidth: "150px", marginBottom: "10px" }}
         />
@@ -338,7 +355,7 @@ const ProformaInvoice = () => {
     const images = element.querySelectorAll("img");
 
     const promises = Array.from(images)?.map(async (img) => {
-      if (img.src.startsWith("data:")) return;
+      if (img.src.startsWith("data?:")) return;
 
       const response = await fetch(img.src, { mode: "cors" });
       const blob = await response.blob();
@@ -372,13 +389,16 @@ const ProformaInvoice = () => {
       <div className="content" id="content-for-pdf">
         <Invoice data={data} companyInfo={companyInfo} />
       </div>
-      <button
-        type="button"
-        className="btn btn-success ml-4 mt-4"
-        onClick={generatePDF}
-      >
-        DownLoad PDF
-      </button>
+      <div className="d-flex justify-content-center">
+        <button
+          type="button"
+          className="btn btn-success mt-4"
+          onClick={generatePDF}
+        >
+          Download PDF
+        </button>
+      </div>
+
     </>
   );
 };
