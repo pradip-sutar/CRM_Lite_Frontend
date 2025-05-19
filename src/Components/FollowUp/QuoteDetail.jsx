@@ -1,11 +1,10 @@
-// QuoteDetail.js
 import * as React from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { useLocation, useNavigate } from "react-router-dom";
-import Version1Detail from "./version1Detail"; // Ensure this import is correct
+import Version1Detail from "./version1Detail";
 import PreviousQuote from "./PreviousQuote";
 const CustomTabPanel = ({ children, value, index, ...other }) => (
   <div
@@ -33,6 +32,8 @@ const a11yProps = (index) => ({
 const QuoteDetail = () => {
   const navigate = useNavigate();
   const { row = {}, companyInfo = {} } = useLocation()?.state || {};
+  console.log(companyInfo);
+  
 
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
@@ -52,7 +53,10 @@ const QuoteDetail = () => {
         />
       ),
     },
-    { label: "PREVIOUS QUOTE", content: <PreviousQuote enquiry_id={row.enquiry_id} /> },
+    {
+      label: "PREVIOUS QUOTE",
+      content: <PreviousQuote enquiry_id={row.enquiry_id} />,
+    },
   ]);
 
   const handleBackClick = () => {
@@ -61,7 +65,7 @@ const QuoteDetail = () => {
 
   return (
     <>
-      <div className="container-xxl flex-grow-1 container-p-y mb-5">
+      <div className="container-fluid flex-grow-1 container-p-y mb-5">
         <div className="card-header d-flex justify-content-between align-items-center py-2">
           <h5 className="mx-4">
             <span className="text-muted fw-light">FollowUp / </span>Quotation
@@ -101,7 +105,6 @@ const QuoteDetail = () => {
               >
                 {tabs.map((tab, index) => (
                   <Tab
-                    
                     label={tab.label}
                     {...a11yProps(index)}
                     sx={{ flex: 1, textAlign: "center" }}

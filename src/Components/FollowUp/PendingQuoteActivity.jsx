@@ -23,36 +23,30 @@ import { useGetQuotationTable } from "../../hooks/Quotation/useQuotationTable";
 import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
 const PendingQuoteActivity = () => {
-  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
-  const logged_customer_id = crmStore.getState().user?.userInfo?.customer_id;
-  console.log(logged_customer_id);
-  
   const navigate = useNavigate();
-  const { quotationTable } = useGetQuotationTable(logged_customer_id,logged_employee_Type);
+  const { quotationTable } = useGetQuotationTable();
 
   const [quatationData, setQuatationData] = useState([]);
   const [companyInfo, setCompanyInfo] = useState({});
 
+  const fetchCompanyInfo = async () => {
+    try {
+      const response = await getCompanyInfo();
+      console.log(response);
 
-  
-      const fetchCompanyInfo = async () => {
-        try {
-          const response = await getCompanyInfo();
-          console.log(response);
-    
-          if (response.length > 0) {
-            setCompanyInfo(response[0]);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-  
-    useEffect(() => {
-      if (quotationTable) {
-        setQuatationData(quotationTable);
+      if (response.length > 0) {
+        setCompanyInfo(response[0]);
       }
-    }, [quotationTable]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (quotationTable) {
+      setQuatationData(quotationTable);
+    }
+  }, [quotationTable]);
 
   useEffect(() => {
     const today = new Date().setHours(0, 0, 0, 0);
@@ -75,17 +69,16 @@ const PendingQuoteActivity = () => {
     minute: "2-digit",
     hour12: true,
   };
-   useEffect(() => {
-        fetchCompanyInfo();
-      }, []);
+  useEffect(() => {
+    fetchCompanyInfo();
+  }, []);
 
   return (
     <Box
       sx={{ p: 2, overflow: "auto", maxHeight: "500px", paddingBottom: "0" }}
       className="InitiatedComponentbox"
     >
-
-{quatationData?.length > 0 ? (
+      {quatationData?.length > 0 ? (
         quatationData.map((row) => (
           <Box key={row.enquiry_id}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
@@ -293,29 +286,7 @@ const PendingQuoteActivity = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={3}>
-                    <Box sx={{ display: "flex", alignItems: "start" }}>
-                      <Avatar
-                        sx={{
-                          backgroundColor: "#7695FF",
-                          color: "#ffffff",
-                          mr: 2,
-                        }}
-                      >
-                        <AssignmentTurnedInIcon />
-                      </Avatar>
-                      <Box>
-                        <Typography sx={{ fontSize: "0.7rem" }}>
-                          <strong>Assigned</strong>
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: "0.7rem", color: "#666cff" }}
-                        >
-                          {row?.created_by_name}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
+                  
                 </Grid>
 
                 <Grid item xs={3}>
@@ -326,17 +297,16 @@ const PendingQuoteActivity = () => {
                       marginTop: "10px",
                     }}
                   >
-                    
                     <button
-                          onClick={() => {
-                            navigate("/FollowUp/QuotationDetails", {
-                              state: { row, companyInfo },
-                            });
-                          }}
-                          className="bg-primary text-white p-1"
-                        >
-                          Quote
-                        </button>
+                      onClick={() => {
+                        navigate("/FollowUp/QuotationDetails", {
+                          state: { row, companyInfo },
+                        });
+                      }}
+                      className="bg-primary text-white p-1"
+                    >
+                      Quote
+                    </button>
                   </Box>
                 </Grid>
               </CardContent>
@@ -344,7 +314,7 @@ const PendingQuoteActivity = () => {
           </Box>
         ))
       ) : (
-        <h3>No Pending Quotetion  </h3>
+        <h3>No Pending Quotetion </h3>
       )}
     </Box>
   );

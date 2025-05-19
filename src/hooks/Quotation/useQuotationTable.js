@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAssignQuote } from "../../services/FollowUp/AccountProfileview/apiAsignQuote";
 
-export const useGetQuotationTable = (employee_id,userType) => {
+export const useGetQuotationTable = () => {
   const { isLoading, data: quotationTable } = useQuery({
-    queryKey: ["quotationTable", employee_id ?? userType],
-    queryFn: () => getAssignQuote(employee_id,userType),
-  });
+    queryKey: ["quotationTable"],
+    queryFn: () => getAssignQuote(),
+  })
   return { quotationTable, isLoading };
 };

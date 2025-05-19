@@ -5,10 +5,7 @@ export const AddPolicyMasters = async (data) => {
   console.log(data);
 
   try {
-    const response = await apiGateWay.post(
-      `/api/policy_master/`,
-      data
-    );
+    const response = await apiGateWay.post(`/api/policy_master/`, data);
     if (response.status === 201) {
       toast.success("Policy master added successfully!");
       return response.status;
@@ -20,9 +17,7 @@ export const AddPolicyMasters = async (data) => {
 
 export const getPolicyMaster = async () => {
   try {
-    const response = await apiGateWay.get(
-      `/api/policy_master/`
-    );
+    const response = await apiGateWay.get(`/api/policy_master/`);
     console.log(response.data);
 
     return response.data;
@@ -42,8 +37,6 @@ export const getPolicyMasterProjectWise = async (project_id, forwhich) => {
 
     return response.data;
   } catch (error) {
-    if (error.response.status == 404) {
-      toast.info("No policy master found for this project");
-    }
+    console.log(error);
   }
 };

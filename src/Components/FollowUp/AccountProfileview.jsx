@@ -120,7 +120,7 @@ const AccountProfileview = ({ id }) => {
     stage = "",
     status = "",
     project = null,
-    confirm_project = false,
+    confirm_project = 0,
     product_details = [],
     source = null,
     enquiry_type = null,
@@ -373,51 +373,39 @@ const AccountProfileview = ({ id }) => {
   };
 
   const handelQuoteClick = async () => {
-    const res = await postQuoteAsign(enquiry_id);
+    const formatdData = {
+      enquiry_id,
+      customer_id,
+      customer_phone,
+      customer_email,
+      customer_address,
+      stage,
+      "project":confirm_project,
+      status,
+      date: new Date().toISOString().split('T')[0] 
+    };
+    console.log(formatdData)
+    const res = await postQuoteAsign(formatdData);
     if (res == 201) {
-      navigate("/FollowUp/AccountProfileview/AssignQuote", {
-        state: {
-          team_id,
-          enquiry_id,
-          customer_id,
-          rate,
-          stage,
-          status,
-          project,
-          enquiry_type,
-          source,
-          confirm_project,
-          product_details,
-          customer_name,
-          customer_phone,
-          customer_email,
-          customer_address,
-        },
-      });
+      navigate("/followUp/Quotation");
     }
   };
 
   const handelVisit = async () => {
+    const formatdData = {
+      enquiry_id,
+      customer_id,
+      customer_phone,
+      customer_email,
+      customer_address,
+      stage,
+      "project":confirm_project,
+      status,
+      date: new Date().toISOString().split('T')[0] 
+    };
     const res = await postAssignVisit(enquiry_id);
     if (res == 201) {
-      navigate("/FollowUp/AccountProfileview/AssignVisit", {
-        state: {
-          team_id,
-          enquiry_id,
-          customer_id,
-          rate,
-          stage,
-          status,
-          project,
-          enquiry_type,
-          source,
-          confirm_project,
-          product_details,
-          customer_name,
-          customer_phone,
-          customer_email,
-        },
-      });
+      navigate("/followUp/Quotation");
     }
   };
 
