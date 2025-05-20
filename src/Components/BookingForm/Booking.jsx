@@ -199,12 +199,6 @@ function Booking() {
           >
             <i className="mdi mdi-refresh me-2"></i> Reset
           </button>
-          <button
-            onClick={() => navigate("/BookingForm/allotment")}
-            className="ms-2 btn  btn-primary btn-sm waves-effect waves-light"
-          >
-            <span className="me-2 mdi mdi-plus"></span>Allotment
-          </button>
         </div>
       </div>
       <div className="container-fluid p-0 ps-lg-4">

@@ -21,18 +21,29 @@ import {
 } from "../../services/FollowUp/AccountProfileview/apiAssignVisit";
 import html2pdf from "html2pdf.js";
 import { postSchedule } from "../../services/FollowUp/AccountProfileview/accountProfileview";
+
 const VisitVersion = ({ row, companyInfo, onNavigate }) => {
   console.log(row);
-  const logged_employee_name = crmStore.getState().user?.userInfo?.employee_name;
+  const logged_employee_name =
+    crmStore.getState().user?.userInfo?.employee_name;
 
-  const { control, getValue } = useForm();
+  const { control, getValues } = useForm();
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [policy, setPolicy] = useState([]);
   const [nameDesignationData, setNameDesignationData] = useState([
     { name: "", designation: "" },
   ]);
-
   const [versionAndVisit, setVersionAndVisit] = useState({});
+
+  // Local state to manage editable field values
+  const [visitDetails, setVisitDetails] = useState({
+    visitID: "",
+    version: "",
+    project: row.project || "",
+    location: row.project_address || "",
+    purpose: row.purpose || "",
+    siteManager: row.siteManager || "",
+  });
 
   const handleNameDesignationChange = (index, field, value) => {
     const updatedData = [...nameDesignationData];
@@ -47,20 +58,12 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
     ]);
   };
 
-  const [uploadedImages, setUploadedImages] = useState({});
-
-  // Handle image upload
-  const handleImageUpload = (event, index) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setUploadedImages((prev) => ({ ...prev, [index]: imageUrl }));
-    }
-  };
-
   const fetchPolicy = async (project_id) => {
     try {
-      const response = await getPolicyMasterProjectWise(project_id,"Quotation");
+      const response = await getPolicyMasterProjectWise(
+        project_id,
+        "Quotation"
+      );
       setPolicy(response);
     } catch (error) {
       console.log(error);
@@ -73,11 +76,55 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
 
   useEffect(() => {
     fetchPolicy(row?.project);
-  }, []);
+    // Update visitDetails when versionAndVisit changes
+    setVisitDetails((prev) => ({
+      ...prev,
+      visitID: versionAndVisit.visit_id || prev.visitID,
+      version: versionAndVisit.version || prev.version,
+    }));
+  }, [row, versionAndVisit]);
+
+  const [visitorReports, setVisitorReports] = useState([
+    { time: "", report: "", image: "" },
+  ]);
+
+  const [uploadedImages, setUploadedImages] = useState([]);
+
+  const handleImageUpload = (e, index) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      const updatedImages = [...uploadedImages];
+      updatedImages[index] = imageUrl;
+      setUploadedImages(updatedImages);
+
+      const updatedReports = [...visitorReports];
+      updatedReports[index].image = file;
+      setVisitorReports(updatedReports);
+    }
+  };
+
+  const handleInputChange = (index, field, value) => {
+    const updatedReports = [...visitorReports];
+    updatedReports[index][field] = value;
+    setVisitorReports(updatedReports);
+  };
+
+  const handleVisitDetailChange = (field, value) => {
+    setVisitDetails((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const addNewRow = () => {
+    setVisitorReports([...visitorReports, { time: "", report: "", image: "" }]);
+    setUploadedImages([...uploadedImages, null]);
+  };
 
   const date = new Date(row?.date);
-  const istDate = date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-  
+  const istDate = new Date().toISOString().split("T")[0];
+
   const now = new Date();
   const day = String(now.getDate()).padStart(2, "0");
   const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -91,12 +138,12 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
   const next_date_time = `${formattedDate} at ${formattedTime}`;
 
   const formatedDataForActivity = {
-    enquiry_id:row?.enquiry_id,
+    enquiry_id: row?.enquiry_id,
     action: "Visit Completed",
     next_discussion_point: "Do Next Follow-Up",
-    next_date_time, 
+    next_date_time,
   };
-  
+
   const onSubmit = async () => {
     const result = await GenerateVisitVersion(row.id);
     setVersionAndVisit(result);
@@ -118,7 +165,9 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
         }
         const options = {
           margin: [5, 5, 5, 5],
-          filename: `Quotation.pdf`,
+          filename: `Visit_Report_${
+            versionAndVisit?.visit_id || visitDetails.visitID
+          }.pdf`,
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { scale: 4 },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
@@ -129,16 +178,18 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
           .set(options)
           .output("blob");
         html2pdf().from(element).set(options).save();
-        console.log(pdfBlob);
 
         const formData = new FormData();
         formData.append("file", pdfBlob);
         formData.append("enquiry_id", row?.enquiry_id);
-        formData.append("version", versionAndVisit?.version);
+        formData.append(
+          "version",
+          versionAndVisit?.version || visitDetails.version
+        );
 
         const res = await postVisitPdf(formData);
         if (res == 201) {
-          postSchedule(formatedDataForActivity)
+          postSchedule(formatedDataForActivity);
           onNavigate(1);
         }
       }
@@ -149,537 +200,690 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
 
   return (
     <Box
-    sx={{
-      padding: { xs: 1, sm: 2, md: 4 }, // Responsive padding for mobile, tablet, desktop
-      maxWidth: "100%", // Full width on mobile, constrained on larger screens
-      margin: "auto",
-      backgroundColor: "#f5f5f5",
-    }}
+      className="container bg-white p-4"
+      sx={{
+        maxWidth: "800px",
+        fontSize: "0.8rem",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+      }}
     >
       <div id="content-for-pdf">
-        <Box sx={{ textAlign: "center", paddingBottom: { xs: 2, md: 4 } }}>
-          <Typography variant="h4" sx={{ fontSize: { xs: "1.5rem", md: "2.125rem" } }}>{companyInfo?.name}</Typography>
-          <Typography sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
-            {companyInfo?.address},{companyInfo?.pincode},{companyInfo?.state}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            borderBottom: "2px solid #dee2e6",
+            pb: 3,
+            mb: 4,
+          }}
+        >
+          <img
+            src={`${import.meta.env.VITE_URL_BASE}${
+              companyInfo?.brands?.[0]?.brand_logo
+            }`}
+            alt="Company Logo"
+            style={{ maxWidth: "120px", height: "auto" }}
+          />
+          <Box sx={{ textAlign: "end" }}>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", mb: 1, color: "#ff6200" }}
+            >
+              {row.visit_type} REPORT
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{ color: "#007bff", mb: 0, fontSize: "1.25rem" }}
+            >
+              {companyInfo?.name || "Company Name"}
+            </Typography>
+            <Typography sx={{ color: "#343a40", fontSize: "0.85rem" }}>
+              {companyInfo?.address}, {companyInfo?.pincode},{" "}
+              {companyInfo?.state}
+            </Typography>
+            <Typography sx={{ color: "#343a40", fontSize: "0.85rem" }}>
+              Phone: {companyInfo?.mobileno} | Email: {companyInfo?.email}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "600",
+              color: "#343a40",
+              fontSize: "1rem",
+              mb: 2,
+            }}
+          >
+            VISIT DETAILS
           </Typography>
-          <Typography sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>
-            Phone: {companyInfo?.mobileno} | Email: {companyInfo?.email}
+          <Table sx={{ borderCollapse: "collapse" }}>
+            <TableBody>
+              {[
+                {
+                  label: "VISIT ID",
+                  value: visitDetails.visitID,
+                  name: "visitID",
+                  field: "visitID",
+                },
+                {
+                  label: "Version",
+                  value: visitDetails.version,
+                  name: "Version",
+                  field: "version",
+                },
+                {
+                  label: "Project",
+                  value: visitDetails.project,
+                  name: "projectName",
+                  field: "project",
+                },
+                {
+                  label: "Date & Time",
+                  value: `${new Date()
+                    .getDate()
+                    .toString()
+                    .padStart(2, "0")}-${(new Date().getMonth() + 1)
+                    .toString()
+                    .padStart(2, "0")}-${new Date().getFullYear()} ${new Date()
+                    .getHours()
+                    .toString()
+                    .padStart(2, "0")}:${new Date()
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")}:${new Date()
+                    .getSeconds()
+                    .toString()
+                    .padStart(2, "0")}`,
+                  name: "dateAndTime",
+                  readOnly: true,
+                },
+                {
+                  label: "Location",
+                  value: visitDetails.location,
+                  name: "location",
+                  field: "location",
+                },
+                {
+                  label: "Purpose",
+                  value: visitDetails.purpose,
+                  name: "purpose",
+                  field: "purpose",
+                },
+                {
+                  label: "Site Manager",
+                  value: visitDetails.siteManager,
+                  name: "siteManager",
+                  field: "siteManager",
+                },
+              ].map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell
+                    sx={{
+                      width: "30%",
+                      padding: "8px",
+                      fontWeight: "600",
+                      color: "#343a40",
+                      fontSize: "0.85rem",
+                      border: "none",
+                      backgroundColor: "#f8f9fa",
+                    }}
+                  >
+                    {item.label}
+                  </TableCell>
+                  <TableCell
+                    sx={{ padding: "8px", color: "#343a40", border: "none" }}
+                  >
+                    <TextField
+                      name={item.name}
+                      placeholder={
+                        item.label === "VISIT ID" || item.label === "Version"
+                          ? "Auto Generated"
+                          : undefined
+                      }
+                      disabled={
+                        item.label === "VISIT ID" || item.label === "Version"
+                          ? "true"
+                          : ""
+                      }
+                      value={item.value || ""}
+                      onChange={
+                        item.field
+                          ? (e) =>
+                              handleVisitDetailChange(
+                                item.field,
+                                e.target.value
+                              )
+                          : undefined
+                      }
+                      InputProps={{
+                        readOnly: item.readOnly || isReadOnly,
+                        sx: {
+                          fontSize: "0.85rem",
+                          "& .MuiInputBase-input": {
+                            padding: "4px 0",
+                            backgroundColor: "transparent",
+                          },
+                          "& .MuiInput-underline:before": {
+                            borderBottom: "1px solid #dee2e6",
+                          },
+                          "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                            {
+                              borderBottom: "2px solid #ff6200",
+                            },
+                          "& .MuiInput-underline:after": {
+                            borderBottom: "2px solid #ff6200",
+                          },
+                        },
+                      }}
+                      fullWidth
+                      variant="standard"
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
+
+        <Box sx={{ mb: 4, color: "#6c757d", fontSize: "0.85rem" }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "600",
+              color: "#343a40",
+              fontSize: "1rem",
+              mb: 2,
+            }}
+          >
+            TERMS & CONDITIONS
           </Typography>
-          <Typography variant="h5" sx={{ fontSize: { xs: "1.25rem", md: "1.5rem" } }}>
-          {row.visit_type}
+          <ul style={{ paddingLeft: "20px", margin: 0 }}>
+            {policy?.statements?.map((data) => (
+              <li key={data.id}>{data.statement}</li>
+            ))}
+          </ul>
+        </Box>
+
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "600",
+              color: "#343a40",
+              fontSize: "1rem",
+              mb: 2,
+            }}
+          >
+            VISITORS
+          </Typography>
+          <Paper sx={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
+            <Table sx={{ borderCollapse: "collapse" }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#ff6200",
+                      color: "white",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "8px",
+                      fontSize: "0.85rem",
+                      border: "none",
+                    }}
+                  >
+                    Name
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#ff6200",
+                      color: "white",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "8px",
+                      fontSize: "0.85rem",
+                      border: "none",
+                    }}
+                  >
+                    Designation
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {nameDesignationData.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell
+                      sx={{ padding: "8px", color: "#343a40", border: "none" }}
+                    >
+                      <TextField
+                        name={`name-${index}`}
+                        placeholder="No Show"
+                        value={row.name}
+                        onChange={(e) =>
+                          handleNameDesignationChange(
+                            index,
+                            "name",
+                            e.target.value
+                          )
+                        }
+                        InputProps={{
+                          readOnly: isReadOnly,
+                          sx: {
+                            fontSize: "0.85rem",
+                            "& .MuiInputBase-input": {
+                              padding: "4px 0",
+                              backgroundColor: "transparent",
+                            },
+                            "& .MuiInput-underline:before": {
+                              borderBottom: "1px solid #dee2e6",
+                            },
+                            "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                              {
+                                borderBottom: "2px solid #ff6200",
+                              },
+                            "& .MuiInput-underline:after": {
+                              borderBottom: "2px solid #ff6200",
+                            },
+                          },
+                        }}
+                        fullWidth
+                        variant="standard"
+                      />
+                    </TableCell>
+                    <TableCell
+                      sx={{ padding: "8px", color: "#343a40", border: "none" }}
+                    >
+                      <TextField
+                        name={`designation-${index}`}
+                        placeholder="No Show"
+                        value={row.designation}
+                        onChange={(e) =>
+                          handleNameDesignationChange(
+                            index,
+                            "designation",
+                            e.target.value
+                          )
+                        }
+                        InputProps={{
+                          readOnly: isReadOnly,
+                          sx: {
+                            fontSize: "0.85rem",
+                            "& .MuiInputBase-input": {
+                              padding: "4px 0",
+                              backgroundColor: "transparent",
+                            },
+                            "& .MuiInput-underline:before": {
+                              borderBottom: "1px solid #dee2e6",
+                            },
+                            "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                              {
+                                borderBottom: "2px solid #ff6200",
+                              },
+                            "& .MuiInput-underline:after": {
+                              borderBottom: "2px solid #ff6200",
+                            },
+                          },
+                        }}
+                        fullWidth
+                        variant="standard"
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell
+                    colSpan={2}
+                    sx={{ textAlign: "center", border: "none", padding: "8px" }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={handleAddRow}
+                      id="button_for_add_row"
+                      sx={{
+                        backgroundColor: "#ff6200",
+                        color: "white",
+                        fontSize: "0.85rem",
+                        "&:hover": { backgroundColor: "#e65b00" },
+                      }}
+                    >
+                      + Add Row
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Paper>
+        </Box>
+
+        <Box sx={{ mb: 4 }} className="table-responsive">
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "600",
+              color: "#343a40",
+              fontSize: "1rem",
+              mb: 2,
+            }}
+          >
+            VISIT REPORT
+          </Typography>
+          <Paper sx={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
+            <Table sx={{ borderCollapse: "collapse" }}>
+              <TableBody>
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    sx={{ padding: "16px", border: "none" }}
+                  >
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item xs={12} sm={5}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontWeight: "bold",
+                              color: "#343a40",
+                              fontSize: "0.85rem",
+                            }}
+                          >
+                            Date:
+                          </Typography>
+                          <TextField
+                            type="date"
+                            size="small"
+                            sx={{ width: "100%", fontSize: "0.85rem" }}
+                            InputProps={{
+                              sx: {
+                                fontSize: "0.85rem",
+                                "& .MuiInputBase-input": {
+                                  padding: "4px 0",
+                                  backgroundColor: "transparent",
+                                },
+                                "& .MuiInput-underline:before": {
+                                  borderBottom: "1px solid #dee2e6",
+                                },
+                                "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                                  {
+                                    borderBottom: "2px solid #ff6200",
+                                  },
+                                "& .MuiInput-underline:after": {
+                                  borderBottom: "2px solid #ff6200",
+                                },
+                              },
+                            }}
+                            variant="standard"
+                          />
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} sm={5}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontWeight: "bold",
+                              color: "#343a40",
+                              fontSize: "0.85rem",
+                            }}
+                          >
+                            Field Employee Name:
+                          </Typography>
+                          <TextField
+                            size="small"
+                            value={logged_employee_name}
+                            sx={{ width: "100%", fontSize: "0.85rem" }}
+                            InputProps={{
+                              sx: {
+                                fontSize: "0.85rem",
+                                "& .MuiInputBase-input": {
+                                  padding: "4px 0",
+                                  backgroundColor: "transparent",
+                                },
+                                "& .MuiInput-underline:before": {
+                                  borderBottom: "1px solid #dee2e6",
+                                },
+                                "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                                  {
+                                    borderBottom: "2px solid #ff6200",
+                                  },
+                                "& .MuiInput-underline:after": {
+                                  borderBottom: "2px solid #ff6200",
+                                },
+                              },
+                            }}
+                            variant="standard"
+                          />
+                        </Box>
+                      </Grid>
+                      <Grid item xs={12} sm={2}>
+                        <Button
+                          onClick={addNewRow}
+                          variant="contained"
+                          sx={{
+                            backgroundColor: "#ff6200",
+                            color: "white",
+                            fontSize: "0.85rem",
+                            "&:hover": { backgroundColor: "#e65b00" },
+                          }}
+                        >
+                          + Add
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#ff6200",
+                      color: "white",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "8px",
+                      fontSize: "0.85rem",
+                      border: "none",
+                    }}
+                  >
+                    Time
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#ff6200",
+                      color: "white",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "8px",
+                      fontSize: "0.85rem",
+                      border: "none",
+                    }}
+                  >
+                    Report
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      backgroundColor: "#ff6200",
+                      color: "white",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      padding: "8px",
+                      fontSize: "0.85rem",
+                      border: "none",
+                    }}
+                  >
+                    Image
+                  </TableCell>
+                </TableRow>
+                {visitorReports.map((entry, index) => (
+                  <TableRow key={index}>
+                    <TableCell
+                      sx={{ padding: "8px", color: "#343a40", border: "none" }}
+                    >
+                      <TextField
+                        name={`time-${index}`}
+                        type="time"
+                        value={entry.time}
+                        onChange={(e) =>
+                          handleInputChange(index, "time", e.target.value)
+                        }
+                        InputProps={{
+                          readOnly: isReadOnly,
+                          sx: {
+                            fontSize: "0.85rem",
+                            "& .MuiInputBase-input": {
+                              padding: "4px 0",
+                              backgroundColor: "transparent",
+                            },
+                            "& .MuiInput-underline:before": {
+                              borderBottom: "1px solid #dee2e6",
+                            },
+                            "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                              {
+                                borderBottom: "2px solid #ff6200",
+                              },
+                            "& .MuiInput-underline:after": {
+                              borderBottom: "2px solid #ff6200",
+                            },
+                          },
+                        }}
+                        fullWidth
+                        variant="standard"
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell
+                      sx={{ padding: "8px", color: "#343a40", border: "none" }}
+                    >
+                      <TextField
+                        name={`report-${index}`}
+                        value={entry.report}
+                        onChange={(e) =>
+                          handleInputChange(index, "report", e.target.value)
+                        }
+                        InputProps={{
+                          readOnly: isReadOnly,
+                          sx: {
+                            fontSize: "0.85rem",
+                            "& .MuiInputBase-input": {
+                              padding: "4px 0",
+                              backgroundColor: "transparent",
+                            },
+                            "& .MuiInput-underline:before": {
+                              borderBottom: "1px solid #dee2e6",
+                            },
+                            "& .MuiInput-underline:hover:not(.Mui-disabled):before":
+                              {
+                                borderBottom: "2px solid #ff6200",
+                              },
+                            "& .MuiInput-underline:after": {
+                              borderBottom: "2px solid #ff6200",
+                            },
+                          },
+                        }}
+                        fullWidth
+                        variant="standard"
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell
+                      sx={{ padding: "8px", color: "#343a40", border: "none" }}
+                    >
+                      {uploadedImages[index] ? (
+                        <img
+                          src={uploadedImages[index]}
+                          alt={`Uploaded Preview ${index}`}
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            objectFit: "cover",
+                            borderRadius: "4px",
+                          }}
+                        />
+                      ) : (
+                        <Button
+                          variant="contained"
+                          component="label"
+                          disabled={isReadOnly}
+                          sx={{
+                            backgroundColor: "#ff6200",
+                            color: "white",
+                            fontSize: "0.85rem",
+                            "&:hover": { backgroundColor: "#e65b00" },
+                          }}
+                        >
+                          Upload Image
+                          <input
+                            type="file"
+                            hidden
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e, index)}
+                          />
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Box>
+
+        <Box sx={{ textAlign: "center", mb: 4, color: "#343a40" }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: "bold", fontSize: "1rem" }}
+          >
+            THANK YOU FOR YOUR COOPERATION
           </Typography>
         </Box>
 
-        {/* Form Section */}
-        <Paper elevation={3} sx={{ padding: { xs: 1, sm: 2 }, marginBottom: { xs: 2, md: 4 } }}>
-          <Table>
-            <TableBody
-             sx={{ border: "1px solid black" }}
-            >
-              <TableRow>
-                <TableCell
-                  sx={{
-                    backgroundColor: "#89bcc2",
-                    fontWeight: "bold",
-                    width: "30%",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                    fontSize: { xs: "0.75rem", md: "1rem" },
-                  }}
-                >
-                  VISIT ID
-                </TableCell>
-
-                <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                  <TextField
-                    name="visitID"
-                    placeholder=""
-                    value={versionAndVisit?.visit_id}
-                    InputProps={{ readOnly: isReadOnly }}
-                    fullWidth
-                    size="small"
-                  />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell
-                  sx={{
-                    backgroundColor: "#89bcc2",
-                    fontWeight: "bold",
-                    width: "30%",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                    fontSize: { xs: "0.75rem", md: "1rem" },
-                    
-                  }}
-                >
-                  Version
-                </TableCell>
-
-                <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                  <TextField
-                    name="Version"
-                    placeholder=""
-                    value={versionAndVisit?.version}
-                    InputProps={{ readOnly: isReadOnly }}
-                    fullWidth
-                    size="small"
-                  />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell
-                  sx={{
-                    backgroundColor: "#89bcc2",
-                    fontWeight: "bold",
-                    width: "30%",
-                    border: "1px solid black",
-                  }}
-                >
-                  Project
-                </TableCell>
-                <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                  <TextField
-                    name="projectName"
-                    value={row.project}
-                    InputProps={{ readOnly: isReadOnly }}
-                    fullWidth
-                    size="small"
-                  />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell
-                  sx={{
-                    backgroundColor: "#89bcc2",
-                    fontWeight: "bold",
-                    width: "30%",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                    fontSize: { xs: "0.75rem", md: "1rem" },
-                  }}
-                >
-                  Date & Time
-                </TableCell>
-                <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                  <TextField
-                    name="dateAndTime"
-                    value={`${new Date()
-                      .getDate()
-                      .toString()
-                      .padStart(2, "0")}-${(new Date().getMonth() + 1)
-                      .toString()
-                      .padStart(
-                        2,
-                        "0"
-                      )}-${new Date().getFullYear()} ${new Date()
-                      .getHours()
-                      .toString()
-                      .padStart(2, "0")}:${new Date()
-                      .getMinutes()
-                      .toString()
-                      .padStart(2, "0")}:${new Date()
-                      .getSeconds()
-                      .toString()
-                      .padStart(2, "0")}`}
-                    InputProps={{ readOnly: true }}
-                    fullWidth
-                  />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell
-                 sx={{
-                  backgroundColor: "#89bcc2",
-                  fontWeight: "bold",
-                  width: "30%",
-                  border: "1px solid black",
-                  padding: { xs: "4px", md: "8px" },
-                  fontSize: { xs: "0.75rem", md: "1rem" },
-                }}
-                >
-                  Location
-                </TableCell>
-                <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                  <TextField
-                    name="location"
-                    value={row?.project_address}
-                    InputProps={{ readOnly: isReadOnly }}
-                    fullWidth
-                    size="small"
-                  />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell
-                 sx={{
-                  backgroundColor: "#89bcc2",
-                  fontWeight: "bold",
-                  width: "30%",
-                  border: "1px solid black",
-                  padding: { xs: "4px", md: "8px" },
-                  fontSize: { xs: "0.75rem", md: "1rem" },
-                }}
-                >
-                  Purpose
-                </TableCell>
-                <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                  <TextField
-                    name="purpose"
-                    value={row.purpose}
-                    InputProps={{ readOnly: isReadOnly }}
-                    fullWidth
-                    size="small"
-                  />
-                </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell
-                 sx={{
-                  backgroundColor: "#89bcc2",
-                  fontWeight: "bold",
-                  width: "30%",
-                  border: "1px solid black",
-                  padding: { xs: "4px", md: "8px" },
-                  fontSize: { xs: "0.75rem", md: "1rem" },
-                }}
-                >
-                  Site Manager
-                </TableCell>
-                <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                  <TextField
-                    name="siteManager"
-                    value={row.siteManager}
-                    InputProps={{ readOnly: isReadOnly }}
-                    fullWidth
-                    size="small"
-                  />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-          <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: "1rem", md: "1.5rem" } }}>
-            <ul style={{ paddingLeft: { xs: "10px", md: "20px" } }}>
-              {policy?.statements?.map((data) => {
-                return <li key={data.id} style={{ fontSize: { xs: "0.875rem", md: "1rem" } }}>{data.statement} </li>;
-              })}
-            </ul>
+        <Box
+          sx={{
+            textAlign: "center",
+            backgroundColor: "#f8f9fa",
+            py: 3,
+            borderTop: "1px solid #dee2e6",
+            mt: 4,
+          }}
+        >
+          <img
+            src={`${import.meta.env.VITE_URL_BASE}${
+              companyInfo?.brands?.[0]?.brand_logo
+            }`}
+            alt="Company Logo"
+            style={{ maxWidth: "150px", marginBottom: "10px" }}
+          />
+          <Typography sx={{ color: "#6c757d", fontSize: "0.75rem" }}>
+            © {new Date().getFullYear()}{" "}
+            {companyInfo?.brands?.[0]?.brand_name || "Your Company"}. All rights
+            reserved.
           </Typography>
-        </Paper>
-        <Paper elevation={3} sx={{ padding: { xs: 1, sm: 2 }, marginBottom: { xs: 2, md: 4 } }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell
-                  colSpan={2}
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: { xs: "1rem", md: "1.25rem" },
-                    textAlign: "center",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                  }}
-                >
-                  Visitors
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell
-                 sx={{
-                  fontWeight: "bold",
-                  fontSize: { xs: "1rem", md: "1.25rem" },
-                  textAlign: "center",
-                  border: "1px solid black",
-                  padding: { xs: "4px", md: "8px" },
-                }}
-                >
-                  Name
-                </TableCell>
-                <TableCell
-                 sx={{
-                  fontWeight: "bold",
-                  fontSize: { xs: "1rem", md: "1.25rem" },
-                  textAlign: "center",
-                  border: "1px solid black",
-                  padding: { xs: "4px", md: "8px" },
-                }}
-                >
-                  Designation
-                </TableCell>
-              </TableRow>
-
-              {nameDesignationData.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                    <TextField
-                      name={`name-${index}`}
-                      placeholder="No Show"
-                      value={row.name}
-                      onChange={(e) =>
-                        handleNameDesignationChange(
-                          index,
-                          "name",
-                          e.target.value
-                        )
-                      }
-                      InputProps={{ readOnly: isReadOnly }}
-                      fullWidth
-                    />
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                    <TextField
-                      name={`designation-${index}`}
-                      placeholder="No Show"
-                      value={row.designation}
-                      onChange={(e) =>
-                        handleNameDesignationChange(
-                          index,
-                          "designation",
-                          e.target.value
-                        )
-                      }
-                      InputProps={{ readOnly: isReadOnly }}
-                      fullWidth
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-
-              <TableRow>
-                <TableCell
-                  colSpan={2}
-                  sx={{ textAlign: "center", border: "none", padding: { xs: "4px", md: "8px" } }}
-                >
-                  <Button
-                    variant="contained"
-                    onClick={handleAddRow}
-                    id="button_for_add_row"
-                    size="small"
-                  >
-                    + Add Row
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </Paper>
-        <Paper elevation={4} sx={{ padding: { xs: 1, sm: 2 }, marginBottom: { xs: 2, md: 4 } }} className="table-responsive">
-          <Table >
-            <TableHead >
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: { xs: "1rem", md: "1.25rem" },
-                    textAlign: "center",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                  }}
-                >
-                  Report
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableRow>
-              <TableCell
-                colSpan={5}
-                sx={{ padding: { xs: 1, md: 2 }, border: "1px solid black" }}
-              >
-                <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={6}>
-                {/* <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                > */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 1, md: 4 } }}>
-                    <Typography sx={{ fontWeight: "bold", fontSize: { xs: "0.875rem", md: "1rem" } }}>Date:</Typography>
-                    <TextField
-                      value={istDate}
-                      size="small"
-                      sx={{ width: { xs: "100%", md: 300 } }}
-                      InputProps={{ sx: { backgroundColor: "#fff" } }}
-                    />
-                  </Box>
-</Grid>
-<Grid item xs={12} sm={6}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 1, md: 2 } }}>
-                    <Typography sx={{ fontWeight: "bold", fontSize: { xs: "0.875rem", md: "1rem" } }}>
-                      Field Employee Name:
-                    </Typography>
-                    <TextField
-                      size="small"
-                      value={logged_employee_name}
-                      sx={{ width: { xs: "100%", md: 300 } }}
-                      InputProps={{ sx: { backgroundColor: "#fff" } }}
-                    />
-                  </Box>
-                  </Grid>
-                  </Grid>
-                {/* </Box> */}
-              </TableCell>
-            </TableRow>
-            <TableBody sx={{ border: "1px solid black" }}>
-              <TableRow>
-                <TableCell
-                 sx={{
-                  fontWeight: "bold",
-                  fontSize: { xs: "0.875rem", md: "1.25rem" },
-                  textAlign: "center",
-                  border: "1px solid black",
-                  padding: { xs: "4px", md: "8px" },
-                }}
-                >
-                  Time
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: { xs: "0.875rem", md: "1.25rem" },
-                    textAlign: "center",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                  }}
-                >
-                  Sub Projects
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: { xs: "0.875rem", md: "1.25rem" },
-                    textAlign: "center",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                  }}
-                >
-                  Property
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: { xs: "0.875rem", md: "1.25rem" },
-                    textAlign: "center",
-                    border: "1px solid black",
-                    padding: { xs: "4px", md: "8px" },
-                  }}
-                >
-                  Report
-                </TableCell>
-                <TableCell
-                 sx={{
-                  fontWeight: "bold",
-                  fontSize: { xs: "0.875rem", md: "1.25rem" },
-                  textAlign: "center",
-                  border: "1px solid black",
-                  padding: { xs: "4px", md: "8px" },
-                }}
-                >
-                  Image
-                </TableCell>
-              </TableRow>
-
-              {row?.product_details?.map((data, index) => (
-                <TableRow key={index}>
-                  {/* Time Input */}
-                  <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                    <TextField
-                      name={`time-${index}`}
-                      type="time"
-                      placeholder="No Show"
-                      InputProps={{ readOnly: isReadOnly }}
-                      fullWidth
-                      size="small"
-                    />
-                  </TableCell>
-
-                  {/* Sub Projects Input */}
-                  <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                    <TextField
-                      name={`subProjects-${index}`}
-                      value={data.subproject_name}
-                      InputProps={{ readOnly: isReadOnly }}
-                      fullWidth
-                      size="small"
-                    />
-                  </TableCell>
-
-                  {/* Property Input */}
-                  <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                    <TextField
-                      name={`property-${index}`}
-                      value={data.house_no}
-                      InputProps={{ readOnly: isReadOnly }}
-                      fullWidth
-                      size="small"
-                    />
-                  </TableCell>
-
-                  {/* Report Input */}
-                  <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                    <TextField
-                      name={`report-${index}`}
-                      placeholder="No Show"
-                      InputProps={{ readOnly: isReadOnly }}
-                      fullWidth
-                      size="small"
-                    />
-                  </TableCell>
-
-                  {/* Image Upload or Display */}
-                  <TableCell sx={{ border: "1px solid black", padding: { xs: "4px", md: "8px" } }}>
-                    {uploadedImages[index] ? (
-                      <img
-                        src={uploadedImages[index]}
-                        alt={`Uploaded Preview ${index}`}
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    ) : (
-                      <Button
-                        variant="contained"
-                        component="label"
-                        disabled={isReadOnly}
-                        size="small"
-                      >
-                        Upload Image
-                        <input
-                          type="file"
-                          hidden
-                          accept="image/*"
-                          onChange={(e) => handleImageUpload(e, index)}
-                        />
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
+        </Box>
       </div>
 
-      {/* Save Button */}
-      <Box sx={{ textAlign: "center", marginTop: { xs: 2, md: 4 } }}>
+      <Box sx={{ textAlign: "center", mt: 4 }}>
         <Button
           variant="contained"
-          color="primary"
           onClick={onSubmit}
-          sx={{ backgroundColor: "#666cff", padding: { xs: "6px 16px", md: "8px 24px" } }}
-          size="medium"
+          sx={{
+            backgroundColor: "#ff6200",
+            color: "white",
+            fontSize: "0.85rem",
+            padding: "8px 16px",
+            "&:hover": { backgroundColor: "#e65b00" },
+          }}
         >
           Generate PDF
         </Button>

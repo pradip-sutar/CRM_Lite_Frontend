@@ -380,11 +380,11 @@ const AccountProfileview = ({ id }) => {
       customer_email,
       customer_address,
       stage,
-      "project":confirm_project,
+      project: confirm_project,
       status,
-      date: new Date().toISOString().split('T')[0] 
+      date: new Date().toISOString().split("T")[0],
     };
-    console.log(formatdData)
+    console.log(formatdData);
     const res = await postQuoteAsign(formatdData);
     if (res == 201) {
       navigate("/followUp/Quotation");
@@ -398,14 +398,16 @@ const AccountProfileview = ({ id }) => {
       customer_phone,
       customer_email,
       customer_address,
+      customer_name,
       stage,
-      "project":confirm_project,
+      project: confirm_project,
       status,
-      date: new Date().toISOString().split('T')[0] 
+      date: new Date().toISOString().split("T")[0],
     };
-    const res = await postAssignVisit(enquiry_id);
+
+    const res = await postAssignVisit(formatdData);
     if (res == 201) {
-      navigate("/followUp/Quotation");
+      navigate("/followUp/Visit");
     }
   };
 
@@ -417,7 +419,7 @@ const AccountProfileview = ({ id }) => {
             <span
               className="text-muted fw-light"
               onClick={() => {
-                navigate("/followUp");
+                navigate("/followUp", { state: { activeTab } });
               }}
               style={{
                 cursor: "pointer",

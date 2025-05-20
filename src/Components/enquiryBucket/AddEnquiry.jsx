@@ -135,8 +135,6 @@ const AddEnquiry = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
-
-    data.employee_id = logged_employee_Id;
     try {
       if (editData?.enquiry_id) {
         console.log(data);

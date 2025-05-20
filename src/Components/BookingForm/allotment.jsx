@@ -194,6 +194,8 @@ const Allotment = () => {
       customer: allFormData.customer_id,
       customer_gst_no: allFormData.customerGstNo,
       payment_details: paymentDetails,
+      enquiry_id,
+      payable_amount:paymentDetails.amount
     };
     if (editData?.project_details?.customer_id) {
       formatedDataForSubmit.project_details.customer_id =
