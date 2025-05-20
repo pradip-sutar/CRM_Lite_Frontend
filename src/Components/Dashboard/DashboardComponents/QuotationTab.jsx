@@ -5,78 +5,97 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElemen
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
 const QuotationTab = () => {
-    const [employeeStats, setEmployeeStats] = useState([
-        {
-            id: 1,
-            name: "Greenville Apartments",
-            emp: "Rabi",
-            date: "03-12-2024",
-            count: 30,
-        },
-        {
-            id: 2,
-            name: "Skyline Towers",
-            emp: "Santosh",
-            date: "25-02-2025",
-            count: 20,
-        },
-    ]);
+  const [employeeStats, setEmployeeStats] = useState([
+    {
+      id: 1,
+      date: "May 16, 2025",
+      enquiryId: "ENQ-2345",
+      name: "John Smith",
+      contact: "+1 (555) 123-4567",
+      product: "Premium Plan",
+      quoteId: "Q-8721",
+      type: "New",
+      time: "10:30 AM",
+      quoteNumber: 1,
+      amount: "$12,500",
+      quoteStatus: "Sent",
+      enquiryStage: "Lead",
+      enquiryStatus: "Warm",
+      conversion: "65%",
+      show: "Viewed",
+      mode: "Email",
+      report: "View",
+    },
+    {
+      id: 2,
+      date: "May 16, 2025",
+      enquiryId: "ENQ-2346",
+      name: "Maria Garcia",
+      contact: "+1 (555) 234-5678",
+      product: "Enterprise Solution",
+      quoteId: "Q-8722",
+      type: "New",
+      time: "02:00 PM",
+      quoteNumber: 1,
+      amount: "$45,000",
+      quoteStatus: "Sent",
+      enquiryStage: "Prospect",
+      enquiryStatus: "Hot",
+      conversion: "85%",
+      show: "Viewed",
+      mode: "WhatsApp",
+      report: "View",
+    },
+    {
+      id: 3,
+      date: "May 17, 2025",
+      enquiryId: "ENQ-2347",
+      name: "Robert Chen",
+      contact: "+1 (555) 345-6789",
+      product: "Basic Package",
+      quoteId: "Q-8723",
+      type: "Revised",
+      time: "11:15 AM",
+      quoteNumber: 2,
+      amount: "$8,500",
+      quoteStatus: "Prepared",
+      enquiryStage: "Lead",
+      enquiryStatus: "Warm",
+      conversion: "45%",
+      show: "Pending",
+      mode: "Email",
+      report: "View",
+    },
+    {
+      id: 4,
+      date: "May 15, 2025",
+      enquiryId: "ENQ-2348",
+      name: "Sarah Johnson",
+      contact: "+1 (555) 456-7890",
+      product: "Premium Plan",
+      quoteId: "Q-8724",
+      type: "Revised",
+      time: "09:00 AM",
+      quoteNumber: 3,
+      amount: "$13,750",
+      quoteStatus: "Sent",
+      enquiryStage: "Prospect",
+      enquiryStatus: "Hot",
+      conversion: "90%",
+      show: "Not Viewed",
+      mode: "Manual",
+      report: "View",
+    },
+  ]);
 
-    const activityData = {
-        labels: [
-            "Greenville Apartments",
-            "Skyline Towers",
-            "Golden Residency",
-            "Riverside Villas",
-            "Metro Heights"
-        ],
-        datasets: [
-            {
-                label: "Visits",
-                data: [15, 10, 20, 12, 18],
-                backgroundColor: "#007bff", // Uniform blue bars
-            },
-        ],
-    };
-
-
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: "top",
-                labels: {
-                    boxWidth: 12,
-                    boxHeight: 12,
-                    padding: 15,
-                },
-            },
-            tooltip: {
-                enabled: true,
-            },
-        },
-        scales: {
-            x: {
-                grid: {
-                    color: "#e7e7e7",
-                },
-            },
-            y: {
-                beginAtZero: true,
-                grid: {
-                    color: "#e7e7e7",
-                },
-                suggestedMax: 20,
-            },
-        },
-    };
 
 
 
-    return (
-        <div className="container-fluid">
-            <style>
-                {`
+
+  return (
+    <div className="container-fluid">
+      <style>
+        {`
           /* Card Styling */
           .stats-card {
             border: none;
@@ -141,6 +160,14 @@ const QuotationTab = () => {
           .card-header {
             background: linear-gradient(90deg, #007bff, #00d4ff);
             border-radius: 15px 15px 0 0;
+          }
+             .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+          }
+
+          .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
           }
 
           /* Pagination Styling */
@@ -254,92 +281,251 @@ const QuotationTab = () => {
             }
           }
         `}
-            </style>
+      </style>
 
-            {/* Charts Section */}
-            <div className="row g-3 mb-4">
-                <div className="col-12 ">
-                    <div
-                        className="card shadow animate-card"
-                        style={{ borderRadius: "10px", border: "1px solid #ddd" }}
-                    >
-                        <div className="card-body p-4">
-                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                <h6 className="mb-0">Property-wise Quotations</h6>
-                                <button className="btn btn-outline-primary btn-sm">Export</button>
-                            </div>
-                            <div className="chart-container" style={{ position: "relative",height: "300px" }}>
-                                <Bar data={activityData} options={options} width={430} height={110} />
-                            </div>
-                        </div>
-                    </div>
+      {/* Cart Section */}
+      <div className="row g-3">
+        <div className='col-12 col-lg-4 col-md-6'>
+          <div className="card shadow-sm p-4 mb-4">
+            <h5 className="fw-bold mb-3">Total Quotes</h5>
+            <div className="row g-3">
+              <div className="col-12 col-lg-6 col-md-6 ">
+                <div
+                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
+                  style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+                >
+                  <div className="fw-semibold mb-1">Number</div>
+                  <div className="fw-bold fs-5">142</div>
                 </div>
-            </div>
+              </div>
 
-            {/* Table Section */}
-            <div className="row">
-                <div className="col-12">
-                    <div className="card stats-card">
-                        <div className="card-header py-3">
-                            <h5 className="mb-0 fw-bold text-light">Quotation Details</h5>
-                        </div>
-                        <div className="card-body p-4">
-                            {employeeStats?.length > 0 ? (
-                                <div className="table-responsive">
-                                    <table className="table table-hover table-bordered align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                                                <th scope="col">Property</th>
-                                                <th scope="col">Employee</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Count</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {employeeStats?.map((row, index) => (
-                                                <tr key={index}>
-                                                    <td>{index + 1}</td>
-                                                    <td>{row?.name}</td>
-                                                    <td>{row?.emp}</td>
-                                                    <td>{row?.date}</td>
-                                                    <td>{row?.count}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ) : (
-                                <div className="text-center py-5 no-data">
-                                    <i className="bi bi-exclamation-circle me-2"></i>
-                                    No Employee Stats Found
-                                </div>
-                            )}
-
-                            {employeeStats?.length > 0 && (
-                                <div className="d-flex justify-content-between align-items-center mt-4">
-                                    <div className="text-muted">
-                                        Showing 1 to {employeeStats.length} of {employeeStats.length} entries
-                                    </div>
-                                    <ul className="pagination mb-0">
-                                        <li className="page-item disabled">
-                                            <a className="page-link" href="#">Previous</a>
-                                        </li>
-                                        <li className="page-item active">
-                                            <a className="page-link" href="#">1</a>
-                                        </li>
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+              <div className="col-12 col-lg-6 col-md-6 ">
+                <div
+                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
+                  style={{ borderTop: "4px solid #10B981", background: "linear-gradient(135deg, #ffffff, #D1FAE5)" }}
+                >
+                  <div className="fw-semibold mb-1">Value</div>
+                  <div className="fw-bold fs-5">₹487,500</div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    );
+
+        <div className='col-12 col-lg-4 col-md-6'>
+          <div className="card shadow-sm p-4 mb-4">
+            <h5 className="fw-bold mb-3">New Quotes</h5>
+            <div className="row g-3">
+              <div className="col-12 col-lg-6 col-md-6 ">
+                <div
+                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
+                  style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+                >
+                  <div className="fw-semibold mb-1">Number</div>
+                  <div className="fw-bold fs-5">98</div>
+                </div>
+              </div>
+
+              <div className="col-12 col-lg-6 col-md-6 ">
+                <div
+                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
+                  style={{ borderTop: "4px solid #10B981", background: "linear-gradient(135deg, #ffffff, #D1FAE5)" }}
+                >
+                  <div className="fw-semibold mb-1">Value</div>
+                  <div className="fw-bold fs-5">₹310,000</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className='col-12 col-lg-4 col-md-6'>
+          <div className="card shadow-sm p-4 mb-4">
+            <h5 className="fw-bold mb-3">Revised Quotes</h5>
+            <div className="row g-3">
+              <div className="col-12 col-lg-6 col-md-6 ">
+                <div
+                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
+                  style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+                >
+                  <div className="fw-semibold mb-1">Number</div>
+                  <div className="fw-bold fs-5">65</div>
+                </div>
+              </div>
+
+              <div className="col-12 col-lg-6 col-md-6 ">
+                <div
+                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
+                  style={{ borderTop: "4px solid #10B981", background: "linear-gradient(135deg, #ffffff, #D1FAE5)" }}
+                >
+                  <div className="fw-semibold mb-1">Value</div>
+                  <div className="fw-bold fs-5">₹487,700</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row g-3">
+        <div className='col-12'>
+          <div className="card stats-card animate-card shadow-sm">
+            <div className="d-flex justify-content-end gap-3 p-3">
+              <div className="mb-3" style={{ width: "230px" }}>
+                <label htmlFor="timePeriod" className="form-label fw-bold">Product:</label>
+                <select className="form-select" id="timePeriod">
+                  <option value="basic">Basic Package</option>
+                  <option value="standard">Standard Plan</option>
+                  <option value="premium">Premium Plan</option>
+                  <option value="enterprise">Enterprise Solution</option>
+                </select>
+              </div>
+              <div className="mb-3" style={{ width: "230px" }}>
+                <label htmlFor="timePeriod" className="form-label fw-bold">Enquiry Status:</label>
+                <select className="form-select" id="timePeriod">
+                  <option value="all">All</option>
+                  <option value="cold">Cold</option>
+                  <option value="warm">Warm</option>
+                  <option value="hot">Hot</option>
+                </select>
+              </div>
+              <div className="mb-3" style={{ width: "230px" }}>
+                <label htmlFor="timePeriod" className="form-label fw-bold">Quote Type:</label>
+                <select className="form-select" id="timePeriod">
+                  <option value="all">All</option>
+                  <option value="client">New</option>
+                  <option value="demo">Revised</option>
+                </select>
+              </div>
+              <div className="mb-3" style={{ width: "230px" }}>
+                <label htmlFor="timePeriod" className="form-label fw-bold">Quote  Status:</label>
+                <select className="form-select" id="timePeriod">
+                  <option value="all">All</option>
+                  <option value="new">Prepared</option>
+                  <option value="reschedule">Send</option>
+                </select>
+              </div>
+              <div className="mb-3" style={{ width: "230px" }}>
+                <label htmlFor="timePeriod" className="form-label fw-bold">Mode:</label>
+                <select className="form-select" id="timePeriod">
+                  <option value="all">All</option>
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Table Section */}
+      <div className="row">
+        <div className="col-12">
+          <div className="card stats-card">
+            <div className="card-header py-3">
+              <h5 className="mb-0" style={{color:"white", fontWeight:"bold"}}>Quotation Details</h5>
+            </div>
+            <div className="card-body p-4">
+              {employeeStats?.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-hover table-bordered align-middle">
+                    <thead>
+                      <tr className='text-nowrap'>
+                        <th>SL No.</th>
+                        <th>Date</th>
+                        <th>Enquiry ID</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Product</th>
+                        <th>Quote ID</th>
+                        <th>Type</th>
+                        <th>Time</th>
+                        <th>Quote #</th>
+                        <th>Amount</th>
+                        <th>Quote Status</th>
+                        <th>Enquiry Stage</th>
+                        <th>Enquiry Status</th>
+                        <th>Conversion</th>
+                        <th>Show</th>
+                        <th>Mode</th>
+                        <th>Report</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {employeeStats.map((row, index) => (
+                        <tr key={index} className='text-nowrap text-center'>
+                          <td>{index + 1}</td>
+                          <td>{row.date}</td>
+                          <td>{row.enquiryId}</td>
+                          <td>{row.name}</td>
+                          <td>{row.contact}</td>
+                          <td>{row.product}</td>
+                          <td>{row.quoteId}</td>
+                          <td>{row.type}</td>
+                          <td>{row.time}</td>
+                          <td>{row.quoteNumber}</td>
+                          <td>{row.amount}</td>
+                          <td>{row.quoteStatus}</td>
+                          <td>{row.enquiryStage}</td>
+                          <td>{row.enquiryStatus}</td>
+                          <td>{row.conversion}</td>
+                          <td>{row.show}</td>
+                          <td>{row.mode}</td>
+                          <td>
+                            <a href="#" className="text-primary">View</a>
+                          </td>
+                          <td className="d-flex p-4">
+                            <button
+                              className="action-btn btn-text-primary"
+                              title="View Details"
+                            >
+                              <i className="mdi mdi-eye text-primary"></i>
+                            </button>
+                            <button
+                              className="action-btn btn-text-warning"
+                              title="Edit Company"
+                            >
+                              <i className="mdi mdi-pencil-outline text-warning"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                </div>
+              ) : (
+                <div className="text-center py-5 no-data">
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  No Quotation Found
+                </div>
+              )}
+
+              {employeeStats?.length > 0 && (
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  <div className="text-muted">
+                    Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                  </div>
+                  <ul className="pagination mb-0">
+                    <li className="page-item disabled">
+                      <a className="page-link" href="#">Previous</a>
+                    </li>
+                    <li className="page-item active">
+                      <a className="page-link" href="#">1</a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="#">Next</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default QuotationTab;
