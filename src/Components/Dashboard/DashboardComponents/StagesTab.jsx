@@ -86,7 +86,7 @@ const StagesTab = () => {
 
 
   return (
-    <div className="container-fluid py-4">
+    <div className="container-fluid">
       <style>
         {`
           /* Card Styling */
@@ -180,26 +180,6 @@ const StagesTab = () => {
             animation: fadeIn 1s ease-in;
           }
 
-          /* Breadcrumb Styling */
-          .breadcrumb {
-            background-color: transparent;
-            padding: 0;
-            margin-bottom: 1.5rem;
-          }
-          .breadcrumb-item a {
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.2s ease;
-          }
-          .breadcrumb-item a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-          }
-          .breadcrumb-item.active {
-            color: #6c757d;
-            font-weight: 500;
-          }
-
           /* Chart Card Animation */
           .animate-card {
             animation: slideUp 0.5s ease-in-out;
@@ -288,40 +268,7 @@ const StagesTab = () => {
         `}
       </style>
 
-      {/* Breadcrumb Navigation */}
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">Stages</li>
-        </ol>
-      </nav>
-
-      {/* Filters Section */}
-      <div className="row g-3 mb-4">
-        <div className="d-flex justify-content-end gap-3">
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
-            <select className="form-select" id="timePeriod">
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="annually">Annually</option>
-            </select>
-          </div>
-
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
-            <select className="form-select" id="employee">
-              <option value="raj">Raj Tripathy</option>
-              <option value="abhishek">Abhishek Rathi</option>
-              <option value="rahul">Rahul Pani</option>
-              <option value="pradip">Pradip Sutar</option>
-              <option value="amit">Amit Das</option>
-            </select>
-          </div>
-        </div>
-      </div>
+     
 
       {/* Charts Section */}
       <div className="row g-3 mb-4">

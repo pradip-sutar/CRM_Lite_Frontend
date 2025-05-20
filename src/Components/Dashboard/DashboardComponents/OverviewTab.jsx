@@ -1,13 +1,39 @@
-import React, { useMemo } from 'react';
-import { Link  } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from "react-router-dom";
 import { Doughnut, Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
+import crmStore from '../../../Utils/crmStore';
+import { getOverView } from '../../../services/Dashboard/DashboardComponents/OverviewTab';
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
-// Note: Removed unused Chart import from react-apexcharts since it's not used in the code
-// import Chart from "react-apexcharts";
+const Overview = ({ overviewData, filterOverviewData }) => {
+  console.log("Received Overview Data:", overviewData);
+  console.log("Received Filter Overview Data:", filterOverviewData);
+  const [showModal, setShowModal] = useState(false);
+  const [overViewData, setOverViewData] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("R");
 
-const Overview = () => {
+  const loginData = crmStore.getState().user.userInfo;
+  console.log(loginData);
+
+  const fetchOverViewData = async () => {
+    try {
+      const response = await getOverView();
+      console.log(response);
+      setOverViewData(response);
+    } catch (error) {
+      console.error("Error fetching OverView data", error);
+    }
+  };
+  console.log(overViewData);
+
+  useEffect(() => {
+    fetchOverViewData();
+  }, []);
+
+
+  const dataSource = filterOverviewData || overViewData;
+
   const randomColor = useMemo(() => {
     const colors = [
       "#FF6B6B",
@@ -84,12 +110,37 @@ const Overview = () => {
   };
 
   // Enquiry Stages graph
-  
-  const attendanceData = [59, 31, 10];
+  const attendanceData = [
+    dataSource?.enquiry_summary?.stage_enquiry,
+    dataSource?.metrics?.total_leads,
+    dataSource?.enquiry_summary?.stage_opportunity,
+  ];
+
+  const statusData = [
+    {
+      label: 'Enquiry',
+      color: '#00C851',
+      value: `${Math.round((dataSource?.enquiry_summary?.stage_enquiry / dataSource?.enquiry_summary?.total_enquiries) * 100) || 0}`,
+      total_value: dataSource?.enquiry_summary?.stage_enquiry
+    },
+    {
+      label: 'Lead',
+      color: '#2E3B5F',
+      value: `${Math.round((dataSource?.enquiry_summary?.stage_lead / dataSource?.enquiry_summary?.total_enquiries) * 100) || 0}`,
+      total_value: dataSource?.enquiry_summary?.stage_lead
+    },
+    {
+      label: 'Opportunity',
+      color: '#FFBB33',
+      value: `${Math.round((dataSource?.enquiry_summary?.stage_opportunity / dataSource?.enquiry_summary?.total_enquiries) * 100) || 0}`,
+      total_value: dataSource?.enquiry_summary?.stage_opportunity
+    },
+  ];
+
   const colors = ["#00C851", "#2E3B5F", "#FFBB33"];
 
   const data = {
-    labels: ["Present", "Late", "Permission"],
+    labels: ["Enquiry", "Lead", "Opportunity"],
     datasets: [
       {
         data: attendanceData,
@@ -110,10 +161,85 @@ const Overview = () => {
         display: false,
       },
       tooltip: {
-        enabled: false,
+        enabled: true,
+        callbacks: {
+          label: function (context) {
+            const label = context.label || '';
+            const value = context.formattedValue || '';
+            return `${label}: ${value}`;
+          },
+        },
       },
     },
     cutout: "70%",
+  };
+
+  // Trending Product
+  const productData = {
+    labels: dataSource?.last_10_days_stats?.map(item => item.date),
+    datasets: [
+      {
+        label: "Calls",
+        data: dataSource?.last_10_days_stats?.map(item => item.action_count),
+        borderColor: "#1E90FF",
+        backgroundColor: "#007bff",
+        tension: 0.4,
+        pointRadius: 5,
+        borderWidth: 3,
+      },
+      {
+        label: "Visits",
+        data: dataSource?.last_10_days_stats?.map(item => item.visit_count),
+        borderColor: "#2E8B57",
+        backgroundColor: "#2E8B57",
+        tension: 0.4,
+        pointRadius: 5,
+        borderWidth: 3,
+      },
+      {
+        label: "Bookings",
+        data: dataSource?.last_10_days_stats?.map(item => item.booking_count),
+        borderColor: "#DC143C",
+        backgroundColor: "#DC143C",
+        tension: 0.4,
+        pointRadius: 5,
+        borderWidth: 3,
+      },
+      {
+        label: "Quotation",
+        data: dataSource?.last_10_days_stats?.map(item => item.quotation_count),
+        borderColor: "#EDDB42",
+        backgroundColor: "#EDDB42",
+        tension: 0.4,
+        pointRadius: 5,
+        borderWidth: 3,
+      },
+    ],
+  };
+
+  const productOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+        align: "center",
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          color: "#e7e7e7",
+        },
+      },
+      y: {
+        grid: {
+          color: "#e7e7e7",
+        },
+      },
+    },
   };
 
   // Conversion graph
@@ -121,30 +247,45 @@ const Overview = () => {
     labels: [""],
     datasets: [
       {
-        label: "Fulltime",
-        data: [74],
-        backgroundColor: "#FFC107",
+        label: "Active Calls",
+        data: [dataSource?.enquiry_summary?.total_active_enquiries],
+        backgroundColor: "#4caf50",
         barPercentage: 1,
         categoryPercentage: 1,
       },
       {
-        label: "Contract",
-        data: [31],
-        backgroundColor: "#455A64",
+        label: "New Calls",
+        data: [dataSource?.enquiry_summary?.fresh_enquiries],
+        backgroundColor: "#2196f3",
         barPercentage: 1,
         categoryPercentage: 1,
       },
       {
-        label: "Probation",
-        data: [34],
+        label: "Non Valid Calls",
+        data: [dataSource?.enquiry_summary?.total_dead?.total_invalid],
+        backgroundColor: "#ff9800",
+        barPercentage: 1,
+        categoryPercentage: 1,
+      },
+      {
+        label: "Unanswered Calls",
+        data: [0],
+        backgroundColor: "#9c27b0",
+        barPercentage: 1,
+        categoryPercentage: 1,
+      },
+      {
+        label: "Dead Calls",
+        data: [dataSource?.enquiry_summary?.total_not_interested],
         backgroundColor: "#f44336",
         barPercentage: 1,
         categoryPercentage: 1,
       },
       {
-        label: "WFH",
-        data: [15],
-        backgroundColor: "#FF69B4",
+        label: "Non Active Calls",
+        data: [(dataSource?.enquiry_summary?.total_enquiries) -
+          (dataSource?.enquiry_summary?.total_active_enquiries)],
+        backgroundColor: "#795548",
         barPercentage: 1,
         categoryPercentage: 1,
       },
@@ -152,7 +293,7 @@ const Overview = () => {
   };
 
   const empOptions = {
-    indexAxis: "y",
+    indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -160,7 +301,14 @@ const Overview = () => {
         display: false,
       },
       tooltip: {
-        enabled: false,
+        enabled: true,
+        callbacks: {
+          label: function (context) {
+            const label = context.dataset.label;
+            const value = context.raw;
+            return `${label}: ${value}`;
+          },
+        },
       },
     },
     scales: {
@@ -176,7 +324,7 @@ const Overview = () => {
   };
 
   return (
-    <div className="container-fluid py-4">
+    <div className="container-fluid p-0 pr-1">
       <style>
         {`
           /* Animations */
@@ -192,26 +340,6 @@ const Overview = () => {
 
           .animate-card {
             animation: fadeIn 0.5s ease-out;
-          }
-
-                    /* Breadcrumb Styling */
-          .breadcrumb {
-            background-color: transparent;
-            padding: 0;
-            margin-bottom: 1.5rem;
-          }
-          .breadcrumb-item a {
-            color: #007bff;
-            text-decoration: none;
-            transition: color 0.2s ease;
-          }
-          .breadcrumb-item a:hover {
-            color: #0056b3;
-            text-decoration: underline;
-          }
-          .breadcrumb-item.active {
-            color: #6c757d;
-            font-weight: 500;
           }
 
           .card {
@@ -276,6 +404,18 @@ const Overview = () => {
             border-radius: 5px;
           }
 
+          /* Modal Backdrop Blur */
+          .modal.show {
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+            backdrop-filter: blur(5px); /* Apply blur effect to background */
+            -webkit-backdrop-filter: blur(5px); /* For Safari compatibility */
+          }
+
+          .modal-content {
+            background: #fff; /* Ensure modal content is not blurred */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+          }
+
           /* Responsive Adjustments */
           @media (max-width: 768px) {
             .card-body {
@@ -304,6 +444,13 @@ const Overview = () => {
             }
           }
 
+          @media (min-width: 992px) {
+            .col-lg-5th {
+              flex: 0 0 20%;
+              max-width: 20%;
+            }
+          }
+
           @media (max-width: 576px) {
             .doughnut-chart {
               width: 180px !important;
@@ -325,194 +472,310 @@ const Overview = () => {
         `}
       </style>
 
-      {/* Breadcrumb Navigation */}
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">Calling Analytics</li>
-        </ol>
-      </nav>
+      <div className="row g-3">
+        <div className="col-12 ">
+          <div
+            className="card shadow animate-card"
+            style={{ height: "8rem", background: "linear-gradient(135deg, #dfe9f3, #ffffff)" }}
+          >
+            <div className="card-body p-4">
+              <div className="d-flex align-items-center mb-3 justify-content-between">
+                <div className='d-flex align-items-center mb-3 '>
+                  <div
+                    className="avatar-circle d-flex align-items-center justify-content-center rounded-circle text-white fw-bold me-3"
+                    style={{
+                      width: "4rem",
+                      height: "4rem",
+                      backgroundColor: randomColor,
+                      fontSize: "2.5rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        textAlign: "center",
+                        padding: "5px",
+                        fontSize: "2.5rem",
+                      }}
+                    >
+                      {loginData?.employee_name
+                        ? loginData.employee_name.charAt(0).toUpperCase()
+                        : ""}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="card-title mt-1"><span className='fw-bold'>Welcome Back</span>, {loginData?.employee_name}</h3>
+                    <p>Wishing You A Great Day Ahead</p>
+                  </div>
+                </div>
 
-      {/* First Row: Admin Info and Stats */}
-      <div className="row g-3 mb-4">
-
-        <div className='d-flex justify-content-end gap-3'>
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="timePeriod" className="form-label fw-bold">Time Period:</label>
-            <select
-              className="form-select"
-              id="timePeriod"
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-              <option value="annually">Annually</option>
-            </select>
-          </div>
-
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="date" className="form-label fw-bold">Date:</label>
-            <input
-              type="date"
-              className="form-control"
-              id="date"
-              name="date"
-            />
-          </div>
-        </div>
-
-        <div className="col-12 col-lg-4 col-md-6">
-          <div className="card shadow animate-card" style={{ height: "19rem", background: "linear-gradient(135deg, #ffffff, #ffe4ec)", }}>
-            <div className="card-body p-4 position-relative">
-              <h3 className="card-title mb-3 d-flex align-items-center gap-2">
-                Hi, Admin
-              </h3>
-              <div
-                className="avatar-circle position-absolute end-0 mt-4 me-4 d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
-                style={{
-                  width: "5rem",
-                  height: "5rem",
-                  backgroundColor: randomColor,
-                }}
-              >
-                <div style={{ textAlign: "center", fontSize: "2.5rem" }}>
-                  Dk
+                <div className='text-end'>
+                  <button
+                    className='btn btn-capsul'
+                    style={{
+                      color: "white",
+                      background: "linear-gradient(135deg, #e1eec5, #f05053)",
+                      border: "none"
+                    }}
+                    onClick={() => setShowModal(true)}
+                  >
+                    View Profile
+                  </button>
                 </div>
               </div>
-              <p className="mb-3">Wishing You A Great Day Ahead</p>
-              <ul className="list-unstyled mb-0">
-                <li className="mb-2">
-                  <span className="h5 me-1 fw-bold">Name:</span>
-                  <span>Jiban Mahakud</span>
-                </li>
-                <li className="mb-2">
-                  <span className="h5 me-1 fw-bold">Designation:</span>
-                  <span>ascdscd</span>
-                </li>
-                <li className="mb-2">
-                  <span className="h5 me-1 fw-bold">Department:</span>
-                  <span>sdcsds</span>
-                </li>
-                <li className="mb-2">
-                  <span className="h5 me-1 fw-bold">Contact:</span>
-                  <span>+91 8990765687</span>
-                </li>
-                <li>
-                  <span className="h5 me-1 fw-bold">Email:</span>
-                  <span>assssssssss@gmail.com</span>
-                </li>
-              </ul>
             </div>
           </div>
-        </div>
-        <div className="col-12 col-lg-8 col-md-6">
-          <div className="card shadow animate-card">
-            <div className="card-body p-4">
-              <div className="row g-3">
+          {showModal && (
+            <div className="modal show fade d-block" tabIndex="-1" role="dialog">
+              <div className="modal-dialog modal-dialog-centered" role="document">
+                <div className="modal-content p-0 overflow-hidden" style={{ borderRadius: '10px' }}>
+                  {/* Header Section */}
+                  <div className="d-flex align-items-center p-3" style={{ backgroundColor: '#1c1e21', color: 'white' }}>
+                    <div
+                      className="avatar-circle d-flex align-items-center justify-content-center rounded-circle text-white fw-bold me-3"
+                      style={{
+                        width: "4rem",
+                        height: "4rem",
+                        backgroundColor: randomColor,
+                        fontSize: "2.5rem",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          textAlign: "center",
+                          padding: "5px",
+                          fontSize: "2.5rem",
+                        }}
+                      >
+                        {loginData?.employee_name
+                          ? loginData.employee_name.charAt(0).toUpperCase()
+                          : ""}
+                      </div>
+                    </div>
+                    <div>
+                      <h5 className="mb-0" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ccc' }}>{loginData?.employee_name}</h5>
+                      <div className="d-flex align-items-center" style={{ fontSize: '0.85rem', color: '#ccc' }}>
+                        <span>{loginData?.designation_id}</span>
+                      </div>
+                    </div>
+                    <button
+                      className="btn btn-sm ms-auto"
+                      onClick={() => setShowModal(false)}
+                      style={{ background: "transparent", color: "white" }}
+                    >
+                      ✕
+                    </button>
+                  </div>
 
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #d0eaff, #ffffff)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Total Projects</h6>
-                      <h4 className="fw-bold mb-2">5</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
+                  {/* Body Section */}
+                  <div className="p-3">
+                    <div className="mb-3">
+                      <label className="text-muted small">Phone Number</label>
+                      <div>{loginData?.employee_mobno}</div>
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="text-muted small">Email Address</label>
+                      <div>{loginData?.email}</div>
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="text-muted small">Department</label>
+                      <div>{loginData?.department_id}</div>
                     </div>
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #fff6b7, #fcd9b8)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Total Calls</h6>
-                      <h4 className="fw-bold mb-2">1562</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* card section */}
+      <div className="col-12">
+        <div className="card shadow animate-card">
+          <div className="card-body p-4">
+            <div className="row g-3">
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #d0eaff, #ffffff)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Products</h6>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.metrics?.total_projects}
+                    </h4>
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #fddde6, #e8e6f8)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Valid Numbers</h6>
-                      <h4 className="fw-bold mb-2">1293</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #fff6b7, #fcd9b8)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Enquiries</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_enquiries}</h4>
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #d4fc79, #96e6a1)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Answered Calls</h6>
-                      <h4 className="fw-bold mb-2">895</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #fddde6, #e8e6f8)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Active Enquiries</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_active_enquiries}</h4>
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Visits</h6>
-                      <h4 className="fw-bold mb-2">75</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #d4fc79, #96e6a1)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Not Interested</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_not_interested}</h4>
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #d4fcf9, #c2e9fb)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Quotations</h6>
-                      <h4 className="fw-bold mb-2">54</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Invalid Enquiries</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_dead?.total_invalid}</h4>
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #ffe0e0, #ffdadf)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Bookings</h6>
-                      <h4 className="fw-bold mb-2">5</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #d4fcf9, #c2e9fb)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Hot Enquiries</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.hot_count}</h4>
                   </div>
                 </div>
-                <div className="col-12 col-md-6 col-lg-3">
-                  <div className="card shadow-sm stat-card h-100">
-                    <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                      background: "linear-gradient(135deg, #f0f7da, #fffde7)",
-                      color: "white",
-                      borderRadius: "0.5rem"
-                    }}>
-                      <h6 className="mb-1">Commissions</h6>
-                      <h4 className="fw-bold mb-2">₹48200</h4>
-                      {/* <span className="text-success small">{stat.change} from last period</span> */}
-                    </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #ffe0e0, #ffdadf)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Warm Enquiries</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.warm_count}</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #f0f7da, #fffde7)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Cold Enquiries</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.cold_count}</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #f0f7f4, #d9e4dd)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Fresh Enquiries</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.fresh_enquiries}</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Quotes</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_quotes}</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #84fab0, #8fd3f4)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Leads</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_leads}</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #fceabb, #f8b500)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Prospects</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #c2e9fb, #e2ebf0)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Schedules</h6>
+                    <h4 className="fw-bold mb-2">95</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #ffdde1, #ee9ca7)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Booking</h6>
+                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_bookings}</h4>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12 col-md-6 col-lg-5th">
+                <div className="card shadow-sm stat-card h-100">
+                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
+                    background: "linear-gradient(135deg, #f4f4f4, #e2e2e2)",
+                    color: "white",
+                    borderRadius: "0.5rem"
+                  }}>
+                    <h6 className="mb-1">Total Sales</h6>
+                    <h4 className="fw-bold mb-2">₹{dataSource?.metrics?.total_sales}</h4>
                   </div>
                 </div>
               </div>
@@ -523,8 +786,8 @@ const Overview = () => {
 
       {/* Second Row: Activity Trend and Enquiry Stages */}
       <div className="row g-3 mb-4">
-        <div className="col-12 col-lg-9 col-md-6" >
-          <div className="card shadow animate-card" >
+        <div className="col-12 col-lg-9 col-md-6">
+          <div className="card shadow animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Activity Trend</h5>
@@ -536,46 +799,37 @@ const Overview = () => {
             </div>
           </div>
         </div>
+
         <div className="col-12 col-lg-3 col-md-6">
-          <div className="card shadow animate-card text-center" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
+          <div className="card shadow animate-card text-center">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Enquiry Stages</h5>
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
-              <div className="doughnut-chart position-relative" style={{ width: 250, height: 200, marginLeft: "1rem" }}>
+              <div
+                className="doughnut-chart position-relative"
+                style={{ width: 250, height: 200, marginLeft: '1.5rem' }}
+              >
                 <Doughnut data={data} options={enquiryoptions} />
-                {/* <div
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    textAlign: "center",
-                  }}
-                >
-                  <div style={{ color: "#888", fontSize: 14 }}>Total Attendance</div>
-                  <div style={{ fontSize: 28, fontWeight: 600, color: "#1a1a1a" }}>{totalAttendance}</div>
-                </div> */}
               </div>
               <div className="mt-3">
                 <h6>Status</h6>
                 <div className="d-flex flex-column align-items-center">
-                  {[
-                    { label: "Enquiry", color: "#00C851", value: "59%" },
-                    { label: "Lead", color: "#2E3B5F", value: "21%" },
-                    { label: "Opportunity", color: "#FFBB33", value: "2%" },
-                  ].map((status, index) => (
-                    <div key={index} className="d-flex justify-content-between w-50 status-item py-1">
+                  {statusData.map((status, index) => (
+                    <div
+                      key={index}
+                      className="d-flex justify-content-between w-50 status-item py-1"
+                    >
                       <span className="d-flex align-items-center">
                         <span
                           className="badge rounded-circle me-2"
-                          style={{ backgroundColor: status.color, width: 10, height: 10 }}
-                        ></span>
-                        <span className="badge rounded-circle me-2" style={{ backgroundColor: status.color, width: 10, height: 13 }}>.</span>
-                        {status.label}
+                          style={{ backgroundColor: status.color, width: 10, height: 13 }}
+                        >.</span>
+                        {status.label}{" "}
                       </span>
-                      <span>{status.value}</span>
+                      <span>{status.total_value}</span>
+                      <span>({status.value})%</span>
                     </div>
                   ))}
                 </div>
@@ -585,87 +839,116 @@ const Overview = () => {
         </div>
       </div>
 
-      {/* Third Row: Trending Properties and Conversion Funnel */}
+      {/* Third Row: Trending Product and FollowUp Status */}
       <div className="row g-3">
         <div className="col-12 col-lg-7 col-md-6">
           <div className="card shadow animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Trending Properties</h5>
+                <div>
+                  <h5 className="mb-0">Trending Product</h5>
+                  <small >
+                    Project: {dataSource?.last_10_days_stats?.[0]?.project_name || "N/A"}
+                  </small>
+                </div>
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
               <div className="chart-container">
-                <Bar data={activityData} options={options} height={200} width={450} />
+                <Bar data={productData} options={productOptions} height={236} width={450} />
               </div>
             </div>
           </div>
         </div>
+
         <div className="col-12 col-lg-5 col-md-6">
           <div className="card shadow animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Conversion Funnel</h5>
+                <h5 className="mb-0">Enquiry Distribution</h5>
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
+
               <div className="chart-container" style={{ height: "20px", borderRadius: "10px", overflow: "hidden" }}>
                 <Bar data={empData} options={empOptions} height={20} />
               </div>
+
               <div className="row text-center mt-4">
-                <div className="col-6 ">
-                  <div className='d-flex justify-content-between gap-4'>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)", }}>
-                      <div className="card-body">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#FF5722", width: "10px", height: "13px" }}
-                          >.</span>
-                          Total Calls (48%)
+                <div className="col-12">
+                  <div className="row g-3">
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#4caf50", width: "10px", height: "13px" }}></span>
+                            Active Calls
+                          </div>
+                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.total_active_enquiries}</div>
                         </div>
-                        <div className="fw-bold fs-5">112</div>
                       </div>
                     </div>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #fddde6, #e8e6f8)" }}>
-                      <div className="card-body">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#455A64", width: "10px", height: "13px" }}
-                          >.</span>
-                          Answer Calls (20%)
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#2196f3", width: "10px", height: "13px" }}></span>
+                            New Calls
+                          </div>
+                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.fresh_enquiries}</div>
                         </div>
-                        <div className="fw-bold fs-5">23</div>
                       </div>
                     </div>
-                  </div>
-                  <div className='d-flex justify-content-between gap-4'>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
-                      <div className="card-body mb-0">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#f44336", width: "10px", height: "13px" }}
-                          >.</span>
-                          Visits (22%)
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fff4e6, #ffe0b2)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#ff9800", width: "10px", height: "13px" }}></span>
+                            Non Valid Calls
+                          </div>
+                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.total_dead?.total_invalid}</div>
                         </div>
-                        <div className="fw-bold fs-5">12</div>
                       </div>
                     </div>
-                    <div className="card shadow-sm stat-card h-100 col-12" style={{ background: "linear-gradient(135deg, #f0f7da, #fffde7)" }}>
-                      <div className="card-body mb-0">
-                        <div className="d-flex align-items-center justify-content-center mb-1">
-                          <span
-                            className="badge rounded-circle me-2"
-                            style={{ backgroundColor: "#FF69B4", width: "10px", height: "13px" }}
-                          >.</span>
-                          Booking (10%)
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fddde6, #e8e6f8)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#9c27b0", width: "10px", height: "13px" }}></span>
+                            Unanswered Calls
+                          </div>
+                          <div className="fw-bold fs-5">18</div>
                         </div>
-                        <div className="fw-bold fs-5">4</div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fdecea, #fbc9c9)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#f44336", width: "10px", height: "13px" }}></span>
+                            Dead Calls
+                          </div>
+                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.total_not_interested}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-12 col-md-4">
+                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #d7ccc8, #efebe9)" }}>
+                        <div className="card-body">
+                          <div className="d-flex align-items-center justify-content-center mb-1">
+                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#795548", width: "10px", height: "13px" }}></span>
+                            Non Active Calls
+                          </div>
+                          <div className="fw-bold fs-5">{(dataSource?.enquiry_summary?.total_enquiries) -
+                            (dataSource?.enquiry_summary?.total_active_enquiries)}</div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>

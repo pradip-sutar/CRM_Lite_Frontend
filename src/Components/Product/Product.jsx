@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ValidationCard from "../../ui/ValidationCard";
-import crmStore from "../../Utils/crmStore";
 import {
   getProductForm,
   deleteProduct,

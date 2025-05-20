@@ -491,7 +491,7 @@ const Allotment = () => {
                     GST No.:-
                   </label>
                   <input
-                    type="number"
+                    type="text"
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("customerGstNo")}
