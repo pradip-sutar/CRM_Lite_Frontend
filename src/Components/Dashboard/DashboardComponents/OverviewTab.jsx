@@ -11,7 +11,6 @@ const Overview = ({ overviewData, filterOverviewData }) => {
   console.log("Received Filter Overview Data:", filterOverviewData);
   const [showModal, setShowModal] = useState(false);
   const [overViewData, setOverViewData] = useState([]);
-  const [selectedProject, setSelectedProject] = useState("R");
 
   const loginData = crmStore.getState().user.userInfo;
   console.log(loginData);
@@ -120,19 +119,19 @@ const Overview = ({ overviewData, filterOverviewData }) => {
     {
       label: 'Enquiry',
       color: '#00C851',
-      value: `${Math.round((dataSource?.enquiry_summary?.stage_enquiry / dataSource?.enquiry_summary?.total_enquiries) * 100) || 0}`,
+      value: `${Math.round((dataSource?.enquiry_summary?.stage_enquiry / dataSource?.enquiry_summary?.aggregate_enquiries) * 100) || 0}`,
       total_value: dataSource?.enquiry_summary?.stage_enquiry
     },
     {
       label: 'Lead',
       color: '#2E3B5F',
-      value: `${Math.round((dataSource?.enquiry_summary?.stage_lead / dataSource?.enquiry_summary?.total_enquiries) * 100) || 0}`,
+      value: `${Math.round((dataSource?.enquiry_summary?.stage_lead / dataSource?.enquiry_summary?.aggregate_enquiries) * 100) || 0}`,
       total_value: dataSource?.enquiry_summary?.stage_lead
     },
     {
       label: 'Opportunity',
       color: '#FFBB33',
-      value: `${Math.round((dataSource?.enquiry_summary?.stage_opportunity / dataSource?.enquiry_summary?.total_enquiries) * 100) || 0}`,
+      value: `${Math.round((dataSource?.enquiry_summary?.stage_opportunity / dataSource?.enquiry_summary?.aggregate_enquiries) * 100) || 0}`,
       total_value: dataSource?.enquiry_summary?.stage_opportunity
     },
   ];
@@ -233,6 +232,13 @@ const Overview = ({ overviewData, filterOverviewData }) => {
         grid: {
           color: "#e7e7e7",
         },
+        ticks: {
+          callback: function (value, index) {
+            const date = dataSource?.last_10_days_stats?.[index]?.date ;
+            const project = dataSource?.last_10_days_stats?.[index]?.project_name ;
+            return `${date}\n(${project})`;
+          },
+        },
       },
       y: {
         grid: {
@@ -283,7 +289,7 @@ const Overview = ({ overviewData, filterOverviewData }) => {
       },
       {
         label: "Non Active Calls",
-        data: [(dataSource?.enquiry_summary?.total_enquiries) -
+        data: [(dataSource?.enquiry_summary?.aggregate_enquiries) -
           (dataSource?.enquiry_summary?.total_active_enquiries)],
         backgroundColor: "#795548",
         barPercentage: 1,
@@ -847,9 +853,6 @@ const Overview = ({ overviewData, filterOverviewData }) => {
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <div>
                   <h5 className="mb-0">Trending Product</h5>
-                  <small >
-                    Project: {dataSource?.last_10_days_stats?.[0]?.project_name || "N/A"}
-                  </small>
                 </div>
                 <button className="btn btn-outline-primary btn-sm">Export</button>
               </div>
@@ -942,7 +945,7 @@ const Overview = ({ overviewData, filterOverviewData }) => {
                             <span className="badge rounded-circle me-2" style={{ backgroundColor: "#795548", width: "10px", height: "13px" }}></span>
                             Non Active Calls
                           </div>
-                          <div className="fw-bold fs-5">{(dataSource?.enquiry_summary?.total_enquiries) -
+                          <div className="fw-bold fs-5">{(dataSource?.enquiry_summary?.aggregate_enquiries) -
                             (dataSource?.enquiry_summary?.total_active_enquiries)}</div>
                         </div>
                       </div>

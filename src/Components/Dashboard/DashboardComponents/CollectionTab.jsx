@@ -195,7 +195,7 @@ const CollectionTab = () => {
             border-radius: 5px;
           }
 
-          /* CompanyInfo styles for card and table */
+         
           .company-info-card {
             border: none;
             border-radius: 15px;
