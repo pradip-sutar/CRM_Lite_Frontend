@@ -3,35 +3,37 @@ import { Link } from "react-router-dom";
 import { Doughnut, Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
 import crmStore from '../../../Utils/crmStore';
-import { getOverView } from '../../../services/Dashboard/DashboardComponents/OverviewTab';
+// import { getOverView } from '../../../services/Dashboard/DashboardComponents/OverviewTab';
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
-const Overview = ({ overviewData, filterOverviewData }) => {
-  console.log("Received Overview Data:", overviewData);
+const Overview = ({filterOverviewData }) => {
   console.log("Received Filter Overview Data:", filterOverviewData);
   const [showModal, setShowModal] = useState(false);
-  const [overViewData, setOverViewData] = useState([]);
+  // const [overViewData, setOverViewData] = useState([]);
 
   const loginData = crmStore.getState().user.userInfo;
   console.log(loginData);
 
-  const fetchOverViewData = async () => {
-    try {
-      const response = await getOverView();
-      console.log(response);
-      setOverViewData(response);
-    } catch (error) {
-      console.error("Error fetching OverView data", error);
-    }
-  };
-  console.log(overViewData);
+  // const fetchOverViewData = async () => {
+  //   try {
+  //     const response = await getOverView();
+  //     console.log("----->",response);
+  //     setOverViewData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching OverView data", error);
+  //   }
+  // };
+  // console.log(overViewData);
 
-  useEffect(() => {
-    fetchOverViewData();
-  }, []);
+  // useEffect(() => {
+  //   console.log("calling")
+  //   fetchOverViewData();
+  // },[]);
 
 
-  const dataSource = filterOverviewData || overViewData;
+  // const dataSource = filterOverviewData || overViewData;
+    const dataSource = filterOverviewData ;
+
 
   const randomColor = useMemo(() => {
     const colors = [
@@ -51,11 +53,11 @@ const Overview = ({ overviewData, filterOverviewData }) => {
 
   // Activity Trend graph
   const activityData = {
-    labels: ["2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05"],
+    labels: dataSource?.collective_10_days_stats?.map(item => item.date) || [],
     datasets: [
       {
         label: "Calls",
-        data: [350, 295, 310, 280, 320],
+        data: dataSource?.collective_10_days_stats?.map(item => item.action_count) || [],
         borderColor: "#1E90FF",
         backgroundColor: "#007bff",
         tension: 0.4,
@@ -64,7 +66,7 @@ const Overview = ({ overviewData, filterOverviewData }) => {
       },
       {
         label: "Visits",
-        data: [22, 150, 25, 120, 123],
+        data: dataSource?.collective_10_days_stats?.map(item => item.visit_count) || [],
         borderColor: "#2E8B57",
         backgroundColor: "#2E8B57",
         tension: 0.4,
@@ -73,15 +75,25 @@ const Overview = ({ overviewData, filterOverviewData }) => {
       },
       {
         label: "Bookings",
-        data: [10, 8, 129, 9, 320],
+        data: dataSource?.collective_10_days_stats?.map(item => item.booking_count) || [],
         borderColor: "#DC143C",
         backgroundColor: "#DC143C",
         tension: 0.4,
         pointRadius: 5,
         borderWidth: 3,
       },
+      {
+        label: "Quotation",
+        data: dataSource?.collective_10_days_stats?.map(item => item.quotation_count) || [],
+        borderColor: "#EDDB42",
+        backgroundColor: "#EDDB42",
+        tension: 0.4,
+        pointRadius: 5,
+        borderWidth: 3,
+      },
     ],
   };
+
 
   const options = {
     responsive: true,
@@ -234,8 +246,8 @@ const Overview = ({ overviewData, filterOverviewData }) => {
         },
         ticks: {
           callback: function (value, index) {
-            const date = dataSource?.last_10_days_stats?.[index]?.date ;
-            const project = dataSource?.last_10_days_stats?.[index]?.project_name ;
+            const date = dataSource?.last_10_days_stats?.[index]?.date;
+            const project = dataSource?.last_10_days_stats?.[index]?.project_name;
             return `${date}\n(${project})`;
           },
         },
@@ -792,7 +804,7 @@ const Overview = ({ overviewData, filterOverviewData }) => {
 
       {/* Second Row: Activity Trend and Enquiry Stages */}
       <div className="row g-3 mb-4">
-        <div className="col-12 col-lg-9 col-md-6">
+        <div className="col-12 col-lg-9 col-md-6 ">
           <div className="card shadow animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -806,7 +818,7 @@ const Overview = ({ overviewData, filterOverviewData }) => {
           </div>
         </div>
 
-        <div className="col-12 col-lg-3 col-md-6">
+        <div className="col-12 col-lg-3 col-md-6 ">
           <div className="card shadow animate-card text-center">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -815,7 +827,7 @@ const Overview = ({ overviewData, filterOverviewData }) => {
               </div>
               <div
                 className="doughnut-chart position-relative"
-                style={{ width: 250, height: 200, marginLeft: '1.5rem' }}
+                style={{ width: 250, height: 220, marginLeft: '1.5rem' }}
               >
                 <Doughnut data={data} options={enquiryoptions} />
               </div>

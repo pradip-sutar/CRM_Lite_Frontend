@@ -99,8 +99,8 @@ const Properties = () => {
 
 
   // Tab Button
-  const [activeTab, setActiveTab] = useState("Product");
-  const buttons = ["Product", "Sales", "Quote", "Schedule"]
+  const [activeTab, setActiveTab] = useState("Enquiry");
+  const buttons = ["Enquiry", "Sales", "Quote", "Schedule"]
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case "hot":
@@ -332,12 +332,12 @@ const Properties = () => {
       </div>
 
 
-      {activeTab === "Product" && (
+      {activeTab === "Enquiry" && (
         <div className="row">
           <div className="col-12">
             <div className="card stats-card">
               <div className="card-header py-3">
-                <h5 className="mb-0 fw-bold text-light">Product Details</h5>
+                <h5 className="mb-0 fw-bold text-light">Enquiry Details</h5>
               </div>
               <div className="card-body p-4">
                 {employeeStats?.length > 0 ? (
@@ -373,70 +373,6 @@ const Properties = () => {
                   <div className="text-center py-5 no-data">
                     <i className="bi bi-exclamation-circle me-2"></i>
                     No Employee Stats Found
-                  </div>
-                )}
-
-                {employeeStats?.length > 0 && (
-                  <div className="d-flex justify-content-between align-items-center mt-4">
-                    <div className="text-muted">
-                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
-                    </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">Previous</a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">1</a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {activeTab === "Sales" && (
-        <div className="row">
-          <div className="col-12">
-            <div className="card stats-card">
-              <div className="card-header py-3">
-                <h5 className="mb-0 fw-bold text-light">Sales List</h5>
-              </div>
-              <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
-                  <div className="table-responsive">
-                    <table className="table table-hover table-bordered align-middle">
-                      <thead>
-                        <tr>
-                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                          <th scope="col">Product Name</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Customer Name</th>
-                          <th scope="col">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {employeeStats?.map((row, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{row?.name}</td>
-                            <td>{row?.date}</td>
-                            <td>{row?.customerName}</td>
-                            <td>₹{row?.amount?.toLocaleString()}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="text-center py-5 no-data">
-                    <i className="bi bi-exclamation-circle me-2"></i>
-                    No Product Stats Found
                   </div>
                 )}
 
@@ -617,6 +553,70 @@ const Properties = () => {
           </div>
         </div>
 
+      )}
+
+      {activeTab === "Sales" && (
+        <div className="row">
+          <div className="col-12">
+            <div className="card stats-card">
+              <div className="card-header py-3">
+                <h5 className="mb-0 fw-bold text-light">Sales List</h5>
+              </div>
+              <div className="card-body p-4">
+                {employeeStats?.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-hover table-bordered align-middle">
+                      <thead>
+                        <tr>
+                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col">Product Name</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Customer Name</th>
+                          <th scope="col">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {employeeStats?.map((row, index) => (
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{row?.name}</td>
+                            <td>{row?.date}</td>
+                            <td>{row?.customerName}</td>
+                            <td>₹{row?.amount?.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-5 no-data">
+                    <i className="bi bi-exclamation-circle me-2"></i>
+                    No Product Stats Found
+                  </div>
+                )}
+
+                {employeeStats?.length > 0 && (
+                  <div className="d-flex justify-content-between align-items-center mt-4">
+                    <div className="text-muted">
+                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                    </div>
+                    <ul className="pagination mb-0">
+                      <li className="page-item disabled">
+                        <a className="page-link" href="#">Previous</a>
+                      </li>
+                      <li className="page-item active">
+                        <a className="page-link" href="#">1</a>
+                      </li>
+                      <li className="page-item">
+                        <a className="page-link" href="#">Next</a>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
 

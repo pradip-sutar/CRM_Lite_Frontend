@@ -221,13 +221,7 @@ const Behaviour = () => {
                     </Box>
                   ))}
               </Box>
-              {(userType === "Super Admin" ||
-                hasRightsPermission(
-                  "FollowUp",
-                  "Follow Up",
-                  "write",
-                  Permissions
-                )) && (
+             
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <Button
                     type="submit"
@@ -242,7 +236,6 @@ const Behaviour = () => {
                     Submit
                   </Button>
                 </div>
-              )}
             </div>
           </form>
         </div>

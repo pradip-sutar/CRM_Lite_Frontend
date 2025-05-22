@@ -2,10 +2,10 @@ import toast from "react-hot-toast";
 import apiGateWay from "../../ApiGateWay/apiGateWay";
 
 
-export const getOverView = async (start_date, end_date) => {
+export const getEnquiryTab = async (start_date, end_date) => {
   try {
     
-    const response = await apiGateWay.get("/api/get_dash_overview_data/", {
+    const response = await apiGateWay.get("/api/get_dash_enquiry_data/", {
       params: {
         start_date,
         end_date
@@ -16,8 +16,8 @@ export const getOverView = async (start_date, end_date) => {
       return response.data;
     }
   } catch (error) {
-    console.error("Error fetching overview data:", error);
-    toast.error("Failed to fetch overview data");
+    console.error("Error fetching enquiry data:", error);
+    toast.error("Failed to fetch enquiry data");
     return null;
   }
 };

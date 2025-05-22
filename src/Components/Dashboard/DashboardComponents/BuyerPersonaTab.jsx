@@ -1,75 +1,33 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
-ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
-const VisitTab = () => {
-  const [employeeStats, setEmployeeStats] = useState([
+const BuyerPersonaTab = () => {
+  const [personaData, setPersonaData] = useState([
     {
-      id: 1,
-      name: "Greenville Apartments",
-      emp: "Rabi",
-      date: "03-12-2024",
-      count: 30,
+      customerId: "CUST001",
+      name: "Ravi Kumar",
+      contact: "9876543210",
+      product: "2BHK Apartment",
+      conversion: "70",
+      stage: "Lead",
+      status: "Active",
+      activity: "Site Visit Scheduled",
+      finalComment: "Interested in next phase launch",
     },
     {
-      id: 2,
-      name: "Skyline Towers",
-      emp: "Santosh",
-      date: "25-02-2025",
-      count: 20,
+      customerId: "CUST002",
+      name: "Priya Sharma",
+      contact: "9123456789",
+      product: "3BHK Apartment",
+      conversion: "30",
+      stage: "Enquiry",
+      status: "Pending",
+      activity: "Call Done",
+      finalComment: "Asked to follow up next week",
     },
   ]);
 
-  const activityData = {
-    labels: [
-      "Greenville Apartments",
-      "Skyline Towers",
-      "Golden Residency",
-      "Riverside Villas",
-      "Metro Heights"
-    ],
-    datasets: [
-      {
-        label: "Visits",
-        data: [15, 10, 20, 12, 18],
-        backgroundColor: "#007bff", // Uniform blue bars
-      },
-    ],
-  };
 
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          boxWidth: 12,
-          boxHeight: 12,
-          padding: 15,
-        },
-      },
-      tooltip: {
-        enabled: true,
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          color: "#e7e7e7",
-        },
-      },
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: "#e7e7e7",
-        },
-        suggestedMax: 20,
-      },
-    },
-  };
 
 
 
@@ -168,7 +126,6 @@ const VisitTab = () => {
             animation: fadeIn 1s ease-in;
           }
 
-
           /* Chart Card Animation */
           .animate-card {
             animation: slideUp 0.5s ease-in-out;
@@ -258,84 +215,95 @@ const VisitTab = () => {
       </style>
 
 
-      <div className="d-flex gap-5">
-        {/* Charts Section */}
-        <div className="col-lg-5 col-md-12">
-          <div
-            className="card shadow animate-card"
-            style={{ borderRadius: "10px", border: "1px solid #ddd" }}
-          >
-            <div className="card-body p-4">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h6 className="mb-0">Property-wise Visits</h6>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
-              </div>
-              <div className="chart-container">
-                <Bar data={activityData} options={options} height={200} width={450} />
-              </div>
+      {/* Table Section */}
+      <div className="row">
+        <div className="col-12">
+          <div className="card stats-card">
+            <div className="card-header py-3">
+              <h5 className="mb-0 fw-bold text-light">Buyer Persona Management</h5>
             </div>
-          </div>
-        </div>
+            <div className="card-body p-4">
+              {personaData?.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-hover table-bordered align-middle">
+                    <thead>
+                      <tr className="text-nowrap text-center">
+                        <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                        <th scope="col">Customer ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Conversion</th>
+                        <th scope="col">Enquiry Stage</th>
+                        <th scope="col">Status / Type</th>
+                        <th scope="col">Activity</th>
+                        <th scope="col">Final Comment</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-nowrap text-center">
+                      {personaData?.map((row, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{row.customerId}</td>
+                          <td>{row.name}</td>
+                          <td>{row.contact}</td>
+                          <td>{row.product}</td>
+                          <td>
+                            <div className="d-flex align-items-center ">
+                              <div className="progress rounded-pill w-100" style={{ height: "10px", backgroundColor: "#e9ecef" }}>
+                                <div
+                                  className="progress-bar"
+                                  role="progressbar"
+                                  style={{
+                                    width: `${row.conversion}%`,
+                                    backgroundColor: "#28a745", 
+                                    borderRadius: "10px",
+                                  }}
+                                  aria-valuenow={row.conversion}
+                                  aria-valuemin="0"
+                                  aria-valuemax="100"
+                                ></div>
+                              </div>
+                              <span className="ms-2 fw-semibold">{row.conversion}%</span>
+                            </div>
+                          </td>
 
-        {/* Table Section */}
-        <div className="row">
-          <div className="col-lg-12 col-md-12">
-            <div className="card stats-card">
-              <div className="card-header py-3">
-                <h5 className="mb-0 fw-bold text-light">Visit Details</h5>
-              </div>
-              <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
-                  <div className="table-responsive">
-                    <table className="table table-hover table-bordered align-middle">
-                      <thead>
-                        <tr>
-                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                          <th scope="col">Property</th>
-                          <th scope="col">Employee</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Count</th>
+
+                          <td>{row.stage}</td>
+                          <td>{row.status}</td>
+                          <td>{row.activity}</td>
+                          <td>{row.finalComment}</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {employeeStats?.map((row, index) => (
-                          <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{row?.name}</td>
-                            <td>{row?.emp}</td>
-                            <td>{row?.date}</td>
-                            <td>{row?.count}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="text-center py-5 no-data">
-                    <i className="bi bi-exclamation-circle me-2"></i>
-                    No Employee Stats Found
-                  </div>
-                )}
+                      ))}
+                    </tbody>
 
-                {employeeStats?.length > 0 && (
-                  <div className="d-flex justify-content-between align-items-center mt-4">
-                    <div className="text-muted">
-                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
-                    </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">Previous</a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">1</a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
-                      </li>
-                    </ul>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-5 no-data">
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  No Employee Stats Found
+                </div>
+              )}
+
+              {personaData?.length > 0 && (
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  <div className="text-muted">
+                    Showing 1 to {personaData.length} of {personaData.length} entries
                   </div>
-                )}
-              </div>
+                  <ul className="pagination mb-0">
+                    <li className="page-item disabled">
+                      <a className="page-link" href="#">Previous</a>
+                    </li>
+                    <li className="page-item active">
+                      <a className="page-link" href="#">1</a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="#">Next</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -344,4 +312,4 @@ const VisitTab = () => {
   );
 };
 
-export default VisitTab;
+export default BuyerPersonaTab;

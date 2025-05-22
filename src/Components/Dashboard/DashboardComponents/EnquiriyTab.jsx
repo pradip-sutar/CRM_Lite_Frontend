@@ -1,121 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const CollectionTab = () => {
-  const [scheduleDetails, setScheduleDetails] = useState([
-    {
-      date: 'May 16, 2025',
-      enquiryId: 'ENQ-2345',
-      name: 'John Smith',
-      contactNumber: '+1 (555) 123-4567',
-      scheduleType: 'Client Site',
-      scheduleTypeColor: 'lightpurple',
-      mode: 'Offline',
-      modeColor: 'warning',
-      time: '10:30 AM',
-      scheduleNumber: 1,
-      product: 'Premium Plan',
-      scheduleStatus: 'New',
-      scheduleStatusColor: 'lightblue',
-      enquiryStage: 'Lead',
-      enquiryStageColor: 'lightblue',
-      enquiryStatus: 'Warm',
-      enquiryStatusColor: 'warning',
-      conversion: 65,
-      show: 'Appeared',
-      showStatusColor: 'success'
-    },
-    {
-      date: 'May 16, 2025',
-      enquiryId: 'ENQ-2346',
-      name: 'Maria Garcia',
-      contactNumber: '+1 (555) 234-5678',
-      scheduleType: 'Demo',
-      scheduleTypeColor: 'info',
-      mode: 'Online',
-      modeColor: 'primary',
-      time: '02:00 PM',
-      scheduleNumber: 1,
-      product: 'Enterprise Solution',
-      scheduleStatus: 'New',
-      scheduleStatusColor: 'lightblue',
-      enquiryStage: 'Prospect',
-      enquiryStageColor: 'success',
-      enquiryStatus: 'Hot',
-      enquiryStatusColor: 'success',
-      conversion: 85,
-      show: 'Appeared',
-      showStatusColor: 'success'
-    },
-    {
-      date: 'May 17, 2025',
-      enquiryId: 'ENQ-2347',
-      name: 'Robert Chen',
-      contactNumber: '+1 (555) 345-6789',
-      scheduleType: 'Company Site',
-      scheduleTypeColor: 'success',
-      mode: 'Offline',
-      modeColor: 'warning',
-      time: '11:15 AM',
-      scheduleNumber: 2,
-      product: 'Basic Package',
-      scheduleStatus: 'Rescheduled',
-      scheduleStatusColor: 'warning',
-      enquiryStage: 'Lead',
-      enquiryStageColor: 'lightblue',
-      enquiryStatus: 'Warm',
-      enquiryStatusColor: 'warning',
-      conversion: 45,
-      show: 'Pending',
-      showStatusColor: 'light'
-    },
-    {
-      date: 'May 15, 2025',
-      enquiryId: 'ENQ-2348',
-      name: 'Sarah Johnson',
-      contactNumber: '+1 (555) 456-7890',
-      scheduleType: 'Demo',
-      scheduleTypeColor: 'info',
-      mode: 'Online',
-      modeColor: 'primary',
-      time: '09:00 AM',
-      scheduleNumber: 3,
-      product: 'Premium Plan',
-      scheduleStatus: 'Rescheduled',
-      scheduleStatusColor: 'warning',
-      enquiryStage: 'Prospect',
-      enquiryStageColor: 'success',
-      enquiryStatus: 'Hot',
-      enquiryStatusColor: 'success',
-      conversion: 90,
-      show: 'No Show',
-      showStatusColor: 'danger'
-    },
-    {
-      date: 'May 18, 2025',
-      enquiryId: 'ENQ-2349',
-      name: 'David Williams',
-      contactNumber: '+1 (555) 567-8901',
-      scheduleType: 'Client Site',
-      scheduleTypeColor: 'lightpurple',
-      mode: 'Offline',
-      modeColor: 'warning',
-      time: '03:30 PM',
-      scheduleNumber: 1,
-      product: 'Basic Package',
-      scheduleStatus: 'New',
-      scheduleStatusColor: 'lightblue',
-      enquiryStage: 'Enquiry',
-      enquiryStageColor: 'secondary',
-      enquiryStatus: 'Cold',
-      enquiryStatusColor: 'danger',
-      conversion: 10,
-      show: 'Pending',
-      showStatusColor: 'light'
-    }
-  ]);
+const EnquiryTab = ({ filterEnquiryData }) => {
+  const navigate = useNavigate();
+  console.log("Received Filter Enquiry Data:", filterEnquiryData);
+
+
 
   return (
-    <div className="container-fluid p-0 pr-1 ">
+    <div className="container-fluid p-0 pe-lg-3 ">
       <style>
         {`
           /* Animations from CollectionTab */
@@ -135,6 +28,7 @@ const CollectionTab = () => {
 
           .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 15px;
           }
 
           .card:hover {
@@ -350,77 +244,55 @@ const CollectionTab = () => {
       </style>
 
       {/* Card Section */}
-      <div className="row g-3">
+      <div className="row g-3 p-2">
         {/* Total Enquiries */}
-        <div className="col-12 col-md-3">
+        <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{
-              background: "linear-gradient(135deg, #fff3e0, #ffe0b2)",
-            }}
+            style={{ borderTop: "4px solid #FFA500", background: "linear-gradient(135deg, #ffffff, #FFE5B4)" }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Total Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">258</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Conversion Rate  */}
-        <div className="col-12 col-md-3">
-          <div
-            className="card stats-card animate-card shadow-sm h-75"
-            style={{
-              background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
-            }}
-          >
-            <div className="card-body text-center">
-              <div className="d-flex align-items-center justify-content-center mb-2">
-                <span className="fw-semibold">Conversion Rate </span>
-              </div>
-              <div className="fw-bold fs-4">40%</div>
+              <div className="fw-bold fs-4">{filterEnquiryData?.total_enquiries}</div>
             </div>
           </div>
         </div>
 
         {/* New Enquiries */}
-        <div className="col-12 col-md-3">
+        <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{
-              background: "linear-gradient(135deg, #fdecea, #f8bbd0)",
-            }}
+            style={{ borderTop: "4px solid #DC143C", background: "linear-gradient(135deg, #ffffff, #F4A6A6)" }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">New Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">89</div>
+              <div className="fw-bold fs-4">{filterEnquiryData?.new_enquiries}</div>
             </div>
           </div>
         </div>
 
         {/* Old Enquiries */}
-        <div className="col-12 col-md-3">
+        <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{
-              background: "linear-gradient(135deg, #d0eaff, #ffffff)",
-            }}
+            style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Old Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">189</div>
+              <div className="fw-bold fs-4">{filterEnquiryData?.old_enquiries}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="row g-3">
+      <div className="row g-3 p-2">
+
         <div className='col-12 col-lg-6 col-md-6'>
           <div className="card shadow-sm p-4 mb-4">
             <h5 className="fw-bold mb-3">Enquiry Stage</h5>
@@ -429,10 +301,10 @@ const CollectionTab = () => {
               <div className="col-12 col-md-4 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ backgroundColor: "#f3f4f6" }}
+                  style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
                 >
                   <div className="fw-semibold mb-1">Enquiry</div>
-                  <div className="fw-bold fs-5">96</div>
+                  <div className="fw-bold fs-5">{filterEnquiryData?.stage_counts?.find(s => s.stage === "Enquiry FollowUp")?.count}</div>
                 </div>
               </div>
 
@@ -440,10 +312,10 @@ const CollectionTab = () => {
               <div className="col-12 col-md-4">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ backgroundColor: "#e0edff" }}
+                  style={{ borderTop: "4px solid #DC3545", background: "linear-gradient(135deg, #ffffff, #FFB3BA)" }}
                 >
                   <div className="fw-semibold mb-1">Lead</div>
-                  <div className="fw-bold fs-5">102</div>
+                  <div className="fw-bold fs-5">{filterEnquiryData?.stage_counts?.find(s => s.stage === "Lead")?.count}</div>
                 </div>
               </div>
 
@@ -451,10 +323,10 @@ const CollectionTab = () => {
               <div className="col-12 col-md-4">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ backgroundColor: "#d5fbe3" }}
+                  style={{ borderTop: "4px solid #6F42C1", background: "linear-gradient(135deg, #ffffff, #C6B3FF)" }}
                 >
                   <div className="fw-semibold mb-1">Prospect</div>
-                  <div className="fw-bold fs-5">60</div>
+                  <div className="fw-bold fs-5">{filterEnquiryData?.stage_counts?.find(s => s.stage === "Opportunity")?.count}</div>
                 </div>
               </div>
             </div>
@@ -463,172 +335,116 @@ const CollectionTab = () => {
 
         <div className='col-12 col-lg-6 col-md-6'>
           <div className="card shadow-sm p-4 mb-4">
-            <h5 className="fw-bold mb-3">Enquiry Status</h5>
+            <h5 className="fw-bold mb-3">Enquiry status</h5>
             <div className="row g-3">
-              {/* Enquiry */}
+
               <div className="col-12 col-md-4 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ backgroundColor: "#F0C0D0" }}
+                  style={{
+                    borderTop: "4px solid #FFC107",
+                    background: "linear-gradient(135deg, #ffffff, #FFECB3)"
+                  }}
                 >
                   <div className="fw-semibold mb-1">Cold</div>
-                  <div className="fw-bold fs-5">65</div>
+                  <div className="fw-bold fs-5">{filterEnquiryData?.status_counts?.find(s => s.status === "Cold")?.count}</div>
                 </div>
               </div>
 
-              {/* Lead */}
               <div className="col-12 col-md-4">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ backgroundColor: "#F1E89A" }}
-                >
-                  <div className="fw-semibold mb-1">Warm</div>
-                  <div className="fw-bold fs-5">102</div>
-                </div>
-              </div>
+                  style={{
+                    borderTop: "4px solid #117A65",
+                    background: "linear-gradient(135deg, #ffffff, #A3E4D7 )"
+                  }}
 
-              {/* Prospect */}
-              <div className="col-12 col-md-4">
-                <div
-                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ backgroundColor: "#d5fbe3" }}
                 >
                   <div className="fw-semibold mb-1">Hot</div>
-                  <div className="fw-bold fs-5">60</div>
+                  <div className="fw-bold fs-5">{filterEnquiryData?.status_counts?.find(s => s.status === "Hot")?.count}</div>
+                </div>
+              </div>
+
+              <div className="col-12 col-md-4">
+                <div
+                  className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
+                  style={{
+                    borderTop: "4px solid #884EA0",
+                    background: "linear-gradient(135deg, #ffffff, #D7BDE2  )"
+                  }}
+                >
+                  <div className="fw-semibold mb-1">Warm</div>
+                  <div className="fw-bold fs-5">{filterEnquiryData?.status_counts?.find(s => s.status === "Warm")?.count}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
-      <div className="row g-3">
-        <div className='col-12'>
-          <div className="card stats-card animate-card shadow-sm">
-            <div className="d-flex justify-content-end gap-3 p-3">
-              <div className="mb-3" style={{ width: "200px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Product:</label>
-                <select className="form-select" id="timePeriod">
-                  <option value="basic">Basic Package</option>
-                  <option value="standard">Standard Plan</option>
-                  <option value="premium">Premium Plan</option>
-                  <option value="enterprise">Enterprise Solution</option>
-                </select>
-              </div>
-              <div className="mb-3" style={{ width: "200px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Enquiry Status:</label>
-                <select className="form-select" id="timePeriod">
-                  <option value="all">All</option>
-                  <option value="cold">Cold</option>
-                  <option value="warm">Warm</option>
-                  <option value="hot">Hot</option>
-                </select>
-              </div>
-              <div className="mb-3" style={{ width: "200px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Schedule Type:</label>
-                <select className="form-select" id="timePeriod">
-                  <option value="all">All</option>
-                  <option value="client">Client Site</option>
-                  <option value="demo">Demo</option>
-                  <option value="company">Company Site</option>
-                </select>
-              </div>
-              <div className="mb-3" style={{ width: "200px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Mode:</label>
-                <select className="form-select" id="timePeriod">
-                  <option value="all">All</option>
-                  <option value="online">Online</option>
-                  <option value="offline">Offline</option>
-                </select>
-              </div>
-              <div className="mb-3" style={{ width: "200px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Schedule Status:</label>
-                <select className="form-select" id="timePeriod">
-                  <option value="all">All</option>
-                  <option value="new">New</option>
-                  <option value="reschedule">Reschedule</option>
-                </select>
-              </div>
-              <div className="mb-3" style={{ width: "200px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Show Status:</label>
-                <select className="form-select" id="timePeriod">
-                  <option value="all">All</option>
-                  <option value="appeared">Appeared</option>
-                  <option value="noshow">No Show</option>
-                  <option value="pending">Pending</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="row">
+
+      <div className="row p-2">
         <div className="col-12">
           <div className="card company-info-card">
             <div className="card-header py-3">
-              <h5 className="mb-0 text-light fw-bold">Schedule Table</h5>
+              <h5 className="mb-0 fw-bold" style={{ color: "white" }}>Enquiry Table</h5>
             </div>
             <div className="card-body p-4">
-              {scheduleDetails?.length > 0 ? (
+              {filterEnquiryData?.visit_details?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered">
                     <thead>
-                      <tr>
+                      <tr className='text-nowrap'>
                         <th>Date</th>
                         <th>Enquiry ID</th>
                         <th>Name</th>
                         <th>Contact Number</th>
-                        <th>Schedule Type</th>
-                        <th>Mode</th>
-                        <th>Time</th>
-                        <th>Schedule Number</th>
+                        <th>Source</th>
+                        <th>Type</th>
+                        <th>Email</th>
+                        <th>Response</th>
+                        <th>Stage</th>
+                        <th>Rate</th>
+                        <th>Status</th>
                         <th>Product</th>
-                        <th>Schedule Status</th>
-                        <th>Enquiry Stage</th>
-                        <th>Enquiry Status</th>
                         <th>Conversion</th>
-                        <th>Show</th>
-                        <th>Report</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {scheduleDetails?.map((row, index) => (
+                    <tbody className='text-nowrap'>
+                      {filterEnquiryData?.visit_details?.map((row, index) => (
                         <tr key={index}>
-                          <td>{row?.date}</td>
-                          <td>{row?.enquiryId}</td>
-                          <td>{row?.name}</td>
-                          <td>{row?.contactNumber}</td>
-                          <td>{row?.scheduleType}</td>
-                          <td>{row?.mode}</td>
-                          <td>{row?.time}</td>
-                          <td>{row?.scheduleNumber}</td>
-                          <td>{row?.product}</td>
-                          <td>{row?.scheduleStatus}</td>
-                          <td>{row?.enquiryStage}</td>
-                          <td>
-                            <span className={`badge rounded-pill px-3 py-2 bg-${row?.enquiryStatusColor}`}>{row?.enquiryStatus}</span>
-                          </td>
-                          <td>{row?.conversion}%</td>
-                          <td>
-                            <span className={`badge rounded-pill px-3 py-2 bg-${row?.showStatusColor}`}>{row?.show}</span>
-                          </td>
-                          <td>
-                            <a href="#" className="text-primary">View</a>
-                          </td>
+                          <td>{new Date(row?.latest_action_datetime).toISOString().split('T')[0]}</td>
+                          <td>{row?.enquiry_id}</td>
+                          <td>{row?.customer_name}</td>
+                          <td>{row?.customer_phone}</td>
+                          <td>{row?.source || "Na(Online)"}</td>
+                          <td>{row?.type||"Na(New/Old)"}</td>
+                          <td>{row?.customer_email}</td>
+                          <td>{row?.response || "Na(In Progress)"}</td>
+                          <td>{row?.latest_stage}</td>
+                          <td>{[...Array(5)].map((_, i) => (
+                            <span
+                              key={i}
+                              className={`mdi ${i < row?.rate ? "mdi-star text-warning" : "mdi-star-outline text-muted"}`}
+                            ></span>
+                          ))}</td>
+                          <td>{row?.latest_status}</td>
+                          <td>{row?.product || "Na"}</td>
+                          <td>{row?.conversion || "Na"}%</td>
                           <td className="d-flex p-4">
                             <button
+                              onClick={() =>
+                                navigate("/dashboard/enquiry/enquiryTabView", {
+                                  state: { enquiryViewData: row },
+                                })
+                              }
                               className="action-btn btn-text-primary"
                               title="View Details"
                             >
                               <i className="mdi mdi-eye text-primary"></i>
-                            </button>
-                            <button
-                              className="action-btn btn-text-warning"
-                              title="Edit Company"
-                            >
-                              <i className="mdi mdi-pencil-outline text-warning"></i>
                             </button>
                           </td>
                         </tr>
@@ -643,10 +459,10 @@ const CollectionTab = () => {
                 </div>
               )}
 
-              {scheduleDetails?.length > 0 && (
+              {filterEnquiryData?.visit_details?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">
                   <div className="text-muted">
-                    Showing 1 to {scheduleDetails.length} of {scheduleDetails.length} entries
+                    Showing 1 to {filterEnquiryData?.visit_details.length} of {filterEnquiryData?.visit_details.length} entries
                   </div>
                   <ul className="pagination mb-0">
                     <li className="page-item disabled">
@@ -669,4 +485,4 @@ const CollectionTab = () => {
   )
 }
 
-export default CollectionTab
+export default EnquiryTab
