@@ -116,6 +116,7 @@ const AccountProfileview = ({ id }) => {
     customer_email = "",
     customer_country = "",
     customer_address = "",
+    customer_pincode="",
     rate = 0,
     stage = "",
     status = "",
@@ -2131,21 +2132,15 @@ const AccountProfileview = ({ id }) => {
                                     navigate("/FollowUp/BookingAllotment", {
                                       state: {
                                         enquiry_id,
+                                        confirm_project,
                                         customer_id,
                                         customer_name,
-                                        source,
-                                        enquiry_type,
-                                        project,
+                                        customer_phone,
+                                        customer_email,
+                                        customer_address,
+                                        customer_pincode
                                       },
                                     });
-                                    console.log(
-                                      enquiry_id,
-                                      customer_id,
-                                      customer_name,
-                                      source,
-                                      enquiry_type,
-                                      project
-                                    );
                                   }}
                                 >
                                   Booking

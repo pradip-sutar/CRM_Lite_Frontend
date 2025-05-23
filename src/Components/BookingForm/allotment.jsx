@@ -19,15 +19,16 @@ const Allotment = () => {
   const navigate = useNavigate();
   const {
     enquiry_id,
-    customer_id,
+    confirm_project,
     customer_name,
-    source,
-    enquiry_type,
-    project,
+    customer_phone,
+    customer_pincode,
+    customer_id,
+    customer_email,
+    customer_address,
   } = location?.state || {};
   const editData = location?.state?.editData || null;
   console.log(editData);
-
   const {
     register,
     getValues,
@@ -56,7 +57,9 @@ const Allotment = () => {
   const BankModes = watch("BankModeType");
 
   useEffect(() => {
-    if (Object.entries(selectedProductData).length > 0) {
+    console.log(selectedProductData);
+    if (Object.entries(selectedProductData || {})?.length > 0) {
+      setValue("product_id", selectedProductData?.project_id);
       setValue("description", selectedProductData?.project_description);
       setValue("rate", selectedProductData?.rate);
       setValue("gst", selectedProductData?.gst);
@@ -66,23 +69,33 @@ const Allotment = () => {
 
   const fetchData = async () => {
     const response = await getProductForm(initialUrl);
+    console.log(response);
+
     setProductData(response);
   };
-  useEffect(() => {
-    console.log(selectedProductData);
-  }, [selectedProductData]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    setValue("customer_id", selectedCustomerData?.customer_id);
-    setValue("customerNumber", selectedCustomerData?.mob);
-    setValue("customerEmail", selectedCustomerData?.email);
-    setValue("customerAddress", selectedCustomerData?.present_address);
-    setValue("customerPin", selectedCustomerData?.present_pincode);
+    setValue("customer_name", customer_name);
+    setValue("customerNumber", customer_phone);
+    setValue("customerEmail", customer_email);
+    setValue("customerAddress", customer_address);
+    setValue("customerPin", customer_pincode);
   }, [selectedCustomerData]);
+
+  useEffect(() => {
+    if (confirm_project && productData?.length > 0) {
+      console.log(confirm_project);
+      console.log(productData);
+      const data = productData.find(
+        (data) => data.project_id == confirm_project
+      );
+      setSelectProductDataa(data);
+    }
+  }, [productData]);
 
   const handleInputChange = (inputValue) => {
     setSearchTerm(inputValue);
@@ -130,6 +143,7 @@ const Allotment = () => {
     }
     const allFormData = getValues();
     console.log(allFormData);
+    allFormData.customer_id=customer_id;
     let paymentDetails = {};
 
     switch (Paymentype) {
@@ -195,7 +209,7 @@ const Allotment = () => {
       customer_gst_no: allFormData.customerGstNo,
       payment_details: paymentDetails,
       enquiry_id,
-      payable_amount:paymentDetails.amount
+      payable_amount: paymentDetails.amount,
     };
     if (editData?.project_details?.customer_id) {
       formatedDataForSubmit.project_details.customer_id =
@@ -265,8 +279,12 @@ const Allotment = () => {
                       }`}
                       {...register("product_id", {
                         required: "project",
-                        onChange: (e) =>
-                          setSelectProductDataa(productData[e.target.value]),
+                        onChange: (e) => {
+                          const data = productData.find(
+                            (data) => data.project_id == e.target.value
+                          );
+                          setSelectProductDataa(data);
+                        },
                       })}
                       disabled={!!editData?.project_details?.product_id}
                     >
@@ -274,7 +292,7 @@ const Allotment = () => {
                         Select Project
                       </option>
                       {productData?.map((data, index) => (
-                        <option key={index} value={index}>
+                        <option key={index} value={data.project_id}>
                           {data?.project_name}
                         </option>
                       ))}
@@ -382,21 +400,12 @@ const Allotment = () => {
                   >
                     Customer Name
                   </label>
-                  <div
-                    className="dropdown-container dropdown-container-Box container-Box"
-                    style={{ flex: 1 }}
-                  >
-                    <Select
-                      id="project"
-                      options={searchTerm ? filteredOptions : allOptions}
-                      value={selectedProduct}
-                      onChange={(selected) => {
-                        setSelectedProduct(selected);
-                        setSelectCustomerData(customers[selected.value]);
-                      }}
-                      onInputChange={handleInputChange}
-                      isDisabled={!!editData?.project_details?.product_id}
-                      placeholder="Select Project"
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="text"
+                      className="form-control controlFoorm"
+                      id="carpetArea"
+                      {...register("customer_name")}
                     />
                   </div>
                 </div>
@@ -652,7 +661,6 @@ const Allotment = () => {
                       </div>
                     </div>
                     Reciver Details:-
-
                     <div className="row form-group group-Form ">
                       <div className="col-md-3 d-flex flex-d align-items-center">
                         <label
@@ -844,7 +852,7 @@ const Allotment = () => {
                         />
                       </div>
                     </div>
-                    
+
                     <div className="row form-group group-Form ">
                       <div className="col-md-6 d-flex flex-d align-items-center">
                         <label

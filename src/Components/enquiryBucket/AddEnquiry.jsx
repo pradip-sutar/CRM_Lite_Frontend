@@ -389,6 +389,28 @@ const AddEnquiry = () => {
                           <label>Date</label>
                         </div>
                       </div>
+                      <div className="col-md-6">
+                        <div className="form-floating form-floating-outline">
+                          <select
+                            id="productType"
+                            className={`select2 form-select ${
+                              errors.source ? "is-invalid" : ""
+                            }`}
+                            {...register("owner_type")}
+                          >
+                            <option value="" selected disabled>
+                              Select Owner Type
+                            </option>
+                            <option key={1} value="Own">
+                              Own
+                            </option>
+                            <option key={2} value="Company">
+                              Company
+                            </option>
+                          </select>
+                          <label htmlFor="productType">Owner Type</label>
+                        </div>
+                      </div>
 
                       <div className="col-md-6">
                         <div className="form-floating form-floating-outline">
