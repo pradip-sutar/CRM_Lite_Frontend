@@ -187,17 +187,6 @@ function PaymentReciept() {
                           aria-controls="companyinfo_table"
                           rowspan="1"
                           colspan="1"
-                          aria-label="Enquiry ID: activate to sort column ascending"
-                          style={{ width: "113.2px" }}
-                        >
-                          Sales ID
-                        </td>
-                        <td
-                          className="sorting"
-                          tabIndex="0"
-                          aria-controls="companyinfo_table"
-                          rowspan="1"
-                          colspan="1"
                           aria-label="Quote ID: activate to sort column ascending"
                           style={{ width: "100.2px" }}
                         >
@@ -259,7 +248,6 @@ function PaymentReciept() {
                           </td>
                           <td>{payment.customer_id}</td>
                           <td>{payment.enquiry_id}</td>
-                          <td>{payment.sales_id}</td>
                           <td>{payment.quote_id}</td>
                           <td>{payment.Date}</td>
                           <td>{payment.payment_receipt_number}</td>

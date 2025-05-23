@@ -70,6 +70,7 @@ import AddProductForm from "./Components/Product/AddProductForm";
 import Masters from "./Components/BuyersPersona/Masters";
 import Expectation from "./Components/BuyersPersona/Expectation";
 import ProformaInvoice from "./Components/BookingForm/ProformaInvoice";
+import EnquiryTabView from "./Components/Dashboard/DashboardComponents/TabView/EnquiryTabView";
 
 const CallStatus = lazy(() => import("./components/FollowUp/CallStatus"));
 const CallStatusMaster = lazy(() =>
@@ -268,9 +269,13 @@ const App = () => {
                     path="/followUp/UpdateCallStatus"
                     element={<CallStatusMaster />}
                   />
+                  <Route
+                    path="/dashboard/enquiry/enquiryTabView"
+                    element={<EnquiryTabView />}
+                  />
 
                   <Route path="/*" element={<NotFound />} />
-                  {/* </Route> */}
+
                 </Route>
               </Routes>
             </Suspense>

@@ -184,6 +184,8 @@ const Allotment = () => {
         break;
     }
 
+
+    
     const formatedDataForSubmit = {
       project_details: allFormData.product_id,
       description: allFormData.description,

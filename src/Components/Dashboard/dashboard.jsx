@@ -4,24 +4,32 @@ import OverviewTab from "./DashboardComponents/OverviewTab";
 import CallingTab from "./DashboardComponents/CallingTab";
 import PropertiesTab from "./DashboardComponents/PropertiesTab";
 import EmployeesTab from './DashboardComponents/EmployeesTab';
-import StagesTab from './DashboardComponents/StagesTab';
-import VisitTab from './DashboardComponents/VisitTab';
 import QuotationTab from './DashboardComponents/QuotationTab';
 import BookingTab from './DashboardComponents/BookingTab';
 import CommissionTab from './DashboardComponents/CommissionTab';
-import CollectionTab from './DashboardComponents/CollectionTab';
 import { getOverView } from '../../services/Dashboard/DashboardComponents/OverviewTab';
+import { getEnquiryTab } from "../../services/Dashboard/DashboardComponents/EnquiryTab";
+import SourceTab from "./DashboardComponents/SourceTab"
 import toast from 'react-hot-toast';
+import EnquiryTab from './DashboardComponents/EnquiriyTab';
+import SheduleTab from './DashboardComponents/SheduleTab';
+import BuyerPersonaTab from './DashboardComponents/BuyerPersonaTab';
 
 const Dashboard = () => {
   const [activeComponent, setActiveComponent] = useState('Overview');
+  //overview
   const [filterOverviewData, setFilterOverviewData] = useState(null);
-  const [start_date, setStartDate] = useState('');
-  const [end_date, setEndDate] = useState('');
+  const [overViewStartDate, setOverViewStartDate] = useState('');
+  const [overViewEndDate, setOverViewEndDate] = useState('');
+  // Enquiry Tab
+  const [filterEnquiryData, setFilterEnquiryData] = useState(null);
+  const [enquiryStartDate, setEnquiryStartDate] = useState('');
+  const [enquiryEndDate, setEnquiryEndDate] = useState('');
 
+  // OverView Api
   const fetchFilterOverViewData = async (start_date, end_date) => {
     try {
-      const response = await getOverView({ start_date, end_date });
+      const response = await getOverView(start_date, end_date);
       console.log(response);
       setFilterOverviewData(response);
     } catch (error) {
@@ -29,43 +37,78 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    // Fetch initial data without dates or with default dates
-    fetchFilterOverViewData();
-  }, []);
-
-  const handleSearch = () => {
-    if (start_date && end_date) {
-      fetchFilterOverViewData(start_date, end_date);
+  const handleOverViewSearch = () => {
+    if (overViewStartDate && overViewEndDate) {
+      fetchFilterOverViewData(overViewStartDate, overViewEndDate);
     } else {
       toast.error("Please select both start and end dates");
     }
   };
 
-  const handleReset = () => {
-    setStartDate('');
-    setEndDate('');
+  const handleOverViewReset = () => {
+    setOverViewStartDate('');
+    setOverViewEndDate('');
     fetchFilterOverViewData();
   };
+
+  // EnquiryTab Api
+  const fetchFilterEnquiryData = async (start_date, end_date) => {
+    try {
+      const response = await getEnquiryTab(start_date, end_date);
+      console.log(response);
+      setFilterEnquiryData(response);
+    } catch (error) {
+      console.error("Error fetching Enquiry Tab data", error);
+    }
+  };
+
+  const handleEnquirySearch = () => {
+    if (enquiryStartDate && enquiryEndDate) {
+      fetchFilterOverViewData(enquiryStartDate, enquiryEndDate);
+    } else {
+      toast.error("Please select both start and end dates");
+    }
+  };
+
+  const handleEnquiryTabReset = () => {
+    setEnquiryStartDate('');
+    setEnquiryEndDate('');
+    fetchFilterEnquiryData();
+  };
+
+
+
+
+
+  useEffect(() => {
+    fetchFilterOverViewData();
+    fetchFilterEnquiryData();
+  }, []);
 
   const renderComponent = () => {
     switch (activeComponent) {
       case 'Overview':
         return <OverviewTab filterOverviewData={filterOverviewData} />;
-      case 'FollowUp':
-        return <CallingTab />;
+      case 'Source':
+        return <SourceTab  />;
       case 'Product':
         return <PropertiesTab />;
-      case 'Stages':
-        return <StagesTab />;
-      case 'Visits':
-        return <VisitTab />;
+      case 'FollowUp':
+        return <CallingTab />;
+      case 'Enquiry':
+        return <EnquiryTab filterEnquiryData={filterEnquiryData} />;
       case 'Quotations':
         return <QuotationTab />;
       case 'Bookings':
         return <BookingTab />;
-      case 'Collections':
-        return <CollectionTab />;
+      case 'Buyer Persona':
+        return <BuyerPersonaTab />;
+      case 'Shedules':
+        return <SheduleTab />;
+
+
+
+
     }
   };
 
@@ -80,8 +123,8 @@ const Dashboard = () => {
               className="form-control"
               id="start_date"
               name="start_date"
-              value={start_date}
-              onChange={(e) => setStartDate(e.target.value)}
+              value={overViewStartDate}
+              onChange={(e) => setOverViewStartDate(e.target.value)}
             />
           </div>
           <div className="mb-3" style={{ width: "200px" }}>
@@ -91,16 +134,16 @@ const Dashboard = () => {
               className="form-control"
               id="end_date"
               name="end_date"
-              value={end_date}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={overViewEndDate}
+              onChange={(e) => setOverViewEndDate(e.target.value)}
             />
           </div>
           <div className="mb-3 d-flex gap-2">
-            <button className="btn btn-primary" onClick={handleSearch}>
+            <button className="btn btn-primary" onClick={handleOverViewSearch}>
               Search
             </button>
             <div>
-              <button className="btn btn-light" onClick={handleReset}>
+              <button className="btn btn-light" onClick={handleOverViewReset}>
                 Reset
               </button>
             </div>
@@ -160,7 +203,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      {activeComponent === "Stages" && (
+      {activeComponent === "Buyer Persona" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
@@ -187,7 +230,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      {activeComponent === "Visits" && (
+      {activeComponent === "Shedules" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
@@ -268,18 +311,38 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      {activeComponent === "Collections" && (
-        <div className="row g-3 mb-4">
-          <div className="d-flex justify-content-end gap-3 pr-2">
-            <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
-              <select className="form-select" id="timePeriod">
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="annually">Annually</option>
-              </select>
+      {activeComponent === "Enquiry" && (
+        <div className="d-flex justify-content-end gap-3 pr-2 align-items-end">
+          <div className="mb-3" style={{ width: "200px" }}>
+            <label htmlFor="start_date" className="form-label fw-bold">Start Date:</label>
+            <input
+              type="date"
+              className="form-control"
+              id="start_date"
+              name="start_date"
+              value={enquiryStartDate}
+              onChange={(e) => setEnquiryStartDate(e.target.value)}
+            />
+          </div>
+          <div className="mb-3" style={{ width: "200px" }}>
+            <label htmlFor="end_date" className="form-label fw-bold">End Date:</label>
+            <input
+              type="date"
+              className="form-control"
+              id="end_date"
+              name="end_date"
+              value={enquiryEndDate}
+              onChange={(e) => setEnquiryEndDate(e.target.value)}
+            />
+          </div>
+          <div className="mb-3 d-flex gap-2">
+            <button className="btn btn-primary" onClick={handleEnquirySearch}>
+              Search
+            </button>
+            <div>
+              <button className="btn btn-light" onClick={handleEnquiryTabReset}>
+                Reset
+              </button>
             </div>
           </div>
         </div>
@@ -288,8 +351,8 @@ const Dashboard = () => {
   );
 
   const buttons = [
-    'Overview', 'FollowUp', 'Product', 'Stages', 'Visits',
-    'Quotations', 'Bookings', 'Collections'
+    'Overview', 'Source', 'Product', 'FollowUp', 'Enquiry', 'Shedules', 'Quotations', 'Bookings', 'Buyer Persona',
+
   ];
 
   return (

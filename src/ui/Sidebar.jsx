@@ -294,10 +294,10 @@ function Sidebar() {
           className={`layout-menu menu-vertical menu bg-menu-theme sidebar sidebar-container ${isOpen ? "open" : isCollapsed ? "collapsed" : ""}`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="app-brand demo">
+          <div className="app-brand demo mt-n3">
             <Link to={"/dashboard"} className="app-brand-link">
-              <span className="app-brand-logo demo mt-3">
-                <img src="/PropVichaar.png" width="130px" alt="Logo" />
+              <span className="app-brand-logo demo">
+                <img src="/VichaarCRMLogo.png" width="180px" alt="Logo" />
               </span>
             </Link>
 
@@ -334,7 +334,7 @@ function Sidebar() {
 
           <div className="menu-inner-shadow"></div>
           <div className="menu-scroll">
-            <ul className="menu-inner py-1">
+            <ul className="menu-inner ">
               <li className="menu-card"><Board /></li>
               <li className="menu-card"><SystemAdmin /></li>
               <li className="menu-card"><Employee /></li>

@@ -19,16 +19,13 @@ const Calling = () => {
       answeredCalls: 100,
       unansweredCalls: 20,
       conversionRate: "83.33%",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      totalCalls: 200,
-      validNumbers: 180,
-      invalidNumbers: 20,
-      answeredCalls: 160,
-      unansweredCalls: 20,
-      conversionRate: "88.89%",
+      date: "23-05-2024",
+      source: "Online",
+      product: "CRM",
+      status: "Hot",
+      stage: "Lead",
+      conversionPercent: "70%",
+      rate: 4,
     },
   ]);
 
@@ -281,9 +278,7 @@ const Calling = () => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{
-              background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
-            }}
+            style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
@@ -299,9 +294,7 @@ const Calling = () => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{
-              background: "linear-gradient(135deg, #fff3e0, #ffe0b2)",
-            }}
+            style={{ borderTop: "4px solid #FFA500", background: "linear-gradient(135deg, #ffffff, #FFE5B4)" }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
@@ -317,9 +310,7 @@ const Calling = () => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{
-              background: "linear-gradient(135deg, #fdecea, #f8bbd0)",
-            }}
+            style={{ borderTop: "4px solid #DC143C", background: "linear-gradient(135deg, #ffffff, #F4A6A6)" }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
@@ -357,6 +348,74 @@ const Calling = () => {
               <div className="chart-container">
                 <Line data={activityData} options={options} height={150} />
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      {/* Table Section */}
+      <div className="row">
+        <div className="col-12">
+          <div className="card stats-card">
+            <div className="card-header py-3">
+              <h5 className="mb-0 fw-bold text-light">Calling Data Analysis</h5>
+            </div>
+            <div className="card-body p-4">
+              {employeeStats?.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-hover table-bordered align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Total Calls</th>
+                        <th scope="col">Valid Numbers</th>
+                        <th scope="col">Invalid Numbers</th>
+                        <th scope="col">Answered Calls</th>
+                        <th scope="col">Unanswered Calls</th>
+                        <th scope="col">Conversion Rate</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {employeeStats?.map((row, index) => (
+                        <tr key={index}>
+                          <td>{row?.date}</td>
+                          <td>{row?.totalCalls}</td>
+                          <td>{row?.validNumbers}</td>
+                          <td>{row?.invalidNumbers}</td>
+                          <td>{row?.answeredCalls}</td>
+                          <td>{row?.unansweredCalls}</td>
+                          <td>{row?.conversionRate}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-5 no-data">
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  No Employee Stats Found
+                </div>
+              )}
+
+              {employeeStats?.length > 0 && (
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  <div className="text-muted">
+                    Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                  </div>
+                  <ul className="pagination mb-0">
+                    <li className="page-item disabled">
+                      <a className="page-link" href="#">Previous</a>
+                    </li>
+                    <li className="page-item active">
+                      <a className="page-link" href="#">1</a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="#">Next</a>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -534,13 +593,11 @@ const Calling = () => {
         </div>
       </div>
 
-
-      {/* Table Section */}
       <div className="row">
         <div className="col-12">
           <div className="card stats-card">
             <div className="card-header py-3">
-              <h5 className="mb-0 fw-bold text-light">Calling Data Analysis</h5>
+              <h5 className="mb-0 fw-bold text-light">Customer Leads</h5>
             </div>
             <div className="card-body p-4">
               {employeeStats?.length > 0 ? (
@@ -548,27 +605,36 @@ const Calling = () => {
                   <table className="table table-hover table-bordered align-middle">
                     <thead>
                       <tr>
-                        <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                        <th scope="col">Employee</th>
-                        <th scope="col">Total Calls</th>
-                        <th scope="col">Valid Numbers</th>
-                        <th scope="col">Invalid Numbers</th>
-                        <th scope="col">Answered Calls</th>
-                        <th scope="col">Unanswered Calls</th>
-                        <th scope="col">Conversion Rate</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Stage</th>
+                        <th scope="col">Conversion (%)</th>
+                        <th scope="col">Rate</th>
                       </tr>
                     </thead>
                     <tbody>
                       {employeeStats?.map((row, index) => (
                         <tr key={index}>
-                          <td>{index + 1}</td>
                           <td>{row?.name}</td>
-                          <td>{row?.totalCalls}</td>
-                          <td>{row?.validNumbers}</td>
-                          <td>{row?.invalidNumbers}</td>
-                          <td>{row?.answeredCalls}</td>
-                          <td>{row?.unansweredCalls}</td>
-                          <td>{row?.conversionRate}</td>
+                          <td>{row?.date}</td>
+                          <td>{row?.source}</td>
+                          <td>{row?.product}</td>
+                          <td>{row?.status}</td>
+                          <td>{row?.stage}</td>
+                          <td>{row?.conversionPercent}</td>
+                          <td>
+                            {[...Array(5)].map((_, i) => (
+                              <span
+                                key={i}
+                                className={`mdi ${i < row?.rate ? "mdi-star text-warning" : "mdi-star-outline text-muted"}`}
+                              ></span>
+                            ))}
+                          </td>
+
+
                         </tr>
                       ))}
                     </tbody>
@@ -577,7 +643,7 @@ const Calling = () => {
               ) : (
                 <div className="text-center py-5 no-data">
                   <i className="bi bi-exclamation-circle me-2"></i>
-                  No Employee Stats Found
+                  No Customer Leads Found
                 </div>
               )}
 
@@ -603,6 +669,9 @@ const Calling = () => {
           </div>
         </div>
       </div>
+
+
+
     </div>
   );
 };
