@@ -553,7 +553,7 @@ const Login = () => {
       </div>
 
       <div className="right-section">
-        <h1 className="welcome-heading">Welcome to Prop-Vichaar! 👋</h1>
+        <h1 className="welcome-heading">Welcome to Vichaar-CRM! 👋</h1>
         <p className="subheading">
           Please sign in to your account and start the adventure
         </p>

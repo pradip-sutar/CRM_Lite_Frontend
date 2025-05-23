@@ -9,7 +9,6 @@
 /coverage
 
 # production
-/dist
 /electron
 # misc
 .DS_Store
