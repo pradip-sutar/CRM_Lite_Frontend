@@ -8,12 +8,12 @@ export default defineConfig({
 
   server: {
     host: "0.0.0.0",
-    port: 3000,
+    port: 3006,
   },
 
   preview: {
     host: "0.0.0.0",
-    port: 3000,
-    allowedHosts: ["realestate.vichaarlab.in"],
+    port: 3006,
+    allowedHosts: ["*"],
   },
 });
