@@ -7,9 +7,8 @@
 
 # testing
 /coverage
-
-# production
 /dist
+# production
 /electron
 # misc
 .DS_Store

@@ -20,32 +20,32 @@ import Login from "./Components/LoginRegistration/Login";
 import AppLayout from "./ui/AppLayout";
 import NotFound from "./Components/LoginRegistration/NotFound";
 
-import SystemAdmin from "./components/system admin/SystemAdmin";
-import CompanyForm from "./components/system admin/Forms/CompanyForm";
-import BankInfoForm from "./components/system admin/Forms/BankInfoForm";
-import BankInfo from "./components/system admin/BankInfo";
-import BankInfoDetails from "./components/system admin/BankInfoDetails";
-import CompanyInfo from "./components/system admin/CompanyInfo";
-import CompanyInfoDetails from "./components/system admin/CompanyInfoDetails";
+import SystemAdmin from "./Components/system admin/SystemAdmin";
+import CompanyForm from "./Components/system admin/Forms/CompanyForm";
+import BankInfoForm from "./Components/system admin/Forms/BankInfoForm";
+import BankInfo from "./Components/system admin/BankInfo";
+import BankInfoDetails from "./Components/system admin/BankInfoDetails";
+import CompanyInfo from "./Components/system admin/CompanyInfo";
+import CompanyInfoDetails from "./Components/system admin/CompanyInfoDetails";
 
 import Employee from "./Components/EmployeeManagement/Employee";
 import EmployeeProfile from "./Components/EmployeeManagement/EmployeeProfile";
 
 import DeadTable from "./Components/DeadTable/DeadTable";
-import EnquiryTable from "./components/enquiryBucket/EnquiryTable";
-import AddEnquiry from "./components/enquiryBucket/AddEnquiry";
-import SourceType from "./components/enquiryBucket/SourceType";
+import EnquiryTable from "./Components/enquiryBucket/EnquiryTable";
+import AddEnquiry from "./Components/enquiryBucket/AddEnquiry";
+import SourceType from "./Components/enquiryBucket/SourceType";
 
-import Allotment from "./components/BookingForm/allotment";
-import BookingFormPDF from "./components/BookingForm/BookingFormPDF";
-import Booking from "./components/BookingForm/Booking";
+import Allotment from "./Components/BookingForm/allotment";
+import BookingFormPDF from "./Components/BookingForm/BookingFormPDF";
+import Booking from "./Components/BookingForm/Booking";
 
 import PaymentReciept from "./Components/PaymentReceipt/PaymentReciept";
 
 import Report from "./Components/Report/Report";
 
-import Customer from "./components/Customer/Customer";
-import AddCustomerForm from "./components/Customer/AddCustomerForm";
+import Customer from "./Components/Customer/Customer";
+import AddCustomerForm from "./Components/Customer/AddCustomerForm";
 
 import Quotation from "./Components/FollowUp/Quotation";
 import Visit from "./Components/FollowUp/Visit";
@@ -72,9 +72,9 @@ import Expectation from "./Components/BuyersPersona/Expectation";
 import ProformaInvoice from "./Components/BookingForm/ProformaInvoice";
 import EnquiryTabView from "./Components/Dashboard/DashboardComponents/TabView/EnquiryTabView";
 
-const CallStatus = lazy(() => import("./components/FollowUp/CallStatus"));
+const CallStatus = lazy(() => import("./Components/FollowUp/CallStatus"));
 const CallStatusMaster = lazy(() =>
-  import("./components/FollowUp/CallStatusMaster")
+  import("./Components/FollowUp/CallStatusMaster")
 );
 
 const Dashboard = lazy(() => {
