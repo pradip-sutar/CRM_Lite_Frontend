@@ -47,13 +47,13 @@
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
-  "scripts": {
-    "start": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0 --port 3006",
-    "electron": "electron .",
-    "dist": "npm run build && electron-builder"
-  },
+ "scripts": {
+  "react:build": "vite build",
+  "electron:build": "electron-builder",
+  "build": "npm run react:build && npm run electron:build",
+  "preview": "vite preview --host 0.0.0.0 --port 3006",
+  "start": "electron ."
+},
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -79,8 +79,7 @@
   "build": {
     "appId": "com.yourapp.id",
     "productName": "PropVichaar App",
-    "icon": "assets/vichaarlab_logo.png",
-    "asar":true,
+    "asar": true,
     "directories": {
       "output": "electron"
     },
@@ -89,7 +88,8 @@
     },
     "files": [
       "dist/**/*",
-      "electron-main.js"
+      "electron-main.js",
+      "package.json"
     ]
   }
 }

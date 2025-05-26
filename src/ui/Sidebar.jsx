@@ -297,7 +297,7 @@ function Sidebar() {
           <div className="app-brand demo mt-n3">
             <Link to={"/dashboard"} className="app-brand-link">
               <span className="app-brand-logo demo">
-                <img src="/VichaarCRMLogo.png" width="180px" alt="Logo" />
+                <img src="src/Components/assets/Project/VichaarCRMLogo.png" width="180px" alt="Logo" />
               </span>
             </Link>
 
