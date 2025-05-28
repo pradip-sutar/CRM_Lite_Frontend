@@ -1,10 +1,70 @@
 {
-  "name": "realestate",
-  "version": "0.1.0",
-  "description": "Real Estate App",
-  "author": "Dinakrushna Agasti",
+  "name": "vichaarlab-crm-app",
   "private": true,
-  "main": "electron-main.js",
+  "version": "1.0.0",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite --host 0.0.0.0",
+    "electron": "electron .",
+    "electron:dev": "electron .",
+    "electron:build": "electron-builder",
+    "dist": "npm run build && electron-builder",
+    "preview:prod": "vite preview --host 0.0.0.0 --port 3006"
+  },
+  "build": {
+    "appId": "com.example.POS",
+    "productName": "VichaarLab CRM",
+    "icon": "public/icon.ico",
+    "asar": true,
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "**/*",
+      "dist/**/*",
+      "main.js",
+      "electron-main.js",
+      "!build.exe"
+    ],
+    "extraResources": [
+      {
+        "from": "build.exe",
+        "to": "build.exe"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "public/icon.ico",
+      "uninstallerIcon": "public/icon.ico",
+      "uninstallDisplayName": "VichaarLab-CRM",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "tar.gz"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "public/icon.icns"
+    }
+  },
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@mui/icons-material": "^5.16.7",
@@ -47,13 +107,6 @@
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
- "scripts": {
-  "react:build": "vite build",
-  "electron:build": "electron-builder",
-  "build": "npm run react:build && npm run electron:build",
-  "preview": "vite preview --host 0.0.0.0 --port 3006",
-  "start": "electron ."
-},
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -75,21 +128,5 @@
   "devDependencies": {
     "electron": "^35.2.1",
     "electron-builder": "^26.0.12"
-  },
-  "build": {
-    "appId": "com.yourapp.id",
-    "productName": "PropVichaar App",
-    "asar": true,
-    "directories": {
-      "output": "electron"
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "files": [
-      "dist/**/*",
-      "electron-main.js",
-      "package.json"
-    ]
   }
 }

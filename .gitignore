@@ -8,6 +8,10 @@
 # testing
 /coverage
 /dist
+dist-electron
+
+backend
+build.exe
 # production
 /electron
 # misc
