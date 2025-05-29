@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import logo from "../assets/Project/VichaarCRMLogo.png";
 import Board from "./sidebar/Board";
 import FollowUp from "../ui/sidebar/FollowUp";
 import SystemAdmin from "../ui/sidebar/SystemAdmin";
@@ -297,7 +298,7 @@ function Sidebar() {
           <div className="app-brand demo mt-n3">
             <Link to={"/dashboard"} className="app-brand-link">
               <span className="app-brand-logo demo">
-                <img src="src/Components/assets/Project/VichaarCRMLogo.png" width="180px" alt="Logo" />
+                <img src={logo} width="180px" alt="Logo" />
               </span>
             </Link>
 
