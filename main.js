@@ -53,21 +53,31 @@ function createWindow() {
   });
 
   if (process.env.NODE_ENV === "development") {
-    win.loadURL("http://localhost:3006");
+    const loadURLWithRetry = (retries = 5) => {
+      win
+        .loadURL("http://localhost:3006")
+        .then(() => console.log("✅ Vite dev server loaded successfully"))
+        .catch((err) => {
+          if (retries > 0) {
+            console.warn(
+              `⚠️ Retry loading Vite server... attempts left: ${retries}`
+            );
+            setTimeout(() => loadURLWithRetry(retries - 1), 2000);
+          } else {
+            console.error("❌ Could not connect to Vite dev server:", err);
+          }
+        });
+    };
+
+    loadURLWithRetry();
     win.webContents.openDevTools();
   } else {
-    win.loadFile(path.join(__dirname, "dist", "index.html"));
+    const indexPath = path.join(__dirname, "dist", "index.html");
+    const fileUrl = `file://${indexPath.replace(/\\/g, "/")}`; // For Windows compatibility
+
+    console.log("📦 Loading production file:", fileUrl);
+    win.loadURL(fileUrl);
   }
-
-  globalShortcut.register("Alt+Left", () => {
-    if (win.webContents.canGoBack()) {
-      win.webContents.goBack();
-    }
-  });
-
-  win.webContents.on("did-fail-load", () => {
-    console.log("No previous page to go back to.");
-  });
 }
 
 app.whenReady().then(() => {

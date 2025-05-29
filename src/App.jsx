@@ -1,7 +1,7 @@
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import React, { lazy, Suspense } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -87,7 +87,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <BrowserRouter>
+      <HashRouter>
         <Provider store={crmStore}>
           <PersistGate loading={null} persistor={persistor}>
             <Suspense fallback={<div>Loading...</div>}>
@@ -294,7 +294,7 @@ const App = () => {
             <Toaster position="top-center" />
           </PersistGate>
         </Provider>
-      </BrowserRouter>
+      </HashRouter>
     </QueryClientProvider>
   );
 };
