@@ -92,7 +92,7 @@ function DeadTable() {
   const openModal = (event) => {
     event.preventDefault();
     if (selectedRows.length > 0) {
-      setShowModal(true);
+      handleSubmit();
     } else {
       toast.error("Please select at least one Dead Data.");
     }
@@ -106,11 +106,8 @@ function DeadTable() {
     }
   };
 
-  const handleModalSubmit = () => {
-    console.log(team);
-    console.log(selectedTeamMember);
+  const handleSubmit = () => {
     console.log(selectedRows);
-    setShowModal(false);
   };
 
   useEffect(() => {
@@ -149,8 +146,6 @@ function DeadTable() {
                       <td>Date</td>
                       <td>Stage</td>
                       <td>Status</td>
-                      <td>Team Name</td>
-                      <td>Employee Name</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -173,8 +168,6 @@ function DeadTable() {
                         <td>{row.date}</td>
                         <td>{row.stage}</td>
                         <td>{row.status}</td>
-                        <td>{row.team_name}</td>
-                        <td>{row.assign_name}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -225,92 +218,6 @@ function DeadTable() {
           </div>
         </div>
       </div>
-      {showModal && (
-        <div
-          className="modal fade show d-block"
-          tabIndex="-1"
-          role="dialog"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Select Team and Team Member</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label htmlFor="teamSelect" className="form-label">
-                    Team
-                  </label>
-                  <select
-                    id="teamSelect"
-                    className="form-select"
-                    {...register("team")}
-                  >
-                    <option value="" selected disabled>
-                      Select Team
-                    </option>
-                    {teams?.map((data, index) => (
-                      <option key={index} value={data?.id}>
-                        {data?.team_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="teamMemberSelect" className="form-label">
-                    Team Member
-                  </label>
-                  <select
-                    id="teamMemberSelect"
-                    className="form-select"
-                    value={selectedTeamMember}
-                    onChange={(e) => setSelectedTeamMember(e.target.value)}
-                  >
-                    <option value="" selected disabled>
-                      Select Team Member
-                    </option>
-                    {teamMember?.map((data, index) => (
-                      <option key={index} value={data?.id}>
-                        {data?.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setShowModal(false)}
-                >
-                  Close
-                </button>
-                {(userType === "Super Admin" ||
-                  hasRightsPermission(
-                    "Enquiry Bucket",
-                    "Dead Table",
-                    "write",
-                    Permissions
-                  )) && (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={handleModalSubmit}
-                  >
-                    Submit
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

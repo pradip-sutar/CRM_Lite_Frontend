@@ -186,9 +186,8 @@ const VersionDetail = ({ row, companyInfo, onNavigate }) => {
   const hours = String(now.getHours()).padStart(2, "0");
   const minutes = String(now.getMinutes()).padStart(2, "0");
   const seconds = String(now.getSeconds()).padStart(2, "0");
-  const formattedDates = `${day}-${month}-${year}`;
-  const formattedTime = `${hours}:${minutes}:${seconds}`;
-  const next_date_time = `${formattedDates} at ${formattedTime}`;
+  const next_date_time = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
 
   const formatedDataForActivity = {
     enquiry_id: row?.enquiry_id,
@@ -356,9 +355,9 @@ const VersionDetail = ({ row, companyInfo, onNavigate }) => {
             formData.append("version", result?.version);
 
             const res = await postQuotationPdf(formData);
+            await postSchedule(formatedDataForActivity);
             if (res === 201) {
               onNavigate(1);
-              postSchedule(formatedDataForActivity);
             }
           } catch (error) {
             console.error("Error generating PDF:", error);
@@ -372,11 +371,14 @@ const VersionDetail = ({ row, companyInfo, onNavigate }) => {
     }
   };
 
-  const convertImagesToBase64 = async (element) => {
-    const images = element.querySelectorAll("img");
-    const promises = Array.from(images)?.map(async (img) => {
-      if (img.src.startsWith("data:")) return;
-      const response = await fetch(img.src, { mode: "cors" });
+const convertImagesToBase64 = async (element) => {
+  const images = element.querySelectorAll("img");
+
+  const promises = Array.from(images).map(async (img) => {
+    const src = img?.getAttribute("src");
+    if (!src || src.startsWith("data:")) return;
+    try {
+      const response = await fetch(src, { mode: "cors" });
       const blob = await response.blob();
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -386,9 +388,14 @@ const VersionDetail = ({ row, companyInfo, onNavigate }) => {
         };
         reader.readAsDataURL(blob);
       });
-    });
-    await Promise.all(promises);
-  };
+    } catch (error) {
+      console.warn("Image conversion failed for:", src, error);
+    }
+  });
+
+  await Promise.all(promises);
+};
+
 
   return (
     <>

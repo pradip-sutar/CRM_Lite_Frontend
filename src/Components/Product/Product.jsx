@@ -118,7 +118,7 @@ function Product() {
                                 <td>
                                   <div
                                     onClick={() =>
-                                      navigate("/systemAdmin/productForm", {
+                                      navigate("/product/product-form", {
                                         state: { data: row },
                                       })
                                     }

@@ -17,7 +17,7 @@ import { fetchPageData } from "../../services/Pagination/Pagination";
 import * as XLSX from "xlsx";
 import Select from "react-select";
 import { toast } from "react-toastify";
-// import { getEnquiryReport } from "../../services/Reports/apiEnquiryReport";
+//  import { getEnquiryReport } from "../../services/Reports/apiEnquiryReport";
 import { getSource } from "../../services/EnquiryBucket/apiSourceType";
 
 function EnquiryTable() {
@@ -181,62 +181,6 @@ function EnquiryTable() {
     }
   };
 
-  const openModal = (event) => {
-    event.preventDefault();
-    if (selectedRows?.length > 0) {
-      setShowModal(true);
-    } else {
-      toast.error("Please select at least one enquiry.");
-    }
-  };
-
-  const distributeEnquiries = (
-    selectedEnquiries,
-    selectedTeamMembers,
-    team
-  ) => {
-    const distributedList = [];
-    selectedEnquiries?.forEach((enquiry, index) => {
-      const employeeIndex = index % selectedTeamMembers.length;
-      console.log(index, selectedTeamMembers.length, employeeIndex);
-      const employeeId = selectedTeamMembers[employeeIndex];
-
-      distributedList.push({
-        enquiry_id: enquiry,
-        team,
-        assign: employeeId,
-      });
-    });
-
-    return distributedList;
-  };
-
-  const handleModalSubmit = async () => {
-    if (selectedRows.length >= selectedTeamMembers?.length) {
-      console.log(team);
-      console.log("Selected Team Member:", selectedTeamMembers);
-      console.log("Selected Enquiries:", selectedRows);
-      const formatedData = distributeEnquiries(
-        selectedRows,
-        selectedTeamMembers,
-        team
-      );
-
-      const res = await multipleEnquiryAsign(formatedData);
-      if (res === 200) {
-        loadData(initialUrl, 1, paginationInfo.perPage);
-        setSelectedTeamMembers([]);
-        setSelectedRows([]);
-      }
-      setShowModal(false);
-    } else {
-      toast.error("Selected Members Count are Greater Than Selected Enquiries");
-      setSelectedTeamMembers([]);
-      setSelectedRows([]);
-      setShowModal(false);
-    }
-  };
-
   const onSubmit = async (data) => {
     console.log(data);
 
@@ -256,7 +200,6 @@ function EnquiryTable() {
       data.startDate,
       data.endDate,
       data.customerName,
-      data.employee,
       data.source
     );
     if (!response || response.length === 0) {
@@ -359,177 +302,150 @@ function EnquiryTable() {
           <span className="text-muted fw-light">Enquiry Bucket /</span> Enquiry
           Table
         </h5>
-        
-          <div className="col-12 col-lg-auto d-flex align-items-start align-items-lg-center flex-wrap gap-2">
-            <button
-              className="btn btn-success btn-sm me-2"
-              onClick={handleFormatDownload}
-              title="Download Format"
-            >
-              <i className="mdi mdi-download"></i>
-            </button>
 
-            <button
-              className="btn btn-sm me-2"
-              style={{
-                backgroundColor: "#6f42c1",
-                color: "white",
-                borderColor: "#6f42c1",
-              }}
-              onClick={() => setIsExcelModalOpen(true)}
-              title="Upload Excel"
-            >
-              <i className="mdi mdi-file-excel"></i>
-            </button>
+        <div className="col-12 col-lg-auto d-flex align-items-start align-items-lg-center flex-wrap gap-2">
+          <button
+            className="btn btn-success btn-sm me-2"
+            onClick={handleFormatDownload}
+            title="Download Format"
+          >
+            <i className="mdi mdi-download"></i>
+          </button>
 
-            <button
-              className="btn btn-outline-primary btn-sm me-2"
-              onClick={() => setIsModalOpen(true)}
-              title="Filter"
-            >
-              <i className="mdi mdi-filter"></i>
-            </button>
+          <button
+            className="btn btn-sm me-2"
+            style={{
+              backgroundColor: "#6f42c1",
+              color: "white",
+              borderColor: "#6f42c1",
+            }}
+            onClick={() => setIsExcelModalOpen(true)}
+            title="Upload Excel"
+          >
+            <i className="mdi mdi-file-excel"></i>
+          </button>
 
-            <button
-              className="btn btn-dark btn-sm me-2"
-              onClick={() => generateExcelReport(enquirydata)}
-              title="Download Report"
-            >
-              <i className="mdi mdi-file-document"></i>
-            </button>
+          <button
+            className="btn btn-outline-primary btn-sm me-2"
+            onClick={() => setIsModalOpen(true)}
+            title="Filter"
+          >
+            <i className="mdi mdi-filter"></i>
+          </button>
 
-            <button
-              className="btn btn-secondary btn-sm me-2"
-              onClick={() => loadData(initialUrl, 1, paginationInfo.perPage)}
-              title="Reset"
-            >
-              <i className="mdi mdi-refresh"></i>
-            </button>
+          <button
+            className="btn btn-dark btn-sm me-2"
+            onClick={() => generateExcelReport(enquirydata)}
+            title="Download Report"
+          >
+            <i className="mdi mdi-file-document"></i>
+          </button>
 
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={() => navigate("/enquiryBucket/addEnquiry")}
-              title="Add Enquiry"
-            >
-              <i className="mdi mdi-plus"></i>
-            </button>
-          </div>
+          <button
+            className="btn btn-secondary btn-sm me-2"
+            onClick={() => loadData(initialUrl, 1, paginationInfo.perPage)}
+            title="Reset"
+          >
+            <i className="mdi mdi-refresh"></i>
+          </button>
+
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => navigate("/enquiryBucket/addEnquiry")}
+            title="Add Enquiry"
+          >
+            <i className="mdi mdi-plus"></i>
+          </button>
+        </div>
       </div>
       <div className="col-sm ml-2">
         <div className="card">
           <div className="title card-header d-flex justify-content-between align-items-center bg-label-primary py-2">
             <h5 className="mb-0">Enquiry Table :</h5>
           </div>
-          <form onSubmit={openModal}>
-            <div className="text-nowrap p-3">
-              <div className="d-flex">
-                <div
-                  className="d-flex gap-2 ms-auto rounded-pill"
-                  style={{ backgroundColor: "ButtonHighlight" }}
+
+          <div className="text-nowrap p-3">
+            <div className="d-flex">
+              <div
+                className="d-flex gap-2 ms-auto rounded-pill"
+                style={{ backgroundColor: "ButtonHighlight" }}
+              >
+                <h6 className="mt-3 pl-1 text-dark fw-bold">Page</h6>
+                <select
+                  className="form-select form-select-sm"
+                  style={{ width: "80px" }}
+                  onChange={handlePerPageChange}
+                  value={paginationInfo.perPage}
                 >
-                  <h6 className="mt-3 pl-1 text-dark fw-bold">Page</h6>
-                  <select
-                    className="form-select form-select-sm"
-                    style={{ width: "80px" }}
-                    onChange={handlePerPageChange}
-                    value={paginationInfo.perPage}
-                  >
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                  </select>
-                  <h6 className="mt-3 pr-1 text-dark fw-bold">
-                    of {count || 0}
-                  </h6>
-                </div>
-              </div>
-
-              <div className="table-responsive">
-                <table className="table table-bordered" id="all_request_table">
-                  <thead className="table-secondary">
-                    <tr>
-                      <th>
-                          <Checkbox
-                            checked={selectAll}
-                            onChange={handleSelectAllChange}
-                            indeterminate={
-                              selectedRows.length > 0 &&
-                              selectedRows.length < enquirydata.length
-                            }
-                          />
-                        SL No
-                      </th>
-                      <th>Enquiry ID</th>
-                      <th>Customer Name</th>
-                      <th>Mobile</th>
-                      <th>Date</th>
-                      <th>Source</th>
-                      <th>Project</th>
-                      <th>Enquiry Type</th>
-                      <th>Stage</th>
-                      <th>Status</th>
-                      <th>Activity</th>
-                      <th>History</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {enquirydata?.length > 0 &&
-                      enquirydata?.map((data, index) => (
-                        <tr key={index}>
-                          <td>
-                            
-                              <Checkbox
-                                checked={selectedRows.includes(data.enquiry_id)}
-                                onChange={(event) =>
-                                  handleCheckboxChange(event, data.enquiry_id)
-                                }
-                              />
-
-                            {(currentPage - 1) * paginationInfo.perPage +
-                              index +
-                              1}
-                          </td>
-                          <td>{data.enquiry_id}</td>
-                          <td>{data.customer_name}</td>
-                          <td>{data.customer_phone}</td>
-                          <td>{data.date}</td>
-                          <td>{data.source_name}</td>
-                          <td>{data.confirm_project_name}</td>
-                          <td>{data.enquiry_type}</td>
-                          <td>{data.stage}</td>
-                          <td>{data.status}</td>
-                          <td>{data.activity}</td>
-                          <td>{data.history}</td>
-                          <td>
-                            
-                              <div
-                                onClick={() =>
-                                  navigate("/enquiryBucket/addEnquiry", {
-                                    state: { enquiryData: data },
-                                  })
-                                }
-                                className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                data-bs-original-title="Edit"
-                              >
-                                <i className="mdi mdi-pencil-outline"></i>
-                              </div>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                <h6 className="mt-3 pr-1 text-dark fw-bold">of {count || 0}</h6>
               </div>
             </div>
-            <Box display="flex" justifyContent="end">
-              <Button type="submit" variant="contained" sx={{ mb: 2, mr: 3 }}>
-                Submit
-              </Button>
-            </Box>
-          </form>
+
+            <div className="table-responsive">
+              <table className="table table-bordered" id="all_request_table">
+                <thead className="table-secondary">
+                  <tr>
+                    <th>SL No</th>
+                    <th>Enquiry ID</th>
+                    <th>Customer Name</th>
+                    <th>Mobile</th>
+                    <th>Date</th>
+                    <th>Source</th>
+                    <th>Project</th>
+                    <th>Enquiry Type</th>
+                    <th>Stage</th>
+                    <th>Status</th>
+                    <th>Activity</th>
+                    <th>History</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {enquirydata?.length > 0 &&
+                    enquirydata?.map((data, index) => (
+                      <tr key={index}>
+                        <td>
+                          {(currentPage - 1) * paginationInfo.perPage +
+                            index +
+                            1}
+                        </td>
+                        <td>{data.enquiry_id}</td>
+                        <td>{data.customer_name}</td>
+                        <td>{data.customer_phone}</td>
+                        <td>{data.date}</td>
+                        <td>{data.source_name}</td>
+                        <td>{data.confirm_project_name}</td>
+                        <td>{data.enquiry_type}</td>
+                        <td>{data.stage}</td>
+                        <td>{data.status}</td>
+                        <td>{data.activity}</td>
+                        <td>{data.history}</td>
+                        <td>
+                          <div
+                            onClick={() =>
+                              navigate("/enquiryBucket/addEnquiry", {
+                                state: { enquiryData: data },
+                              })
+                            }
+                            className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            data-bs-original-title="Edit"
+                          >
+                            <i className="mdi mdi-pencil-outline"></i>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
           <div className="d-flex justify-content-between align-items-center mt-3">
             <div className="text-muted">
@@ -613,82 +529,72 @@ function EnquiryTable() {
             </div>
 
             <div className="container py-3">
-  <form onSubmit={handleSubmit(onSubmit)}>
-    <div className="row mb-3">
-      <div className="col-md-6">
-        <label className="form-label">Start Date</label>
-        <input
-          type="date"
-          {...register("startDate")}
-          className="form-control"
-        />
-        {errors.startDate && (
-          <small className="text-danger">{errors.startDate.message}</small>
-        )}
-      </div>
-      <div className="col-md-6">
-        <label className="form-label">End Date</label>
-        <input
-          type="date"
-          {...register("endDate")}
-          onChange={() => clearErrors("endDate")}
-          className="form-control"
-        />
-        {errors.endDate && (
-          <small className="text-danger">{errors.endDate.message}</small>
-        )}
-      </div>
-    </div>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <label className="form-label">Start Date</label>
+                    <input
+                      type="date"
+                      {...register("startDate")}
+                      className="form-control"
+                    />
+                    {errors.startDate && (
+                      <small className="text-danger">
+                        {errors.startDate.message}
+                      </small>
+                    )}
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">End Date</label>
+                    <input
+                      type="date"
+                      {...register("endDate")}
+                      onChange={() => clearErrors("endDate")}
+                      className="form-control"
+                    />
+                    {errors.endDate && (
+                      <small className="text-danger">
+                        {errors.endDate.message}
+                      </small>
+                    )}
+                  </div>
+                </div>
 
-    <div className="mb-3">
-      <label className="form-label">Customer Name</label>
-      <input
-        type="text"
-        {...register("customerName")}
-        className="form-control"
-      />
-    </div>
+                <div className="mb-3">
+                  <label className="form-label">Customer Name</label>
+                  <input
+                    type="text"
+                    {...register("customerName")}
+                    className="form-control"
+                  />
+                </div>
 
-    <div className="mb-3">
-      <label className="form-label">Source</label>
-      <select className="form-select" {...register("source")}>
-        <option value="">Select Source</option>
-        {souceType?.map((data, index) => (
-          <option key={index} value={data.id}>
-            {data.name}
-          </option>
-        ))}
-      </select>
-    </div>
+                <div className="mb-3">
+                  <label className="form-label">Source</label>
+                  <select className="form-select" {...register("source")}>
+                    <option value="">Select Source</option>
+                    {souceType?.map((data, index) => (
+                      <option key={index} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-   
-      <div className="mb-3">
-        <label className="form-label">Select Employee</label>
-        <Select
-          options={optionsforEmployee}
-          onChange={(selectedOption) =>
-            setValue("employee", selectedOption.value)
-          }
-          placeholder="Search Employee..."
-          isSearchable
-        />
-      </div>
-
-    <div className="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        onClick={() => setIsModalOpen(false)}
-        className="btn btn-secondary"
-      >
-        Cancel
-      </button>
-      <button type="submit" className="btn btn-primary">
-        Submit
-      </button>
-    </div>
-  </form>
-</div>
-
+                <div className="d-flex justify-content-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="btn btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
@@ -823,81 +729,6 @@ function EnquiryTable() {
                 }
               `}
             </style>
-          </div>
-        </div>
-      )}
-
-      {showModal && (
-        <div
-          className="modal fade show d-block"
-          tabIndex="-1"
-          role="dialog"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Select Team and Team Member</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label htmlFor="teamSelect" className="form-label">
-                    Team
-                  </label>
-                  <select
-                    id="teamSelect"
-                    className="form-select"
-                    {...register("team")}
-                  >
-                    <option value="" selected disabled>
-                      Select Team
-                    </option>
-                    {teams?.data?.map((data, index) => (
-                      <option key={index} value={data?.id}>
-                        {data?.team_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="teamMemberSelect" className="form-label">
-                    Team Member
-                  </label>
-                  <Select
-                    isMulti
-                    options={options}
-                    value={options.filter((option) =>
-                      selectedTeamMembers.includes(option.value)
-                    )}
-                    onChange={(selected) =>
-                      setSelectedTeamMembers(selected.map((opt) => opt.value))
-                    }
-                  />
-                </div>
-              </div>
-              
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={handleModalSubmit}
-                  >
-                    Submit
-                  </button>
-                </div>
-            </div>
           </div>
         </div>
       )}

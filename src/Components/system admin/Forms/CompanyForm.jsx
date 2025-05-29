@@ -245,7 +245,7 @@ function CompanyForm() {
     logFormData(formDatas);
 
     if (id) {
-      const status = await updateCompanyData(formDatas, id); 
+      const status = await updateCompanyData(formDatas, id);
       if (status === 200) {
         navigate("/systemAdmin/companyInfo");
       }
@@ -269,6 +269,7 @@ function CompanyForm() {
 
   useEffect(() => {
     if (editValue) {
+      console.log(editValue);
       setValue("name", editValue?.details?.name);
       setValue("alias", editValue?.details?.alias);
       setValue("company_size", editValue?.details?.company_size);
@@ -283,19 +284,41 @@ function CompanyForm() {
       setValue("state", editValue?.details?.state);
       setValue("city", editValue?.details?.city);
       setValue("pincode", editValue?.details?.pincode);
-      setValue("registered_office_details", editValue?.details?.registered_office_details);
+      setValue(
+        "registered_office_details",
+        editValue?.details?.registered_office_details
+      );
       setValue("address", editValue?.details?.address);
       setValue("whatsappno", editValue?.details?.whatsappno);
       setValue("mobileno", editValue?.details?.mobileno);
       setValue("email", editValue?.details?.email);
-      setImageURL(
-        `${import.meta.env.VITE_URL_BASE}${editValue?.details?.incorporation_certificate}`
+      if (editValue?.details?.incorporation_certificate)
+        setImageURL(
+          `${import.meta.env.VITE_URL_BASE}${
+            editValue?.details?.incorporation_certificate
+          }`
+        );
+      setValue(
+        "contact_name",
+        editValue?.contact_info?.length && editValue?.contact_info[0]?.name
       );
-      setValue("contact_name", editValue?.contact_info?.length && editValue?.contact_info[0]?.name);
-      setValue("designation", editValue?.contact_info?.length && editValue?.contact_info[0]?.designation);
-      setValue("role", editValue?.contact_info?.length && editValue?.contact_info[0]?.role);
-      setValue("contact_email", editValue?.contact_info?.length && editValue?.contact_info[0]?.email);
-      setValue("contact_no", editValue?.contact_info?.length && editValue?.contact_info[0]?.mobileno);
+      setValue(
+        "designation",
+        editValue?.contact_info?.length &&
+          editValue?.contact_info[0]?.designation
+      );
+      setValue(
+        "role",
+        editValue?.contact_info?.length && editValue?.contact_info[0]?.role
+      );
+      setValue(
+        "contact_email",
+        editValue?.contact_info?.length && editValue?.contact_info[0]?.email
+      );
+      setValue(
+        "contact_no",
+        editValue?.contact_info?.length && editValue?.contact_info[0]?.mobileno
+      );
     }
   }, [editValue, setValue]);
 
@@ -501,7 +524,10 @@ function CompanyForm() {
 
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h5 className="text-nowrap p-md-0">
-          <span className="text-muted fw-light ms-0 ms-md-4 text-nowrap">System Admin /</span> Company Info
+          <span className="text-muted fw-light ms-0 ms-md-4 text-nowrap">
+            System Admin /
+          </span>{" "}
+          Company Info
         </h5>
         <div className="mb-2 text-end container-fluid">
           <div
@@ -551,7 +577,8 @@ function CompanyForm() {
                             fullWidth
                             label={
                               <span>
-                                Company Name <span style={{ color: "red" }}>*</span>
+                                Company Name{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             id="companyName"
@@ -598,7 +625,8 @@ function CompanyForm() {
                             fullWidth
                             label={
                               <span>
-                                Company Size <span style={{ color: "red" }}>*</span>
+                                Company Size{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             type="number"
@@ -628,7 +656,8 @@ function CompanyForm() {
                             fullWidth
                             label={
                               <span>
-                                Incorporation No <span style={{ color: "red" }}>*</span>
+                                Incorporation No{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             id="incorporation_no"
@@ -652,7 +681,10 @@ function CompanyForm() {
                         </div>
                         <div className="col-md-4 mt-4">
                           <div className="col">
-                            <div className="file-input-container" style={{ position: "relative", width: "100%" }}>
+                            <div
+                              className="file-input-container"
+                              style={{ position: "relative", width: "100%" }}
+                            >
                               <input
                                 type="text"
                                 className="form-control"
@@ -697,7 +729,9 @@ function CompanyForm() {
                                   color: "white",
                                 }}
                                 onClick={() =>
-                                  document.getElementById("incorporationcertificate").click()
+                                  document
+                                    .getElementById("incorporationcertificate")
+                                    .click()
                                 }
                               >
                                 Choose file
@@ -711,7 +745,8 @@ function CompanyForm() {
                             type="date"
                             label={
                               <span>
-                                Incorporation Date <span style={{ color: "red" }}>*</span>
+                                Incorporation Date{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             id="date"
@@ -740,7 +775,8 @@ function CompanyForm() {
                             fullWidth
                             label={
                               <span>
-                                Pan Details <span style={{ color: "red" }}>*</span>
+                                Pan Details{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             id="PAN"
@@ -767,7 +803,8 @@ function CompanyForm() {
                             fullWidth
                             label={
                               <span>
-                                TaxCertificate Details <span style={{ color: "red" }}>*</span>
+                                TaxCertificate Details{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             id="TAX_certificate"
@@ -798,12 +835,15 @@ function CompanyForm() {
                           defaultValue={editValue?.details?.country || ""}
                           render={({ field }) => (
                             <FormControl fullWidth error={!!errors.country}>
-                              <InputLabel id="country-label">Country</InputLabel>
+                              <InputLabel id="country-label">
+                                Country
+                              </InputLabel>
                               <Select
                                 {...field}
                                 label={
                                   <span>
-                                    Country <span style={{ color: "red" }}>*</span>
+                                    Country{" "}
+                                    <span style={{ color: "red" }}>*</span>
                                   </span>
                                 }
                                 labelId="country-label"
@@ -824,7 +864,9 @@ function CompanyForm() {
                                   <em>Select</em>
                                 </MenuItem>
                                 <MenuItem value="Australia">Australia</MenuItem>
-                                <MenuItem value="Bangladesh">Bangladesh</MenuItem>
+                                <MenuItem value="Bangladesh">
+                                  Bangladesh
+                                </MenuItem>
                                 <MenuItem value="Belarus">Belarus</MenuItem>
                                 <MenuItem value="Brazil">Brazil</MenuItem>
                                 <MenuItem value="Canada">Canada</MenuItem>
@@ -936,7 +978,8 @@ function CompanyForm() {
                             fullWidth
                             label={
                               <span>
-                                Registered Office Address <span style={{ color: "red" }}>*</span>
+                                Registered Office Address{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             id="registered_office_details"
@@ -1018,7 +1061,8 @@ function CompanyForm() {
                             type="number"
                             label={
                               <span>
-                                Mobile No <span style={{ color: "red" }}>*</span>
+                                Mobile No{" "}
+                                <span style={{ color: "red" }}>*</span>
                               </span>
                             }
                             id="mobileno"
@@ -1059,6 +1103,9 @@ function CompanyForm() {
                             {...register("email", {
                               required: "This field is required.",
                             })}
+                             onChange={(e) => {
+                          e.target.value = e.target.value.toLowerCase();
+                        }}
                             InputProps={{
                               sx: {
                                 borderRadius: "14px",
@@ -1095,7 +1142,12 @@ function CompanyForm() {
                     </h4>
                   </div>
                   <div className="row g-4">
-                    {["brand_logo", "favicon", "letter_header", "letter_footer"].map((id) => (
+                    {[
+                      "brand_logo",
+                      "favicon",
+                      "letter_header",
+                      "letter_footer",
+                    ].map((id) => (
                       <div className="col-12 col-sm-6 col-md-6" key={id}>
                         <div className="card-body-comp p-3 shadow rounded">
                           <div className="d-flex align-items-start align-items-sm-center gap-4">
@@ -1104,7 +1156,9 @@ function CompanyForm() {
                                 htmlFor={id}
                                 className="btn btn-primary w-100 mb-2"
                               >
-                                <span>{id.replace("_", " ").toUpperCase()}</span>
+                                <span>
+                                  {id.replace("_", " ").toUpperCase()}
+                                </span>
                                 <input
                                   type="file"
                                   id={id}
@@ -1130,11 +1184,15 @@ function CompanyForm() {
                               ) : editValue?.brand_info?.length > 0 ? (
                                 (() => {
                                   const imageUrl =
-                                    editValue.brand_info.find((info) => info[id])?.[id] || "";
+                                    editValue.brand_info.find(
+                                      (info) => info[id]
+                                    )?.[id] || "";
                                   return imageUrl ? (
                                     <div className="mt-2">
                                       <img
-                                        src={`${import.meta.env.VITE_URL_BASE}/${imageUrl}`}
+                                        src={`${
+                                          import.meta.env.VITE_URL_BASE
+                                        }/${imageUrl}`}
                                         alt="Brand Image"
                                         className="img-thumbnail rounded"
                                         style={{
@@ -1238,6 +1296,9 @@ function CompanyForm() {
                         id="contact_email"
                         error={!!errors.contact_email}
                         {...register("contact_email")}
+                        onChange={(e) => {
+                          e.target.value = e.target.value.toLowerCase();
+                        }}
                         InputProps={{
                           sx: {
                             borderRadius: "14px",

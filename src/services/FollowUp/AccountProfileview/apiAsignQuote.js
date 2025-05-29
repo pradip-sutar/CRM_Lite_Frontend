@@ -3,29 +3,30 @@ import { toast } from "react-toastify";
 
 export const postQuoteAsign = async (data) => {
   try {
-    const response = await apiGateWay.post(
-      `/api/quotation/`,
-      data
-    );
+    const response = await apiGateWay.post(`/api/quotation/`, data);
     if (response.status === 201) {
       toast.success("Quote assigned successfully!");
-      return response.status
+      return response.status;
     }
   } catch (error) {
     toast.error("Failed to assign quote!");
   }
 };
 
-export const getAssignQuote = async () => {
+export const getAssignQuote = async (enquiry_id) => {
   try {
- 
-    const response = await apiGateWay.get(
-      `/api/quotation/`
-    );
-     return response.data;
-   
+    let response;
+    if (enquiry_id) {
+      response = await apiGateWay.get(
+        `/api/quotation/?enquiry_id=${enquiry_id}`
+      );
+    } else {
+      response = await apiGateWay.get(`/api/quotation/`);
+    }
+
+    return response.data;
   } catch (error) {
-    if(error.response.status==404){
+    if (error.response.status == 404) {
       toast.info("No quotes assigned found for this employee.");
     }
     console.log(error);
@@ -34,11 +35,8 @@ export const getAssignQuote = async () => {
 
 export const getAssignedQuoteforEmployee = async () => {
   try {
-    const response = await apiGateWay.get(
-      `/api/quotation/`
-    );
-     return response.data;
-   
+    const response = await apiGateWay.get(`/api/quotation/`);
+    return response.data;
   } catch (error) {
     if (error.response.status == 404) {
       toast.info("No quotes assigned found for this employee.");

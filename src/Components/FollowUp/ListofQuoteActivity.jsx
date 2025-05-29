@@ -22,9 +22,10 @@ import { useGetQuotationTable } from "../../hooks/Quotation/useQuotationTable";
 import { getCompanyInfo } from "../../services/SystemAdmin/apiCompanyInfo";
 
 //This Component is used for UpcomingActivity of Activities
-const ListofActivity = () => {
+const ListofActivity = ({ enquiry_id }) => {
+  console.log(enquiry_id);
   const navigate = useNavigate();
-  const { quotationTable } = useGetQuotationTable();
+  const { quotationTable } = useGetQuotationTable(enquiry_id);
   const [companyInfo, setCompanyInfo] = useState({});
   const [quatationData, setQuatationData] = useState([]);
   const fetchCompanyInfo = async () => {
@@ -42,6 +43,7 @@ const ListofActivity = () => {
 
   useEffect(() => {
     if (quotationTable) {
+      console.log(quotationTable);
       setQuatationData(quotationTable);
     }
   }, [quotationTable]);

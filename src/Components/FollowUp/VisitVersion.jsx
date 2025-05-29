@@ -125,17 +125,15 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
   const date = new Date(row?.date);
   const istDate = new Date().toISOString().split("T")[0];
 
-  const now = new Date();
+   const now = new Date();
   const day = String(now.getDate()).padStart(2, "0");
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const year = now.getFullYear();
   const hours = String(now.getHours()).padStart(2, "0");
   const minutes = String(now.getMinutes()).padStart(2, "0");
   const seconds = String(now.getSeconds()).padStart(2, "0");
+  const next_date_time = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 
-  const formattedDate = `${day}-${month}-${year}`;
-  const formattedTime = `${hours}:${minutes}:${seconds}`;
-  const next_date_time = `${formattedDate} at ${formattedTime}`;
 
   const formatedDataForActivity = {
     enquiry_id: row?.enquiry_id,
@@ -163,6 +161,7 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
         if (button) {
           button.remove();
         }
+        await convertImagesToBase64(element);
         const options = {
           margin: [5, 5, 5, 5],
           filename: `Visit_Report_${
@@ -197,6 +196,31 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
       console.log(error);
     }
   };
+
+  const convertImagesToBase64 = async (element) => {
+  const images = element.querySelectorAll("img");
+
+  const promises = Array.from(images).map(async (img) => {
+    const src = img?.getAttribute("src");
+    if (!src || src.startsWith("data:")) return;
+    try {
+      const response = await fetch(src, { mode: "cors" });
+      const blob = await response.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          img.src = reader.result;
+          resolve();
+        };
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.warn("Image conversion failed for:", src, error);
+    }
+  });
+
+  await Promise.all(promises);
+}
 
   return (
     <Box

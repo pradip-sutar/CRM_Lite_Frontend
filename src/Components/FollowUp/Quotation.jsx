@@ -47,8 +47,12 @@ function Quotation() {
   const location = useLocation();
   console.log(location);
   const navigate = useNavigate();
+  const enquiry_id = location?.state?.enquiry_id || null;
   const quotation_id = location?.state?.quotation_id || null;
-  console.log(quotation_id);
+  console.log(enquiry_id);
+  useEffect(() => {
+    if (enquiry_id) setContent("AllList");
+  }, [enquiry_id]);
 
   useEffect(() => {
     if (
@@ -115,6 +119,15 @@ function Quotation() {
           </Link>
         </div>
       </div>
+      {enquiry_id && (
+        <div className="alert alert-info mt-3" role="alert">
+          <strong>Note:</strong> You are now viewing Qutotaion Only for{" "}
+          <span className="text-primary fw-bold">
+            Enquiry ID - {enquiry_id}
+          </span>
+          .
+        </div>
+      )}
 
       <div className="card mx-4">
         <Grid item xs={9} className="followup-section table-resposive">
@@ -126,8 +139,6 @@ function Quotation() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   borderColor: "divider",
-
-                  // p: 2,
                 }}
               >
                 <Typography
@@ -143,7 +154,9 @@ function Quotation() {
                   <strong> Quotation List:</strong>
                 </Typography>
                 <Box className="followup-listInitiate mt-4">
-                  <Box sx={{ display: { xs: "none", sm: "flex",gap:"10px" } }}>
+                  <Box
+                    sx={{ display: { xs: "none", sm: "flex", gap: "10px" } }}
+                  >
                     <Button
                       variant="contained"
                       startIcon={<PendingActionsIcon />}
@@ -164,6 +177,7 @@ function Quotation() {
                           md: "14px",
                         },
                       }}
+                      disabled={enquiry_id}
                     >
                       Pending
                     </Button>
@@ -187,6 +201,7 @@ function Quotation() {
                           md: "14px",
                         },
                       }}
+                      disabled={enquiry_id}
                     >
                       Today
                     </Button>
@@ -210,6 +225,7 @@ function Quotation() {
                           md: "14px",
                         },
                       }}
+                      disabled={enquiry_id}
                     >
                       Upcoming
                     </Button>
@@ -388,7 +404,9 @@ function Quotation() {
             {content === "Today" && <InitiatedQuoteComponent />}
             {content === "UpComing" && <UpcomingQuoteActivity />}
             {content === "Pending" && <PendingQuoteActivity />}
-            {content === "AllList" && <ListofQuoteActivity />}
+            {content === "AllList" && (
+              <ListofQuoteActivity enquiry_id={enquiry_id} />
+            )}
           </Box>
         </Grid>
       </div>

@@ -17,15 +17,6 @@ function CustomerRow({ customer ,index}) {
       <td>
         <div className="d-inline-block">
           <button
-            to=""
-            className="btn btn-text-primary btn-sm small py-1 px-2 waves-effect waves-light"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-original-title="View"
-          >
-            <i className="mdi mdi-eye"></i>
-          </button>
-          <button
             onClick={() =>
               navigate("/customer/addCustomer", {
                 state: { customerDetails: customer },

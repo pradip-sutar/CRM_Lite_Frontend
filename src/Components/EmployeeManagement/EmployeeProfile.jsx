@@ -84,17 +84,8 @@ const EmployeeProfile = () => {
             </h5>
           </div>
 
-          <div className="col-12 d-flex  justify-content-between align-items-center mt-2">
-            <div className="mb-2 ms-lg-4 ms-md-4 ">
-              <button className="btn btn-primary btn-sm" onClick={handleCopy}>
-                Generate Link
-              </button>
-              {copySuccess && (
-                <span style={{ marginLeft: "10px", color: "green" }}>
-                  ✔ Link Copied!
-                </span>
-              )}
-            </div>
+          <div className="col-12 d-flex  justify-content-end align-items-center mb-1">
+          
 
             <div
               onClick={() => navigate(-1)}

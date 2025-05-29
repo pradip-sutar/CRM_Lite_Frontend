@@ -13,6 +13,7 @@ import { getCustomerAndProjectDetails } from "../../services/FollowUp/AccountPro
 import { editBookingForm } from "../../services/BookingForm/apiBookingForm";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 import Select from "react-select";
+import { EditTwoTone } from "@mui/icons-material";
 
 const Allotment = () => {
   const location = useLocation();
@@ -20,12 +21,12 @@ const Allotment = () => {
   const {
     enquiry_id,
     confirm_project,
-    customer_name,
-    customer_phone,
-    customer_pincode,
-    customer_id,
-    customer_email,
-    customer_address,
+    customer_name = null,
+    customer_phone = null,
+    customer_pincode = null,
+    customer_id = null,
+    customer_email = null,
+    customer_address = null,
   } = location?.state || {};
   const editData = location?.state?.editData || null;
   console.log(editData);
@@ -36,6 +37,7 @@ const Allotment = () => {
     formState: { errors },
     trigger,
     watch,
+    reset,
     clearErrors,
   } = useForm();
   const [Paymentype, setPaymentType] = useState(null);
@@ -62,7 +64,7 @@ const Allotment = () => {
       setValue("product_id", selectedProductData?.project_id);
       setValue("description", selectedProductData?.project_description);
       setValue("rate", selectedProductData?.rate);
-      setValue("gst", selectedProductData?.gst);
+      setValue("product_gst", selectedProductData?.gst);
       setValue("cost", selectedProductData?.cost);
     }
   }, [selectedProductData]);
@@ -79,11 +81,11 @@ const Allotment = () => {
   }, []);
 
   useEffect(() => {
-    setValue("customer_name", customer_name);
-    setValue("customerNumber", customer_phone);
-    setValue("customerEmail", customer_email);
-    setValue("customerAddress", customer_address);
-    setValue("customerPin", customer_pincode);
+    if (customer_name) setValue("customer_name", customer_name);
+    if (customer_phone) setValue("customer_mob", customer_phone);
+    if (customer_email) setValue("customer_email", customer_email);
+    if (customer_address) setValue("customer_address", customer_address);
+    if (customer_pincode) setValue("customer_pincode", customer_pincode);
   }, [selectedCustomerData]);
 
   useEffect(() => {
@@ -143,7 +145,7 @@ const Allotment = () => {
     }
     const allFormData = getValues();
     console.log(allFormData);
-    allFormData.customer_id=customer_id;
+    allFormData.customer_id = customer_id;
     let paymentDetails = {};
 
     switch (Paymentype) {
@@ -198,27 +200,22 @@ const Allotment = () => {
         break;
     }
 
-
-    
     const formatedDataForSubmit = {
-      project_details: allFormData.product_id,
+      project_details: allFormData.project_details,
       description: allFormData.description,
       rate: allFormData.rate,
-      product_gst: allFormData.gst,
+      product_gst: allFormData.product_gst,
       cost: allFormData.cost,
-      quantity: allFormData.ProductQuantity,
+      quantity: allFormData.quantity,
       customer: allFormData.customer_id,
       customer_gst_no: allFormData.customerGstNo,
       payment_details: paymentDetails,
       enquiry_id,
       payable_amount: paymentDetails.amount,
     };
-    if (editData?.project_details?.customer_id) {
-      formatedDataForSubmit.project_details.customer_id =
-        editData?.project_details?.customer_id;
-    }
 
     if (editData) {
+      formatedDataForSubmit.customer=editData.customer;
       const res = await editBookingForm(formatedDataForSubmit, editData?.id);
       if (res == 200) {
         navigate(-1);
@@ -238,6 +235,51 @@ const Allotment = () => {
   const year = currentDate.getFullYear();
 
   const formattedDate = `${day}-${month}-${year}`;
+
+  useEffect(() => {
+    if (editData) {
+      setTimeout(() => {
+        reset(editData);
+        setValue("PaymentType", editData?.payment_details?.mode_of_payment);
+        setValue("totalAmmountcash", editData?.payment_details?.amount);
+        setValue("BankModeType", editData?.payment_details?.bankMode);
+        setValue(
+          "transactionNoforPDforUPI",
+          editData?.payment_details?.TransactionNo
+        );
+        setValue("amountforPDforUPI", editData?.payment_details?.amount);
+        setValue("dateforPDforUPI", editData?.payment_details?.date);
+
+        setValue(
+          "transactionNoforPDForCredDeb",
+          editData?.payment_details?.TransactionNo
+        );
+        setValue("amountforPDForCredDeb", editData?.payment_details?.amount);
+        setValue("dateforPDForCredDeb", editData?.payment_details?.date);
+        setValue("bankforPDForCredDeb", editData?.payment_details?.bank);
+
+        setValue(
+          "transactionNoforPDforNEFT",
+          editData?.payment_details?.TransactionNo
+        );
+        setValue("amountforPDforNEFT", editData?.payment_details?.amount);
+        setValue("dateforPDforNEFT", editData?.payment_details?.date);
+        setValue("bankforPDforNEFT", editData?.payment_details?.bank);
+      }, 300);
+
+      setValue("amountforPDcheque", editData?.payment_details?.amount);
+      setValue("dateforcheque", editData?.payment_details?.date);
+      setValue("Accnoforcheque", editData?.payment_details?.accountNo);
+
+      setValue(
+        "chequeNoforPDcheque",
+        editData?.payment_details?.chequeOrDraftNo
+      );
+      setValue("ifscCodeforcheque", editData?.payment_details?.ifsc);
+      setValue("bankforPDforcheque", editData?.payment_details?.bank);
+      setValue("branchforPDforcheque", editData?.payment_details?.branch);
+    }
+  }, [productData]);
 
   return (
     <>
@@ -277,9 +319,9 @@ const Allotment = () => {
                     <select
                       id="project"
                       className={`form-control controlFoorm ${
-                        errors.product_id ? "is-invalid" : ""
+                        errors.project_details ? "is-invalid" : ""
                       }`}
-                      {...register("product_id", {
+                      {...register("project_details", {
                         required: "project",
                         onChange: (e) => {
                           const data = productData.find(
@@ -342,7 +384,7 @@ const Allotment = () => {
                     type="number"
                     className="form-control controlFoorm"
                     id="carpetArea"
-                    {...register("gst")}
+                    {...register("product_gst")}
                   />
                 </div>
 
@@ -371,10 +413,10 @@ const Allotment = () => {
                 <input
                   type="number"
                   className={`form-control ${
-                    errors?.ProductQuantity ? "is-invalid" : ""
+                    errors?.quantity ? "is-invalid" : ""
                   }`}
                   id="carpetArea"
-                  {...register("ProductQuantity", {
+                  {...register("quantity", {
                     required: "Quantity Required",
                   })}
                 />
@@ -421,10 +463,10 @@ const Allotment = () => {
                   <input
                     type="number"
                     className={`form-control ${
-                      errors?.customerNumber ? "is-invalid" : ""
+                      errors?.customer_mob ? "is-invalid" : ""
                     }`}
                     id="carpetArea"
-                    {...register("customerNumber", {
+                    {...register("customer_mob", {
                       required: "Customer number is required",
                       minLength: {
                         value: 10,
@@ -440,9 +482,9 @@ const Allotment = () => {
                       },
                     })}
                   />
-                  {errors?.customerNumber?.message && (
+                  {errors?.customer_mob?.message && (
                     <small style={{ color: "red" }}>
-                      {errors.customerNumber.message}
+                      {errors.customer_mob.message}
                     </small>
                   )}
                 </div>
@@ -505,7 +547,7 @@ const Allotment = () => {
                     type="text"
                     className="form-control controlFoorm"
                     id="carpetArea"
-                    {...register("customerGstNo")}
+                    {...register("customer_gst_no")}
                   />
                 </div>
 

@@ -7,9 +7,14 @@ export const getCustomerReport = async (
   customerName,
   empId
 ) => {
+  const params = new URLSearchParams();
+  if (startDate) params.append("from_date", startDate);
+  if (endDate) params.append("to_date", endDate);
+  if (customerName) params.append("customer_name", customerName);
+  if (empId) params.append("employee_id", empId);
   try {
     const response = await apiGateWay.get(
-      `/api/customer_report/?from_date=${startDate}&to_date=${endDate}&customer_name=${customerName}&employee_id=${empId}`
+      `/api/customer_report/?${params.toString()}`
     );
     return response.data;
   } catch (error) {
