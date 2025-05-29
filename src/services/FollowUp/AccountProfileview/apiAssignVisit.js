@@ -16,9 +16,7 @@ export const postAssignVisit = async (data) => {
 export const getVisitAssignedBy = async () => {
   try {
     if (true) {
-      const response = await apiGateWay.get(
-        `/api/visit/`
-      );
+      const response = await apiGateWay.get(`/api/visit/`);
       return response.data;
     } else {
       const response = await apiGateWay.get(`/api/visit/`);
@@ -31,11 +29,11 @@ export const getVisitAssignedBy = async () => {
   }
 };
 
-export const getVisitAssignToEmployee = async (logged_employee_Id) => {
+export const getVisitAssignToEmployee = async (enquiry_id) => {
   try {
-    if (true) {
+    if (enquiry_id) {
       const response = await apiGateWay.get(
-        `/api/visit/`
+        `/api/visit/?enquiry_id=${enquiry_id}`
       );
       return response.data;
     } else {

@@ -116,7 +116,7 @@ const AccountProfileview = ({ id }) => {
     customer_email = "",
     customer_country = "",
     customer_address = "",
-    customer_pincode="",
+    customer_pincode = "",
     rate = 0,
     stage = "",
     status = "",
@@ -125,6 +125,8 @@ const AccountProfileview = ({ id }) => {
     product_details = [],
     source = null,
     enquiry_type = null,
+    total_quotations = 0,
+    total_visits = 0,
   } = useLocation()?.state || {};
   console.log(useLocation()?.state);
 
@@ -235,7 +237,7 @@ const AccountProfileview = ({ id }) => {
           }
 
           if (res == 200) {
-            navigate(-1);
+            navigate("/followUp", { state: { activeTab } });
           }
         } catch (error) {
           console.log(error);
@@ -388,7 +390,7 @@ const AccountProfileview = ({ id }) => {
     console.log(formatdData);
     const res = await postQuoteAsign(formatdData);
     if (res == 201) {
-      navigate("/followUp/Quotation");
+      navigate("/followUp/Quotation", { state: { enquiry_id } });
     }
   };
 
@@ -408,7 +410,7 @@ const AccountProfileview = ({ id }) => {
 
     const res = await postAssignVisit(formatdData);
     if (res == 201) {
-      navigate("/followUp/Visit");
+      navigate("/followUp/Visit", { state: { enquiry_id } });
     }
   };
 
@@ -1797,7 +1799,15 @@ const AccountProfileview = ({ id }) => {
                                           backgroundColor: "#4f54c7",
                                         },
                                       }}
-                                      onClick={() => handelQuoteClick()}
+                                      onClick={() => {
+                                        if (total_quotations) {
+                                          navigate("/followUp/Quotation", {
+                                            state: { enquiry_id },
+                                          });
+                                        } else {
+                                          handelQuoteClick();
+                                        }
+                                      }}
                                     >
                                       QUOTE
                                     </Button>
@@ -1858,7 +1868,15 @@ const AccountProfileview = ({ id }) => {
                                           backgroundColor: "#4f54c7",
                                         },
                                       }}
-                                      onClick={() => handelVisit()}
+                                      onClick={() => {
+                                        if (total_visits) {
+                                          navigate("/followUp/Visit", {
+                                            state: { enquiry_id },
+                                          });
+                                        } else {
+                                          handelVisit();
+                                        }
+                                      }}
                                     >
                                       VISIT
                                     </Button>
@@ -2138,7 +2156,7 @@ const AccountProfileview = ({ id }) => {
                                         customer_phone,
                                         customer_email,
                                         customer_address,
-                                        customer_pincode
+                                        customer_pincode,
                                       },
                                     });
                                   }}

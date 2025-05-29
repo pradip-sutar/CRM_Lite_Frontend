@@ -47,7 +47,7 @@ const Masters = () => {
     } else {
       const status = await postPersonaMaster(data.categories);
       if (status === 201) {
-        reset();
+        window.location.reload();
       }
     }
   };

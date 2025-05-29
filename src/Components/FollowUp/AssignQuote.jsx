@@ -121,7 +121,7 @@ const AssignQuote = () => {
     if (res == 201) {
       reset();
       fetchAssignQuotes();
-      postSchedule(formatedDataForActivity);
+     await postSchedule(formatedDataForActivity);
     }
   };
 

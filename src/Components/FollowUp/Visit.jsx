@@ -49,7 +49,8 @@ function Visit() {
     setAnchorEl(null);
   };
   const [showButtons, setShowButtons] = useState(false);
-
+  const enquiry_id = location?.state?.enquiry_id || null;
+  console.log(enquiry_id);
   const visit_id = location?.state?.visit_id || null;
 
   useEffect(() => {
@@ -58,9 +59,9 @@ function Visit() {
     }
   }, [location.pathname, visit_id]);
 
-  const fetchVisitforLogedUser = async (logged_employee_Id) => {
+  const fetchVisitforLogedUser = async () => {
     try {
-      const data = await getVisitAssignToEmployee(logged_employee_Id);
+      const data = await getVisitAssignToEmployee(enquiry_id);
       console.log(data);
       if (visit_id) {
         const filterVisit = data.filter((visit) => visit.visit_id === visit_id);
@@ -85,47 +86,35 @@ function Visit() {
       console.log(error);
     }
   };
-  useEffect(() => {
-    fetchCompanyInfo();
-  }, []);
 
   const filterTodayData = () => {
     console.log(content);
 
-    const currentDate = new Date().toDateString();
+    const currentDate = new Date().toISOString().slice(0, 10);
     const filteredData = visitForUser?.filter((row) => {
-      const rowDate = new Date(row?.date).toDateString();
+      const rowDate = new Date(row?.date).toISOString().slice(0, 10);
       return rowDate === currentDate;
     });
     console.log(filteredData);
-
     setQuotationData(filteredData);
   };
 
   const filterUpComingData = () => {
-    console.log(content);
-
-    const today = new Date().setHours(0, 0, 0, 0);
-
-    const filteredData = visitForUser.filter((row) => {
-      const rowDate = new Date(row?.date).setHours(0, 0, 0, 0);
-
-      return rowDate > today;
+    const currentDate = new Date().toISOString().slice(0, 10);
+    const filteredData = visitForUser?.filter((row) => {
+      const rowDate = new Date(row?.date).toISOString().slice(0, 10);
+      return rowDate > currentDate;
     });
-
     setQuotationData(filteredData);
     console.log(filteredData);
   };
 
   const filterPendingData = () => {
-    const today = new Date().setHours(0, 0, 0, 0);
-
+    const currentDate = new Date().toISOString().slice(0, 10);
     const filteredData = visitForUser?.filter((row) => {
-      const rowDate = new Date(row?.date).setHours(0, 0, 0, 0);
-      console.log(rowDate, today);
-      return rowDate < today;
+      const rowDate = new Date(row?.date).toISOString().slice(0, 10);
+      return rowDate < currentDate;
     });
-
     setQuotationData(filteredData);
     console.log(filteredData);
   };
@@ -151,13 +140,12 @@ function Visit() {
   }, [content, visitForUser]);
 
   useEffect(() => {
-    fetchVisitforLogedUser(logged_employee_Id);
+    fetchVisitforLogedUser();
     fetchCompanyInfo();
-  }, [logged_employee_Id]);
-
-  useEffect(() => {
-    console.log(quotationData);
-  }, [quotationData]);
+    if (enquiry_id) {
+      setContent("AllList");
+    }
+  }, []);
 
   const options = {
     timeZone: "UTC",
@@ -187,6 +175,16 @@ function Visit() {
           </Link>
         </div>
       </div>
+
+      {enquiry_id && (
+        <div className="alert alert-info mt-3" role="alert">
+          <strong>Note:</strong> You are now viewing Visti Only for{" "}
+          <span className="text-primary fw-bold">
+            Enquiry ID - {enquiry_id}
+          </span>
+          .
+        </div>
+      )}
       <div className="card mx-4">
         <Grid item xs={9} className="followup-section">
           <Box className="followup-box">
@@ -225,12 +223,16 @@ function Visit() {
                       sx={{
                         mr: 1,
                         mb: 2,
-                        backgroundColor: "#e7e7ff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "Pending"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "Pending" ? "#fff" : "#666cff",
                         width: "auto",
                         height: "25px",
                         fontSize: { xs: "10px", sm: "12px", md: "14px" },
                       }}
+                      disabled={enquiry_id}
                     >
                       Pending
                     </Button>
@@ -242,12 +244,16 @@ function Visit() {
                       sx={{
                         mr: 1,
                         mb: 2,
-                        backgroundColor: "#e7e7ff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "Today"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "Today" ? "#fff" : "#666cff",
                         width: "auto",
                         height: "25px",
                         fontSize: { xs: "10px", sm: "12px", md: "14px" },
                       }}
+                      disabled={enquiry_id}
                     >
                       Today
                     </Button>
@@ -259,12 +265,16 @@ function Visit() {
                       sx={{
                         mr: 1,
                         mb: 2,
-                        backgroundColor: "#dadcff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "UpComing"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "UpComing" ? "#fff" : "#666cff",
                         width: "auto",
                         height: "25px",
                         fontSize: { xs: "10px", sm: "12px", md: "13px" },
                       }}
+                      disabled={enquiry_id}
                     >
                       Upcoming
                     </Button>
@@ -276,8 +286,11 @@ function Visit() {
                       sx={{
                         mr: 1,
                         mb: 2,
-                        backgroundColor: "#e7e7ff !important",
-                        color: "#666cff",
+                        backgroundColor:
+                          content === "AllList"
+                            ? "#666cff !important"
+                            : "#e7e7ff !important",
+                        color: content === "AllList" ? "#fff" : "#666cff",
                         width: "auto",
                         height: "25px",
                         fontSize: { xs: "10px", sm: "12px", md: "14px" },

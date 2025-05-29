@@ -88,7 +88,7 @@ const Expectation = () => {
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     const result = await postExpectations(data);
-    if (result === 200) {
+    if (result === 201) {
       const response = await getExpectations(data.project);
       setGetExpectations(response);
     }

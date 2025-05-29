@@ -371,56 +371,8 @@ const EmployeeProfileProfile = () => {
     }
   }, [editemployeeProfileData]);
 
-  const {
-    fields: familyFields,
-    append: appendFamily,
-    remove: removeFamily,
-  } = useFieldArray({
-    control,
-    name: "familyProfile",
-  });
-
-  // Education Profile
-  const {
-    fields: educationfields,
-    append: appendEducation,
-    remove: removeEducation,
-  } = useFieldArray({
-    control,
-    name: "educationProfile",
-  });
-
-  // Training Detail
-  const {
-    fields: trainingFields,
-    append: appendTraining,
-    remove: removeTraining,
-  } = useFieldArray({
-    control,
-    name: "TrainingDetail",
-  });
-
-  // Experiences
-  const {
-    fields: experienceFields,
-    append: appendExperience,
-    remove: removeExperience,
-  } = useFieldArray({
-    control,
-    name: "experiences",
-  });
-  const department = watch("department") || 0;
-  // const { dropDowns: designations } = useGetDropDowns(
-  //   `department_designation_handler/?department_id=${department}`
-  // );
-
-  // const { dropDowns: departmentName } = useGetDropDowns(
-  //   "department_name_handler/"
-  // );
-  // const { dropDowns: branchType } = useGetDropDowns(
-  //   "system_branch_type_handler/"
-  // );
-  // const { dropDowns: grades } = useGetDropDowns("department_grade_handler/");
+  
+  
 
   const countries = [
     "Australia",

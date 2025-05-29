@@ -34,6 +34,7 @@ const Employee = () => {
     clearErrors,
     reset,
   } = useForm();
+  const [flter, setFilter] = useState(false);
   const [nextUrl, setNextUrl] = useState(null);
   const [prevUrl, setPrevUrl] = useState(null);
   const [count, setCount] = useState(null);
@@ -103,15 +104,14 @@ const Employee = () => {
       data.empNmaeorId,
       data.startDate,
       data.endDate,
-      data.department,
-      data.designation,
       data.isBPO
     );
     if (!response || response.length === 0) {
       toast.error("No employee data available to generate report");
       return;
     }
-    setEmployees(response);
+    setEmployees(response.data);
+    setFilter(true);
     reset();
   };
 
@@ -211,11 +211,18 @@ const Employee = () => {
 
         <div className="col-12 col-lg-auto d-flex flex-wrap align-items-center gap-2">
           <button
-            className="btn btn-outline-primary btn-sm me-2"
+            className="btn btn-outline-primary btn-sm me-2 position-relative"
             onClick={() => setIsModalOpen(true)}
             title="Filter"
           >
             <i className="mdi mdi-filter"></i>
+
+            {flter && (
+              <span
+                className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                style={{ zIndex: 1 }}
+              ></span>
+            )}
           </button>
 
           <button
@@ -228,7 +235,10 @@ const Employee = () => {
 
           <button
             className="btn btn-secondary btn-sm me-2"
-            onClick={() => loadData(initialUrl)}
+            onClick={() => {
+              setFilter(false);
+              loadData(initialUrl);
+            }}
             title="Reset"
           >
             <i className="mdi mdi-refresh"></i>
@@ -302,12 +312,8 @@ const Employee = () => {
                           <td className="py-3 px-4">{employee.name}</td>
                           <td className="py-3 px-4">{employee.email}</td>
                           <td className="py-3 px-4">{employee.mobileno}</td>
-                          <td className="py-3 px-4">
-                            {employee.department}
-                          </td>
-                          <td className="py-3 px-4">
-                            {employee.designation}
-                          </td>
+                          <td className="py-3 px-4">{employee.department}</td>
+                          <td className="py-3 px-4">{employee.designation}</td>
                           <td className="py-3 px-4">
                             {employee.date_of_joining}
                           </td>
@@ -325,55 +331,35 @@ const Employee = () => {
                             >
                               <i className="mdi mdi-eye"></i>
                             </div>
-                              <div
-                                onClick={() =>
-                                  navigate("/employee/EmployeeProfile", {
-                                    state: { employee_id: employee?.empid },
-                                  })
-                                }
-                                className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                data-bs-original-title="Edit"
-                              >
-                                <i className="mdi mdi-pencil-outline"></i>
-                              </div>
-                              <button
-                                className="btn btn-text-danger btn-sm small py-1 px-2"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                data-bs-original-title="Delete"
-                                onClick={() => {
-                                  HandleDeleteById(
-                                    employee?.empid,
-                                    deleteEmployee,
-                                    loadData,
-                                    initialUrl
-                                  );
-                                  EmpIVRDetails(employee.mobileno);
-                                }}
-                              >
-                                <i className="mdi mdi-trash-can" />
-                              </button>
-                            <button
-                              className="btn btn-text-success btn-sm small py-1 px-2"
+                            <div
+                              onClick={() =>
+                                navigate("/employee/EmployeeProfile", {
+                                  state: { employee_id: employee?.empid },
+                                })
+                              }
+                              className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
                               data-bs-toggle="tooltip"
                               data-bs-placement="top"
-                              data-bs-original-title="Lock"
-                              onClick={() =>
-                                handleStatusUpdate(
-                                  employee.empid,
-                                  employee.status
-                                )
-                              }
+                              data-bs-original-title="Edit"
                             >
-                              <i
-                                className={
-                                  employee.status === true
-                                    ? "mdi mdi-lock text-danger"
-                                    : "mdi mdi-lock-open"
-                                }
-                              />
+                              <i className="mdi mdi-pencil-outline"></i>
+                            </div>
+                            <button
+                              className="btn btn-text-danger btn-sm small py-1 px-2"
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="top"
+                              data-bs-original-title="Delete"
+                              onClick={() => {
+                                HandleDeleteById(
+                                  employee?.empid,
+                                  deleteEmployee,
+                                  loadData,
+                                  initialUrl
+                                );
+                                EmpIVRDetails(employee.mobileno);
+                              }}
+                            >
+                              <i className="mdi mdi-trash-can" />
                             </button>
                           </td>
                         </tr>
@@ -487,50 +473,7 @@ const Employee = () => {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6">
-                    <label htmlFor="department" className="form-label">
-                      Department
-                    </label>
-                    <select
-                      className="form-select"
-                      id="department"
-                      {...register("department")}
-                    >
-                      <option value="">Select Department</option>
-                      {allDepartment?.map((data) => (
-                        <option key={data.id} value={data.id}>
-                          {data.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.department && (
-                      <div className="text-danger mt-1">
-                        {errors.department.message}
-                      </div>
-                    )}
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="designation" className="form-label">
-                      Designation
-                    </label>
-                    <select
-                      className="form-select"
-                      id="designation"
-                      {...register("designation")}
-                    >
-                      <option value="">Select Designation</option>
-                      {designations?.map((data) => (
-                        <option key={data.id} value={data.id}>
-                          {data.designation}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.designation && (
-                      <div className="text-danger mt-1">
-                        {errors.designation.message}
-                      </div>
-                    )}
-                  </div>
+
                   <div className="col-12">
                     <div className="form-check">
                       <input

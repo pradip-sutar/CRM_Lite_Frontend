@@ -74,7 +74,7 @@ function PaymentReciept() {
     >
       <div className="card-header d-flex justify-content-between align-items-center py-2">
         <h5 className="breadcrumb mx-4">
-          <span className="text-muted fw-light">Sales /</span> Payment Recipt
+          <span className="text-muted fw-light">Sales /</span> Payment Receipt
         </h5>
         {/* <div className="mb-2 text-end">
           <Link
@@ -87,7 +87,7 @@ function PaymentReciept() {
       </div>
       <div className="card mx-4">
         <div className="title card-header d-flex justify-content-between align-items-center bg-label-primary py-2">
-          <h5 className="mb-0">Payment Recipt :</h5>
+          <h5 className="mb-0">Payment Receipt :</h5>
           {/* <!--  <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTop">
           <span><i className="mdi mdi-plus me-0 me-sm-1"></i></span> Department
         </button> --> */}

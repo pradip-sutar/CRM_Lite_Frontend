@@ -30,6 +30,7 @@ import CompanyInfoDetails from "./Components/system admin/CompanyInfoDetails";
 
 import Employee from "./Components/EmployeeManagement/Employee";
 import EmployeeProfile from "./Components/EmployeeManagement/EmployeeProfile";
+import EmployeeView from "./Components/EmployeeManagement/EmployeeView";
 
 import DeadTable from "./Components/DeadTable/DeadTable";
 import EnquiryTable from "./Components/enquiryBucket/EnquiryTable";
@@ -71,6 +72,9 @@ import Masters from "./Components/BuyersPersona/Masters";
 import Expectation from "./Components/BuyersPersona/Expectation";
 import ProformaInvoice from "./Components/BookingForm/ProformaInvoice";
 import EnquiryTabView from "./Components/Dashboard/DashboardComponents/TabView/EnquiryTabView";
+
+import PaymentReceiptPDF from "./Components/PaymentReceipt/PaymentReceiptPDF";
+
 
 const CallStatus = lazy(() => import("./Components/FollowUp/CallStatus"));
 const CallStatusMaster = lazy(() =>
@@ -168,6 +172,10 @@ const App = () => {
                       path="/employee/EmployeeProfile"
                       element={<EmployeeProfile />}
                     />
+                     <Route
+                      path="employee/EmployeeView"
+                      element={<EmployeeView />}
+                    />
 
                     <Route
                       path="/BookingForm/allotment"
@@ -183,6 +191,7 @@ const App = () => {
                     />
 
                     <Route path="/customer" element={<Customer />} />
+                    <Route path="/customer/addCustomer" element={<AddCustomerForm />} />
 
                     <Route path="/followUp" element={<FollowUp />} />
                     <Route
@@ -269,6 +278,10 @@ const App = () => {
                     path="/followUp/UpdateCallStatus"
                     element={<CallStatusMaster />}
                   />
+                    <Route
+                      path="/Sales/PaymetnReceiptPDF"
+                      element={<PaymentReceiptPDF />}
+                    />
                   <Route
                     path="/dashboard/enquiry/enquiryTabView"
                     element={<EnquiryTabView />}

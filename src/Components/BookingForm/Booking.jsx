@@ -9,6 +9,7 @@ import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { fetchEmployee } from "../../services/EmpManagement/apiCompanyProfile";
 import { fetchPageData } from "../../services/Pagination/Pagination";
+import { getCustomerReport } from "../../services/Reports/apiCustomerReport";
 
 function Booking() {
   const userType = crmStore.getState().user?.userInfo?.userType;
@@ -140,9 +141,8 @@ function Booking() {
   };
 
   const onSubmit = async (data) => {
-    console.log(startDate);
 
-    if (startDate) {
+    if (data.startDate) {
       if (new Date(data.endDate) < new Date(data.startDate)) {
         setError("endDate", {
           type: "manual",
@@ -236,7 +236,7 @@ function Booking() {
                                     index +
                                     1}
                                 </td>
-                                <td>{data?.project_details}</td>
+                                <td>{data?.project_name}</td>
                                 <td>{data?.quantity}</td>
                                 <td>{data?.customer}</td>
                                 <td>{data?.payment_details?.amount}</td>
@@ -373,7 +373,7 @@ function Booking() {
                     </label>
                     <input
                       type="date"
-                      {...register("startDate", {})}
+                      {...register("startDate")}
                       style={{
                         width: "100%",
                         padding: "8px",

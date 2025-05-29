@@ -1,6 +1,6 @@
 import apiGateWay from "../../ApiGateWay/apiGateWay";
 import { toast } from "react-toastify";
-
+ 
 export const postSchedule = async (data) => {
   try {
     const response = await apiGateWay.post(
