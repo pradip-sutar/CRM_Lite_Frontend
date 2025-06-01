@@ -1,24 +1,18 @@
 import toast from "react-hot-toast";
 import apiGateWay from "../../ApiGateWay/apiGateWay";
 
-
-export const getEnquiryTab = async (start_date, end_date) => {
+export const getEnquiryTab = async (enable, filterData) => {
+  let response;
   try {
-    
-    const response = await apiGateWay.get("/api/get_dash_enquiry_data/", {
-      params: {
-        start_date,
-        end_date
-      }
-    });
-
-    if (response.status === 200) {
-      return response.data;
+    if (enable) {
+      response = await apiGateWay.get(
+        `/api/get_dash_enquiry_data/?from_date=${filterData.fromDate}&to_date=${filterData.toDate}`
+      );
+    } else {
+      response = await apiGateWay.get(`/api/get_dash_enquiry_data/`);
     }
+    return response.data;
   } catch (error) {
-    console.error("Error fetching enquiry data:", error);
-    toast.error("Failed to fetch enquiry data");
-    return null;
+    console.log(error);
   }
 };
-

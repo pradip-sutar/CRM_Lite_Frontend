@@ -91,7 +91,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <HashRouter>
+      <BrowserRouter>
         <Provider store={crmStore}>
           <PersistGate loading={null} persistor={persistor}>
             <Suspense fallback={<div>Loading...</div>}>
@@ -307,7 +307,7 @@ const App = () => {
             <Toaster position="top-center" />
           </PersistGate>
         </Provider>
-      </HashRouter>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 };

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const SheduleTab = () => {
+const SheduleTab = ({scheduleData}) => {
   const [scheduleStatus, setScheduleStatus] = useState([
     {
       enquiryId: "ENQ001",
