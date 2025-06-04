@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import crmStore from "../../Utils/crmStore";
 import { fetchPageData } from "../../services/Pagination/Pagination";
+import NumberedPagination from "../Pagination/NumberedPagination";
 function PaymentReciept() {
   const navigate = useNavigate();
   const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
@@ -17,18 +18,21 @@ function PaymentReciept() {
     perPage: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const initialUrl = `${
-    import.meta.env.VITE_URL_BASE
-  }/api/payment-receipt/?page=${currentPage}`;
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/payment-receipt/?page=${currentPage}`;
+    loadData(url);
+  }, [currentPage]);
 
+  
   const loadData = async (url) => {
     setLoading(true);
     const result = await fetchPageData(url);
     console.log("result", result);
 
-    setPaymentReciept(result.data);
-    setNextUrl(result.nextUrl);
-    setPrevUrl(result.prevUrl);
+    setPaymentReciept(result);
+    
     setCount(result.total);
     setPaginationInfo({
       total: result.total || 0,
@@ -37,23 +41,8 @@ function PaymentReciept() {
     setLoading(false);
   };
 
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl);
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl);
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
-  useEffect(() => {
-    loadData(initialUrl);
-  }, []);
 
   // const fetchPaymentReciept = async () => {
   //   try {
@@ -239,7 +228,7 @@ function PaymentReciept() {
                       </tr>
                     </thead>
                     <tbody>
-                      {paymentReciept?.map((payment, index) => (
+                      {paymentReciept?.data?.map((payment, index) => (
                         <tr key={index}>
                           <td>
                             {(currentPage - 1) * paginationInfo.perPage +
@@ -342,31 +331,10 @@ function PaymentReciept() {
             <div className="text-muted">
               Showing {paginationInfo.perPage} of {count} entries
             </div>
-            <ul className="pagination m-0">
-              <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  onClick={handlePrev}
-                  disabled={!prevUrl}
-                >
-                  Previous
-                </button>
-              </li>
-
-              <li className="page-item active">
-                <div className="page-link">{currentPage}</div>
-              </li>
-
-              <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  onClick={handleNext}
-                  disabled={!nextUrl}
-                >
-                  Next
-                </button>
-              </li>
-            </ul>
+               <NumberedPagination
+                  totalPages={2}
+                  onPageChange={setCount}
+                />
           </div>
         </div>
       </div>

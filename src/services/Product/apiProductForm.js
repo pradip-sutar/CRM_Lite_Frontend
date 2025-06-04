@@ -12,7 +12,7 @@ export const postProductForm = async (data) => {
     toast.error("Error on Post of Product Data");
   }
 };
-
+ 
 export const getProductForm = async (url) => {
   try {
     const res = await apiGateWay.get(`${url}`);

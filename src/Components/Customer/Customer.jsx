@@ -10,6 +10,7 @@ import * as XLSX from "xlsx";
 import Select from "react-select";
 import { fetchEmployee } from "../../services/EmpManagement/apiCompanyProfile";
 import { fetchPageData } from "../../services/Pagination/Pagination";
+import NumberedPagination from "../Pagination/NumberedPagination";
 function Customer() {
   const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
@@ -23,10 +24,12 @@ function Customer() {
     perPage: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
-
-  const initialUrl = `${
-    import.meta.env.VITE_URL_BASE
-  }/api/customers/?page=${currentPage}`;
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/customers/?page=${currentPage}`;
+    loadData(url);
+  }, [currentPage]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -46,7 +49,7 @@ function Customer() {
   const loadData = async (url) => {
     setLoading(true);
     const result = await fetchPageData(url);
-    setCustomers(result.data);
+    setCustomers(result);
     setNextUrl(result.nextUrl);
     setPrevUrl(result.prevUrl);
     setCount(result.total);
@@ -57,20 +60,6 @@ function Customer() {
     setLoading(false);
   };
   console.log(customers);
-
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl);
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   const getEmployee = async () => {
     try {
@@ -109,7 +98,6 @@ function Customer() {
       toast.error("No customer data available to generate report");
       return;
     }
-
     setCustomers(response);
     generateExcelReport(response);
     reset();
@@ -125,7 +113,6 @@ function Customer() {
   };
 
   useEffect(() => {
-    loadData(initialUrl);
     getEmployee();
   }, []);
 
@@ -283,12 +270,10 @@ function Customer() {
                   </tr>
                 </thead>
                 <tbody>
-                  {customers?.map((customer, index) => (
+                  {customers?.data?.map((customer, index) => (
                     <CustomerRow
                       customer={customer}
-                      index={
-                        (currentPage - 1) * paginationInfo.perPage + index + 1
-                      }
+                      index={(currentPage - 1) * (index + 1)}
                       key={index}
                     />
                   ))}
@@ -303,31 +288,7 @@ function Customer() {
           <div className="text-muted">
             Showing {paginationInfo.perPage} of {count} entries
           </div>
-          <ul className="pagination m-0">
-            <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-              <button
-                className="page-link"
-                onClick={handlePrev}
-                disabled={!prevUrl}
-              >
-                Previous
-              </button>
-            </li>
-
-            <li className="page-item active">
-              <div className="page-link">{currentPage}</div>
-            </li>
-
-            <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-              <button
-                className="page-link"
-                onClick={handleNext}
-                disabled={!nextUrl}
-              >
-                Next
-              </button>
-            </li>
-          </ul>
+          <NumberedPagination totalPages={customers?.total_pages} onPageChange={setCurrentPage} />
         </div>
 
         {isModalOpen && (
@@ -424,21 +385,19 @@ function Customer() {
                     </div>
                   </div>
 
-                  {logged_employee_Type === "Super Admin" && (
-                    <div style={{ marginBottom: "15px" }}>
-                      <label style={{ display: "block", marginBottom: "5px" }}>
-                        Select Employee
-                      </label>
-                      <Select
-                        options={employees}
-                        onChange={(selectedOption) =>
-                          setValue("employee", selectedOption.value)
-                        }
-                        placeholder="Search Employee..."
-                        isSearchable
-                      />
-                    </div>
-                  )}
+                  <div style={{ marginBottom: "15px" }}>
+                    <label style={{ display: "block", marginBottom: "5px" }}>
+                      Select Employee
+                    </label>
+                    <Select
+                      options={employees}
+                      onChange={(selectedOption) =>
+                        setValue("employee", selectedOption.value)
+                      }
+                      placeholder="Search Employee..."
+                      isSearchable
+                    />
+                  </div>
 
                   <div
                     style={{

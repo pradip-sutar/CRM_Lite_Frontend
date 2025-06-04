@@ -2,16 +2,10 @@ import { useState, useEffect } from "react";
 import { getBank, deleteBank } from "../../services/SystemAdmin/apiBankInfo";
 import { HandleDeleteById } from "../../services/DeleteSwal/HandleDeleteById";
 import { useNavigate } from "react-router-dom";
-
-import Title from "./subItem/Title";
+import NumberedPagination from "../Pagination/NumberedPagination";
 import "./Forms/systemAdmin.css";
-import { hasRightsPermission } from "../../Private/premissionChecker";
-import crmStore from "../../Utils/crmStore";
-import ValidationCard from "../../ui/ValidationCard";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 function BankInfo() {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [bankdata, setBankData] = useState([]);
   const [nextUrl, setNextUrl] = useState(null);
   const [prevUrl, setPrevUrl] = useState(null);
@@ -22,17 +16,19 @@ function BankInfo() {
     perPage: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const initialUrl = `${
-    import.meta.env.VITE_URL_BASE
-  }/api/system_bank_details_handler/?page=${currentPage}`;
-  const navigate = useNavigate();
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/system_bank_details_handler/?page=${currentPage}`;
+    loadData(url);
+  }, [currentPage]);
+
+  const navigate = useNavigate(); 
 
   const loadData = async (url) => {
     setLoading(true);
     const result = await fetchPageData(url);
     setBankData(result.data);
-    setNextUrl(result.nextUrl);
-    setPrevUrl(result.prevUrl);
     setCount(result.total);
     setPaginationInfo({
       total: result.total || 0,
@@ -40,24 +36,6 @@ function BankInfo() {
     });
     setLoading(false);
   };
-
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl);
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  useEffect(() => {
-    loadData(initialUrl);
-  }, []);
 
   return (
     <>
@@ -70,15 +48,14 @@ function BankInfo() {
           Bank Info
         </h5>
 
-        
-          <div className="mb-2 text-end">
-            <div
-              className="ms-2 btn btn-primary btn-sm waves-effect waves-light"
-              onClick={() => navigate("/systemAdmin/bankInfoForm")}
-            >
-              <span className="mdi mdi-plus"></span>Bank Info
-            </div>
+        <div className="mb-2 text-end">
+          <div
+            className="ms-2 btn btn-primary btn-sm waves-effect waves-light"
+            onClick={() => navigate("/systemAdmin/bankInfoForm")}
+          >
+            <span className="mdi mdi-plus"></span>Bank Info
           </div>
+        </div>
       </div>
       <div className="container-fluid  p-0 ps-lg-4">
         <div className="col">
@@ -153,37 +130,33 @@ function BankInfo() {
                                     <i className="mdi mdi-eye"></i>
                                   </div>
 
-                                  
-                                    <div
-                                      onClick={() =>
-                                        navigate("/systemAdmin/bankInfoForm", {
-                                          state: { data: row },
-                                        })
-                                      }
-                                      className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      data-bs-original-title="Edit"
-                                    >
-                                      <i className="mdi mdi-pencil-outline"></i>
-                                    </div>
+                                  <div
+                                    onClick={() =>
+                                      navigate("/systemAdmin/bankInfoForm", {
+                                        state: { data: row },
+                                      })
+                                    }
+                                    className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="Edit"
+                                  >
+                                    <i className="mdi mdi-pencil-outline"></i>
+                                  </div>
 
-                                  
-                                    <div
-                                      onClick={() =>
-                                        HandleDeleteById(
-                                          row.id,
-                                          deleteBank,
-                                          () => loadData(initialUrl)
-                                        )
-                                      }
-                                      className="btn btn-text-danger btn-sm small py-1 px-2"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="top"
-                                      data-bs-original-title="Delete"
-                                    >
-                                      <i className="mdi mdi-trash-can" />
-                                    </div>
+                                  <div
+                                    onClick={() =>
+                                      HandleDeleteById(row.id, deleteBank, () =>
+                                        loadData(initialUrl)
+                                      )
+                                    }
+                                    className="btn btn-text-danger btn-sm small py-1 px-2"
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="top"
+                                    data-bs-original-title="Delete"
+                                  >
+                                    <i className="mdi mdi-trash-can" />
+                                  </div>
                                 </td>
                               </tr>
                             ))}
@@ -204,31 +177,10 @@ function BankInfo() {
                 <div className="text-muted">
                   Showing {paginationInfo.perPage} of {count} entries
                 </div>
-                <ul className="pagination m-0">
-                  <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={handlePrev}
-                      disabled={!prevUrl}
-                    >
-                      Previous
-                    </button>
-                  </li>
-
-                  <li className="page-item active">
-                    <div className="page-link">{currentPage}</div>
-                  </li>
-
-                  <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={handleNext}
-                      disabled={!nextUrl}
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
+                <NumberedPagination
+                  totalPages={2}
+                  onPageChange={setCurrentPage}
+                />
               </div>
             </div>
           </div>

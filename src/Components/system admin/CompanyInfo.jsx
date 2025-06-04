@@ -3,6 +3,7 @@ import Title from "./subItem/Title";
 import { useCompanyInfo } from "../../hooks/systemAdmin/useCompanyInfo";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 function CompanyInfo() {
   const navigate = useNavigate();
@@ -129,16 +130,17 @@ function CompanyInfo() {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
-              <li className="breadcrumb-item">
-                System Admin
-              </li>
+              <li className="breadcrumb-item">System Admin</li>
               <li className="breadcrumb-item active" aria-current="page">
                 Company Info
               </li>
             </ol>
           </nav>
           {companyDetails?.length > 0 ? null : (
-            <Link to="/systemAdmin/companyInfoForm" className="add-btn text-decoration-none">
+            <Link
+              to="/systemAdmin/companyInfoForm"
+              className="add-btn text-decoration-none"
+            >
               <i className="mdi mdi-plus me-1"></i> Add Company
             </Link>
           )}
@@ -156,11 +158,15 @@ function CompanyInfo() {
                     <table className="table table-hover table-bordered">
                       <thead>
                         <tr>
-                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col" style={{ width: "60px" }}>
+                            SL No.
+                          </th>
                           <th scope="col">Company Name</th>
                           <th scope="col">Company ID</th>
                           <th scope="col">Incorporation No</th>
-                          <th scope="col" style={{ width: "150px" }}>Actions</th>
+                          <th scope="col" style={{ width: "150px" }}>
+                            Actions
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -210,19 +216,10 @@ function CompanyInfo() {
                 {companyDetails?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
-                      Showing 1 to {companyDetails.length} of {companyDetails.length} entries
+                      Showing  {companyDetails.length} of{" "}
+                      {companyDetails.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">Previous</a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">1</a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
-                      </li>
-                    </ul>
+                    <NumberedPagination />
                   </div>
                 )}
               </div>
