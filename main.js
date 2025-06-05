@@ -12,24 +12,32 @@ const __dirname = path.dirname(__filename);
 let backendProcess;
 
 function startBackend() {
-  // Use __dirname to point to build.exe in your project root directory
-  const exePath = path.join(__dirname, "build.exe");
+  // Detect packaging vs. dev:
+  // `app.isPackaged` is `false` in `electron .` and true when built.
+  const exeName = 'CRM_Lite_backend.exe';
 
-  console.log(`Starting backend: ${exePath}`);
+  const exePath = app.isPackaged
+    // In production, extraResources go into process.resourcesPath
+    ? path.join(process.resourcesPath, exeName)
+    // In dev, __dirname is the folder where main.js lives
+    : path.join(__dirname, exeName);
+
+  console.log(`[startBackend] launching: ${exePath}`);
 
   backendProcess = spawn(exePath, [], {
     detached: true,
-    stdio: "ignore",
+    stdio: 'ignore',
   });
 
   backendProcess.unref();
 
-  backendProcess.on("error", (err) => {
-    console.error("Failed to start backend process:", err);
+  backendProcess.on('error', (err) => {
+    console.error('[startBackend] failed to start:', err);
   });
 
-  console.log("Backend process started...");
+  console.log('[startBackend] backend started, pid=' + backendProcess.pid);
 }
+
 
 function stopBackend() {
   if (backendProcess) {

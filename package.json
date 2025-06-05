@@ -1,5 +1,6 @@
 {
   "name": "vichaarlab-crm-app",
+  "author":"Dinakrushna Agasti",
   "private": true,
   "version": "1.0.0",
   "main": "main.js",
@@ -27,12 +28,12 @@
       "main.js",
       "electron-main.js",
       "dist/**/*",
-      "!build.exe"
+      "!CRM_Lite_backend.exe"
     ],
     "extraResources": [
       {
-        "from": "build.exe",
-        "to": "build.exe"
+        "from": "CRM_Lite_backend.exe",
+        "to": "CRM_Lite_backend.exe"
       }
     ],
     "win": {
