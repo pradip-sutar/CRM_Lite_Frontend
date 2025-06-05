@@ -8,7 +8,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElemen
 import { Icon } from "@mui/material";
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
-const Calling = () => {
+const Calling = ({FollowUpData}) => {
   const [employeeStats, setEmployeeStats] = useState([
     {
       id: 1,

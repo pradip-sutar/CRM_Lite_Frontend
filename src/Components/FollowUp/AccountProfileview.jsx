@@ -108,6 +108,7 @@ const AccountProfileview = ({ id }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const {
     activeTab = "Today",
+    confirm_project_name=null,
     enquiry_id = null,
     team: team_id = null,
     customer_id = null,
@@ -1800,13 +1801,36 @@ const AccountProfileview = ({ id }) => {
                                         },
                                       }}
                                       onClick={() => {
-                                        if (total_quotations) {
-                                          navigate("/followUp/Quotation", {
-                                            state: { enquiry_id },
-                                          });
-                                        } else {
-                                          handelQuoteClick();
-                                        }
+                                        navigate(
+                                          "/FollowUp/AccountProfileview/AssignQuote",
+                                          {
+                                            state: {
+                                              team_id,
+                                              enquiry_id,
+                                              customer_id,
+                                              rate,
+                                              stage,
+                                              status,
+                                              project,
+                                              enquiry_type,
+                                              source,
+                                              confirm_project,
+                                              product_details,
+                                              customer_name,
+                                              customer_phone,
+                                              customer_email,
+                                              customer_address,
+                                            },
+                                          }
+                                        );
+
+                                        // if (total_quotations) {
+                                        //   navigate("/followUp/Quotation", {
+                                        //     state: { enquiry_id },
+                                        //   });
+                                        // } else {
+                                        //   handelQuoteClick();
+                                        // }
                                       }}
                                     >
                                       QUOTE
@@ -1869,13 +1893,35 @@ const AccountProfileview = ({ id }) => {
                                         },
                                       }}
                                       onClick={() => {
-                                        if (total_visits) {
-                                          navigate("/followUp/Visit", {
-                                            state: { enquiry_id },
-                                          });
-                                        } else {
-                                          handelVisit();
-                                        }
+                                        navigate(
+                                          "/FollowUp/AccountProfileview/AssignVisit",
+                                          {
+                                            state: {
+                                              team_id,
+                                              enquiry_id,
+                                              customer_id,
+                                              rate,
+                                              stage,
+                                              status,
+                                              project,
+                                              enquiry_type,
+                                              source,
+                                              confirm_project,
+                                              product_details,
+                                              customer_name,
+                                              customer_phone,
+                                              customer_email,
+                                            },
+                                          }
+                                        );
+
+                                        // if (total_visits) {
+                                        //   navigate("/followUp/Visit", {
+                                        //     state: { enquiry_id },
+                                        //   });
+                                        // } else {
+                                        //   handelVisit();
+                                        // }
                                       }}
                                     >
                                       VISIT
@@ -1888,6 +1934,7 @@ const AccountProfileview = ({ id }) => {
                                         navigate("/FollowUp/Productviews", {
                                           state: {
                                             enquiry_id,
+                                            
                                           },
                                         });
                                       }}
@@ -1957,6 +2004,7 @@ const AccountProfileview = ({ id }) => {
                                     navigate("/FollowUp/Productviews", {
                                       state: {
                                         enquiry_id,
+                                        confirm_project_name
                                       },
                                     });
                                   }}

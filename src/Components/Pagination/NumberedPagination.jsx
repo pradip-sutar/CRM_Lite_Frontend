@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const NumberedPagination = ({ totalPages, onPageChange }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -9,6 +9,10 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
       onPageChange(page);
     }
   };
+
+  useEffect(() => {
+    handleClick(1);
+  }, [totalPages]);
 
   const getPageNumbers = () => {
     const pages = [];
@@ -40,7 +44,7 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
 
   return (
     <nav aria-label="Page navigation">
-      <ul className="pagination justify-content-center mt-4">
+      <ul className="pagination justify-content-center">
         {/* Previous Button */}
         <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
           <button
@@ -89,6 +93,5 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
     </nav>
   );
 };
-
-export default NumberedPagination;
  
+export default NumberedPagination;

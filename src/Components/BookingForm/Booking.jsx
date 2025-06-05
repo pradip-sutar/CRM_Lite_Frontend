@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { fetchEmployee } from "../../services/EmpManagement/apiCompanyProfile";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 import { getCustomerReport } from "../../services/Reports/apiCustomerReport";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 function Booking() {
   const userType = crmStore.getState().user?.userInfo?.userType;
@@ -35,10 +36,12 @@ function Booking() {
     perPage: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
-
-  const initialUrl = `${
-    import.meta.env.VITE_URL_BASE
-  }/api/booking_form/?page=${currentPage}`;
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/booking_form/?page=${currentPage}`;
+    loadData(url);
+  }, [currentPage]);
 
   const loadData = async (url) => {
     setLoading(true);
@@ -52,21 +55,6 @@ function Booking() {
       perPage: result.perPage || 10,
     });
     setLoading(false);
-  };
-  console.log(data);
-
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl);
-      setCurrentPage(currentPage - 1);
-    }
   };
 
   const getEmployee = async () => {
@@ -141,7 +129,6 @@ function Booking() {
   };
 
   const onSubmit = async (data) => {
-
     if (data.startDate) {
       if (new Date(data.endDate) < new Date(data.startDate)) {
         setError("endDate", {
@@ -168,7 +155,6 @@ function Booking() {
   };
 
   useEffect(() => {
-    loadData(initialUrl);
     fetchCompanyInfo();
     getEmployee();
   }, []);
@@ -245,7 +231,8 @@ function Booking() {
                                     onClick={() =>
                                       navigate("/BookingForm/PDF", {
                                         state: {
-                                        data,companyInfo
+                                          data,
+                                          companyInfo,
                                         },
                                       })
                                     }
@@ -279,35 +266,14 @@ function Booking() {
                   </div>
                 </div>
                 {/* Pagination */}
-                <div className="d-flex justify-content-between align-items-center mt-3">
+                <div className="d-flex justify-content-between align-items-center ">
                   <div className="text-muted">
                     Showing {paginationInfo.perPage} of {count} entries
                   </div>
-                  <ul className="pagination m-0">
-                    <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={handlePrev}
-                        disabled={!prevUrl}
-                      >
-                        Previous
-                      </button>
-                    </li>
-
-                    <li className="page-item active">
-                      <div className="page-link">{currentPage}</div>
-                    </li>
-
-                    <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={handleNext}
-                        disabled={!nextUrl}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
+                  <NumberedPagination
+                    totalPages={2}
+                    onPageChange={setCurrentPage}
+                  />
                 </div>
                 <div className="mt-2  mb-4"></div>
                 {/* </form> */}

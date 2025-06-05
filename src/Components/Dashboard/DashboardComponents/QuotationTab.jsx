@@ -4,7 +4,7 @@ import { Line, Bar } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
 
-const QuotationTab = () => {
+const QuotationTab = ({quotationData}) => {
   const [employeeStats, setEmployeeStats] = useState([
     {
       id: 1,

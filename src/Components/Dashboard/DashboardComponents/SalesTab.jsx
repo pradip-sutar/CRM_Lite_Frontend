@@ -1,34 +1,34 @@
 import React, { useState } from 'react'
 
-const SalesTab = () => {
-    const [salesData, setSalesData] = useState([
-        {
-            id: 1,
-            date: "23-05-2024",
-            enquiryId: "ENQ123",
-            name: "John Doe",
-            contactNumber: "9876543210",
-            product: "CRM",
-            time: "10:30 AM",
-            bookingId: "BK456",
-            amount: "₹15,000",
-            mode: "WhatsApp",
-            payReceipt: "Generated",
-        },
-        {
-            id: 2,
-            date: "24-05-2024",
-            enquiryId: "ENQ123",
-            name: "Jane Smith",
-            contactNumber: "9874563210",
-            product: "CRM",
-            time: "08:30 AM",
-            bookingId: "BK486",
-            amount: "₹15,000",
-            mode: "Email",
-            payReceipt: "Not Generated",
-        },
-    ]);
+const SalesTab = ({salesData}) => {
+    // const [salesData, setSalesData] = useState([
+    //     {
+    //         id: 1,
+    //         date: "23-05-2024",
+    //         enquiryId: "ENQ123",
+    //         name: "John Doe",
+    //         contactNumber: "9876543210",
+    //         product: "CRM",
+    //         time: "10:30 AM",
+    //         bookingId: "BK456",
+    //         amount: "₹15,000",
+    //         mode: "WhatsApp",
+    //         payReceipt: "Generated",
+    //     },
+    //     {
+    //         id: 2,
+    //         date: "24-05-2024",
+    //         enquiryId: "ENQ123",
+    //         name: "Jane Smith",
+    //         contactNumber: "9874563210",
+    //         product: "CRM",
+    //         time: "08:30 AM",
+    //         bookingId: "BK486",
+    //         amount: "₹15,000",
+    //         mode: "Email",
+    //         payReceipt: "Not Generated",
+    //     },
+    // ]);
 
     return (
         <div className="container-fluid p-0 pr-1 ">

@@ -16,7 +16,11 @@ import "./CSS/initiated.css";
 import NumberedPagination from "../Pagination/NumberedPagination";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 
-const InitiatedComponent = ({ filterUrl, filterData, activeTab }) => {
+const InitiatedComponent = ({
+  filterUrl,
+  filterData,
+  activeTab,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const params = new URLSearchParams(filterUrl?.split("?")[1]);
@@ -43,7 +47,7 @@ const InitiatedComponent = ({ filterUrl, filterData, activeTab }) => {
     } else {
       setEnquiryData(filterData);
       if (flag > 0 && filterData.data.length > 0) {
-        handelFetchData();
+        handelFetchData(); 
       }
       console.log("flag increase");
 
@@ -290,13 +294,20 @@ const InitiatedComponent = ({ filterUrl, filterData, activeTab }) => {
           <h3>No FollowUp Are Scheduled For Today</h3>
         )}
       </Box>
-     <Box sx={{ borderTop: "1px solid #e0e0e0", display: "flex", flexDirection: "row-reverse" ,padding:"1px",top:0}}>
-  <NumberedPagination
-    totalPages={enquiryData?.totalPageCount}
-    onPageChange={setCurrentPage}
-  />
-</Box>
-
+      <Box
+        sx={{
+          borderTop: "1px solid #e0e0e0",
+          display: "flex",
+          flexDirection: "row-reverse",
+          padding: "1px",
+          top: 0,
+        }}
+      >
+        <NumberedPagination
+          totalPages={enquiryData?.totalPageCount}
+          onPageChange={setCurrentPage}
+        />
+      </Box>
     </Box>
   );
 };

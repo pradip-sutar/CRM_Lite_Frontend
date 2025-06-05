@@ -1,45 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getProductForm,
-  deleteProduct,
-} from "../../services/Product/apiProductForm";
+import { deleteProduct } from "../../services/Product/apiProductForm";
+import { fetchPageData } from "../../services/Pagination/Pagination";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 function Product() {
   const [productData, setProductData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationInfo, setPaginationInfo] = useState({
+    total: 2,
+    perPage: 10,
+  });
 
-  const initialUrl = `/api/project_new_handler/`;
-  const fetchData = async () => {
-    const response = await getProductForm(initialUrl);
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/project_new_handler/?page=${currentPage}`;
+    fetchData(url);
+  }, [currentPage]);
+
+  const fetchData = async (url) => {
+    const response = await fetchPageData(url);
     setProductData(response);
   };
 
   const deleteProductfn = async (id) => {
     const status = await deleteProduct(id);
     if (status == 204) {
-      fetchData();
+      const url = `${
+        import.meta.env.VITE_URL_BASE
+      }/api/project_new_handler/?page=${currentPage}`;
+      fetchData(url);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [paginationInfo, setPaginationInfo] = useState({
-    total: 2,
-    perPage: 10,
-  });
   const navigate = useNavigate();
-
-  const handleNext = () => {
-    setCurrentPage(currentPage + 1);
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   return (
     <>
@@ -75,7 +70,7 @@ function Product() {
                 >
                   <div className="row">
                     <div className="col-sm-12">
-                      {productData?.length > 0 ? (
+                      {productData?.data?.length > 0 ? (
                         <table
                           className="table table-bordered dataTable no-footer"
                           id="product_table"
@@ -94,7 +89,7 @@ function Product() {
                             </tr>
                           </thead>
                           <tbody>
-                            {productData?.map((row, index) => (
+                            {productData?.data?.map((row, index) => (
                               <tr key={index}>
                                 <td>
                                   {(currentPage - 1) * paginationInfo.perPage +
@@ -163,47 +158,10 @@ function Product() {
                   {Math.min(paginationInfo?.perPage, productData?.length)} of{" "}
                   {paginationInfo.total} entries
                 </div>
-                <ul className="pagination m-0">
-                  <li
-                    className={`page-item ${
-                      currentPage === 1 ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={handlePrev}
-                      disabled={currentPage === 1}
-                    >
-                      Previous
-                    </button>
-                  </li>
-
-                  <li className="page-item active">
-                    <div className="page-link">{currentPage}</div>
-                  </li>
-
-                  <li
-                    className={`page-item ${
-                      productData?.length < paginationInfo.perPage ||
-                      paginationInfo.total <=
-                        currentPage * paginationInfo.perPage
-                        ? "disabled"
-                        : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={handleNext}
-                      disabled={
-                        productData?.length < paginationInfo.perPage ||
-                        paginationInfo.total <=
-                          currentPage * paginationInfo.perPage
-                      }
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
+                <NumberedPagination
+                  totalPages={2}
+                  onPageChange={setCurrentPage}
+                />
               </div>
             </div>
           </div>

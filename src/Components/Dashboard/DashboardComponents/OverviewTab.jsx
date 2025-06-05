@@ -1,13 +1,32 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Doughnut, Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
-import crmStore from '../../../Utils/crmStore';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+} from "chart.js";
+import crmStore from "../../../Utils/crmStore";
 // import { getOverView } from '../../../services/Dashboard/DashboardComponents/OverviewTab';
-ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement
+);
 
-const Overview = ({filterOverviewData }) => {
-  console.log("Received Filter Overview Data:", filterOverviewData);
+const Overview = ({ OverviewData }) => {
+  console.log("Received Filter Overview Data:", OverviewData);
   const [showModal, setShowModal] = useState(false);
   // const [overViewData, setOverViewData] = useState([]);
 
@@ -30,10 +49,8 @@ const Overview = ({filterOverviewData }) => {
   //   fetchOverViewData();
   // },[]);
 
-
-  // const dataSource = filterOverviewData || overViewData;
-    const dataSource = filterOverviewData ;
-
+  // const dataSource = OverviewData || overViewData;
+  const dataSource = OverviewData;
 
   const randomColor = useMemo(() => {
     const colors = [
@@ -53,11 +70,15 @@ const Overview = ({filterOverviewData }) => {
 
   // Activity Trend graph
   const activityData = {
-    labels: dataSource?.collective_10_days_stats?.map(item => item.date) || [],
+    labels:
+      dataSource?.collective_10_days_stats?.map((item) => item.date) || [],
     datasets: [
       {
         label: "Calls",
-        data: dataSource?.collective_10_days_stats?.map(item => item.action_count) || [],
+        data:
+          dataSource?.collective_10_days_stats?.map(
+            (item) => item.action_count
+          ) || [],
         borderColor: "#1E90FF",
         backgroundColor: "#007bff",
         tension: 0.4,
@@ -66,7 +87,10 @@ const Overview = ({filterOverviewData }) => {
       },
       {
         label: "Visits",
-        data: dataSource?.collective_10_days_stats?.map(item => item.visit_count) || [],
+        data:
+          dataSource?.collective_10_days_stats?.map(
+            (item) => item.visit_count
+          ) || [],
         borderColor: "#2E8B57",
         backgroundColor: "#2E8B57",
         tension: 0.4,
@@ -75,7 +99,10 @@ const Overview = ({filterOverviewData }) => {
       },
       {
         label: "Bookings",
-        data: dataSource?.collective_10_days_stats?.map(item => item.booking_count) || [],
+        data:
+          dataSource?.collective_10_days_stats?.map(
+            (item) => item.booking_count
+          ) || [],
         borderColor: "#DC143C",
         backgroundColor: "#DC143C",
         tension: 0.4,
@@ -84,7 +111,10 @@ const Overview = ({filterOverviewData }) => {
       },
       {
         label: "Quotation",
-        data: dataSource?.collective_10_days_stats?.map(item => item.quotation_count) || [],
+        data:
+          dataSource?.collective_10_days_stats?.map(
+            (item) => item.quotation_count
+          ) || [],
         borderColor: "#EDDB42",
         backgroundColor: "#EDDB42",
         tension: 0.4,
@@ -93,7 +123,6 @@ const Overview = ({filterOverviewData }) => {
       },
     ],
   };
-
 
   const options = {
     responsive: true,
@@ -129,22 +158,40 @@ const Overview = ({filterOverviewData }) => {
 
   const statusData = [
     {
-      label: 'Enquiry',
-      color: '#00C851',
-      value: `${Math.round((dataSource?.enquiry_summary?.stage_enquiry / dataSource?.enquiry_summary?.aggregate_enquiries) * 100) || 0}`,
-      total_value: dataSource?.enquiry_summary?.stage_enquiry
+      label: "Enquiry",
+      color: "#00C851",
+      value: `${
+        Math.round(
+          (dataSource?.enquiry_summary?.stage_enquiry /
+            dataSource?.enquiry_summary?.aggregate_enquiries) *
+            100
+        ) || 0
+      }`,
+      total_value: dataSource?.enquiry_summary?.stage_enquiry,
     },
     {
-      label: 'Lead',
-      color: '#2E3B5F',
-      value: `${Math.round((dataSource?.enquiry_summary?.stage_lead / dataSource?.enquiry_summary?.aggregate_enquiries) * 100) || 0}`,
-      total_value: dataSource?.enquiry_summary?.stage_lead
+      label: "Lead",
+      color: "#2E3B5F",
+      value: `${
+        Math.round(
+          (dataSource?.enquiry_summary?.stage_lead /
+            dataSource?.enquiry_summary?.aggregate_enquiries) *
+            100
+        ) || 0
+      }`,
+      total_value: dataSource?.enquiry_summary?.stage_lead,
     },
     {
-      label: 'Opportunity',
-      color: '#FFBB33',
-      value: `${Math.round((dataSource?.enquiry_summary?.stage_opportunity / dataSource?.enquiry_summary?.aggregate_enquiries) * 100) || 0}`,
-      total_value: dataSource?.enquiry_summary?.stage_opportunity
+      label: "Opportunity",
+      color: "#FFBB33",
+      value: `${
+        Math.round(
+          (dataSource?.enquiry_summary?.stage_opportunity /
+            dataSource?.enquiry_summary?.aggregate_enquiries) *
+            100
+        ) || 0
+      }`,
+      total_value: dataSource?.enquiry_summary?.stage_opportunity,
     },
   ];
 
@@ -175,8 +222,8 @@ const Overview = ({filterOverviewData }) => {
         enabled: true,
         callbacks: {
           label: function (context) {
-            const label = context.label || '';
-            const value = context.formattedValue || '';
+            const label = context.label || "";
+            const value = context.formattedValue || "";
             return `${label}: ${value}`;
           },
         },
@@ -187,11 +234,11 @@ const Overview = ({filterOverviewData }) => {
 
   // Trending Product
   const productData = {
-    labels: dataSource?.last_10_days_stats?.map(item => item.date),
+    labels: dataSource?.last_10_days_stats?.map((item) => item.date),
     datasets: [
       {
         label: "Calls",
-        data: dataSource?.last_10_days_stats?.map(item => item.action_count),
+        data: dataSource?.last_10_days_stats?.map((item) => item.action_count),
         borderColor: "#1E90FF",
         backgroundColor: "#007bff",
         tension: 0.4,
@@ -200,7 +247,7 @@ const Overview = ({filterOverviewData }) => {
       },
       {
         label: "Visits",
-        data: dataSource?.last_10_days_stats?.map(item => item.visit_count),
+        data: dataSource?.last_10_days_stats?.map((item) => item.visit_count),
         borderColor: "#2E8B57",
         backgroundColor: "#2E8B57",
         tension: 0.4,
@@ -209,7 +256,7 @@ const Overview = ({filterOverviewData }) => {
       },
       {
         label: "Bookings",
-        data: dataSource?.last_10_days_stats?.map(item => item.booking_count),
+        data: dataSource?.last_10_days_stats?.map((item) => item.booking_count),
         borderColor: "#DC143C",
         backgroundColor: "#DC143C",
         tension: 0.4,
@@ -218,7 +265,9 @@ const Overview = ({filterOverviewData }) => {
       },
       {
         label: "Quotation",
-        data: dataSource?.last_10_days_stats?.map(item => item.quotation_count),
+        data: dataSource?.last_10_days_stats?.map(
+          (item) => item.quotation_count
+        ),
         borderColor: "#EDDB42",
         backgroundColor: "#EDDB42",
         tension: 0.4,
@@ -247,7 +296,8 @@ const Overview = ({filterOverviewData }) => {
         ticks: {
           callback: function (value, index) {
             const date = dataSource?.last_10_days_stats?.[index]?.date;
-            const project = dataSource?.last_10_days_stats?.[index]?.project_name;
+            const project =
+              dataSource?.last_10_days_stats?.[index]?.project_name;
             return `${date}\n(${project})`;
           },
         },
@@ -301,8 +351,10 @@ const Overview = ({filterOverviewData }) => {
       },
       {
         label: "Non Active Calls",
-        data: [(dataSource?.enquiry_summary?.aggregate_enquiries) -
-          (dataSource?.enquiry_summary?.total_active_enquiries)],
+        data: [
+          dataSource?.enquiry_summary?.aggregate_enquiries -
+            dataSource?.enquiry_summary?.total_active_enquiries,
+        ],
         backgroundColor: "#795548",
         barPercentage: 1,
         categoryPercentage: 1,
@@ -311,7 +363,7 @@ const Overview = ({filterOverviewData }) => {
   };
 
   const empOptions = {
-    indexAxis: 'y',
+    indexAxis: "y",
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -494,11 +546,14 @@ const Overview = ({filterOverviewData }) => {
         <div className="col-12 ">
           <div
             className="card shadow animate-card"
-            style={{ height: "8rem", background: "linear-gradient(135deg, #dfe9f3, #ffffff)" }}
+            style={{
+              height: "8rem",
+              background: "linear-gradient(135deg, #dfe9f3, #ffffff)",
+            }}
           >
             <div className="card-body p-4">
               <div className="d-flex align-items-center mb-3 justify-content-between">
-                <div className='d-flex align-items-center mb-3 '>
+                <div className="d-flex align-items-center mb-3 ">
                   <div
                     className="avatar-circle d-flex align-items-center justify-content-center rounded-circle text-white fw-bold me-3"
                     style={{
@@ -522,18 +577,21 @@ const Overview = ({filterOverviewData }) => {
                     </div>
                   </div>
                   <div>
-                    <h3 className="card-title mt-1"><span className='fw-bold'>Welcome Back</span>, {loginData?.employee_name}</h3>
+                    <h3 className="card-title mt-1">
+                      <span className="fw-bold">Welcome Back</span>,{" "}
+                      {loginData?.employee_name}
+                    </h3>
                     <p>Wishing You A Great Day Ahead</p>
                   </div>
                 </div>
 
-                <div className='text-end'>
+                <div className="text-end">
                   <button
-                    className='btn btn-capsul'
+                    className="btn btn-capsul"
                     style={{
                       color: "white",
                       background: "linear-gradient(135deg, #e1eec5, #f05053)",
-                      border: "none"
+                      border: "none",
                     }}
                     onClick={() => setShowModal(true)}
                   >
@@ -544,11 +602,24 @@ const Overview = ({filterOverviewData }) => {
             </div>
           </div>
           {showModal && (
-            <div className="modal show fade d-block" tabIndex="-1" role="dialog">
-              <div className="modal-dialog modal-dialog-centered" role="document">
-                <div className="modal-content p-0 overflow-hidden" style={{ borderRadius: '10px' }}>
+            <div
+              className="modal show fade d-block"
+              tabIndex="-1"
+              role="dialog"
+            >
+              <div
+                className="modal-dialog modal-dialog-centered"
+                role="document"
+              >
+                <div
+                  className="modal-content p-0 overflow-hidden"
+                  style={{ borderRadius: "10px" }}
+                >
                   {/* Header Section */}
-                  <div className="d-flex align-items-center p-3" style={{ backgroundColor: '#1c1e21', color: 'white' }}>
+                  <div
+                    className="d-flex align-items-center p-3"
+                    style={{ backgroundColor: "#1c1e21", color: "white" }}
+                  >
                     <div
                       className="avatar-circle d-flex align-items-center justify-content-center rounded-circle text-white fw-bold me-3"
                       style={{
@@ -572,8 +643,20 @@ const Overview = ({filterOverviewData }) => {
                       </div>
                     </div>
                     <div>
-                      <h5 className="mb-0" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ccc' }}>{loginData?.employee_name}</h5>
-                      <div className="d-flex align-items-center" style={{ fontSize: '0.85rem', color: '#ccc' }}>
+                      <h5
+                        className="mb-0"
+                        style={{
+                          fontSize: "1.5rem",
+                          fontWeight: "bold",
+                          color: "#ccc",
+                        }}
+                      >
+                        {loginData?.employee_name}
+                      </h5>
+                      <div
+                        className="d-flex align-items-center"
+                        style={{ fontSize: "0.85rem", color: "#ccc" }}
+                      >
                         <span>{loginData?.designation_id}</span>
                       </div>
                     </div>
@@ -617,11 +700,14 @@ const Overview = ({filterOverviewData }) => {
             <div className="row g-3">
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #d0eaff, #ffffff)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #d0eaff, #ffffff)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Products</h6>
                     <h4 className="fw-bold mb-2">
                       {dataSource?.metrics?.total_projects}
@@ -631,169 +717,235 @@ const Overview = ({filterOverviewData }) => {
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #fff6b7, #fcd9b8)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #fff6b7, #fcd9b8)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Enquiries</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_enquiries}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.total_enquiries}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #fddde6, #e8e6f8)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #fddde6, #e8e6f8)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Active Enquiries</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_active_enquiries}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.total_active_enquiries}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #d4fc79, #96e6a1)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #d4fc79, #96e6a1)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Not Interested</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_not_interested}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.total_not_interested}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Invalid Enquiries</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.total_dead?.total_invalid}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.total_dead?.total_invalid}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #d4fcf9, #c2e9fb)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #d4fcf9, #c2e9fb)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Hot Enquiries</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.hot_count}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.hot_count}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #ffe0e0, #ffdadf)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #ffe0e0, #ffdadf)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Warm Enquiries</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.warm_count}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.warm_count}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #f0f7da, #fffde7)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #f0f7da, #fffde7)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Cold Enquiries</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.cold_count}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.cold_count}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #f0f7f4, #d9e4dd)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #f0f7f4, #d9e4dd)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Fresh Enquiries</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.fresh_enquiries}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.fresh_enquiries}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Quotes</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_quotes}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.metrics?.total_quotes}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #84fab0, #8fd3f4)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #84fab0, #8fd3f4)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Leads</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_leads}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.metrics?.total_leads}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #fceabb, #f8b500)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #fceabb, #f8b500)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Prospects</h6>
-                    <h4 className="fw-bold mb-2">95</h4>
+                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.stage_opportunity}</h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #c2e9fb, #e2ebf0)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #c2e9fb, #e2ebf0)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Schedules</h6>
-                    <h4 className="fw-bold mb-2">95</h4>
+                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_visit}</h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #ffdde1, #ee9ca7)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #ffdde1, #ee9ca7)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Booking</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_bookings}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.metrics?.total_bookings}
+                    </h4>
                   </div>
                 </div>
               </div>
               <div className="col-12 col-md-6 col-lg-5th">
                 <div className="card shadow-sm stat-card h-100">
-                  <div className="card-body d-flex flex-column justify-content-center align-items-center text-center" style={{
-                    background: "linear-gradient(135deg, #f4f4f4, #e2e2e2)",
-                    color: "white",
-                    borderRadius: "0.5rem"
-                  }}>
+                  <div
+                    className="card-body d-flex flex-column justify-content-center align-items-center text-center"
+                    style={{
+                      background: "linear-gradient(135deg, #f4f4f4, #e2e2e2)",
+                      color: "white",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
                     <h6 className="mb-1">Total Sales</h6>
-                    <h4 className="fw-bold mb-2">₹{dataSource?.metrics?.total_sales}</h4>
+                    <h4 className="fw-bold mb-2">
+                      ₹{dataSource?.metrics?.total_sales}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -809,7 +961,9 @@ const Overview = ({filterOverviewData }) => {
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Activity Trend</h5>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Export
+                </button>
               </div>
               <div className="chart-container">
                 <Line data={activityData} options={options} height={120} />
@@ -823,11 +977,13 @@ const Overview = ({filterOverviewData }) => {
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Enquiry Stages</h5>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Export
+                </button>
               </div>
               <div
                 className="doughnut-chart position-relative"
-                style={{ width: 250, height: 220, marginLeft: '1.5rem' }}
+                style={{ width: 250, height: 220, marginLeft: "1.5rem" }}
               >
                 <Doughnut data={data} options={enquiryoptions} />
               </div>
@@ -842,8 +998,14 @@ const Overview = ({filterOverviewData }) => {
                       <span className="d-flex align-items-center">
                         <span
                           className="badge rounded-circle me-2"
-                          style={{ backgroundColor: status.color, width: 10, height: 13 }}
-                        >.</span>
+                          style={{
+                            backgroundColor: status.color,
+                            width: 10,
+                            height: 13,
+                          }}
+                        >
+                          .
+                        </span>
                         {status.label}{" "}
                       </span>
                       <span>{status.total_value}</span>
@@ -866,10 +1028,17 @@ const Overview = ({filterOverviewData }) => {
                 <div>
                   <h5 className="mb-0">Trending Product</h5>
                 </div>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Export
+                </button>
               </div>
               <div className="chart-container">
-                <Bar data={productData} options={productOptions} height={236} width={450} />
+                <Bar
+                  data={productData}
+                  options={productOptions}
+                  height={236}
+                  width={450}
+                />
               </div>
             </div>
           </div>
@@ -880,10 +1049,19 @@ const Overview = ({filterOverviewData }) => {
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">Enquiry Distribution</h5>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Export
+                </button>
               </div>
 
-              <div className="chart-container" style={{ height: "20px", borderRadius: "10px", overflow: "hidden" }}>
+              <div
+                className="chart-container"
+                style={{
+                  height: "20px",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                }}
+              >
                 <Bar data={empData} options={empOptions} height={20} />
               </div>
 
@@ -891,46 +1069,110 @@ const Overview = ({filterOverviewData }) => {
                 <div className="col-12">
                   <div className="row g-3">
                     <div className="col-12 col-md-4">
-                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)" }}>
+                      <div
+                        className="card shadow-sm stat-card h-75"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
+                        }}
+                      >
                         <div className="card-body">
                           <div className="d-flex align-items-center justify-content-center mb-1">
-                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#4caf50", width: "10px", height: "13px" }}></span>
+                            <span
+                              className="badge rounded-circle me-2"
+                              style={{
+                                backgroundColor: "#4caf50",
+                                width: "10px",
+                                height: "13px",
+                              }}
+                            ></span>
                             Active Calls
                           </div>
-                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.total_active_enquiries}</div>
+                          <div className="fw-bold fs-5">
+                            {
+                              dataSource?.enquiry_summary
+                                ?.total_active_enquiries
+                            }
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="col-12 col-md-4">
-                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #d0eaff, #ffffff)" }}>
+                      <div
+                        className="card shadow-sm stat-card h-75"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #d0eaff, #ffffff)",
+                        }}
+                      >
                         <div className="card-body">
                           <div className="d-flex align-items-center justify-content-center mb-1">
-                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#2196f3", width: "10px", height: "13px" }}></span>
+                            <span
+                              className="badge rounded-circle me-2"
+                              style={{
+                                backgroundColor: "#2196f3",
+                                width: "10px",
+                                height: "13px",
+                              }}
+                            ></span>
                             New Calls
                           </div>
-                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.fresh_enquiries}</div>
+                          <div className="fw-bold fs-5">
+                            {dataSource?.enquiry_summary?.fresh_enquiries}
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="col-12 col-md-4">
-                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fff4e6, #ffe0b2)" }}>
+                      <div
+                        className="card shadow-sm stat-card h-75"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #fff4e6, #ffe0b2)",
+                        }}
+                      >
                         <div className="card-body">
                           <div className="d-flex align-items-center justify-content-center mb-1">
-                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#ff9800", width: "10px", height: "13px" }}></span>
+                            <span
+                              className="badge rounded-circle me-2"
+                              style={{
+                                backgroundColor: "#ff9800",
+                                width: "10px",
+                                height: "13px",
+                              }}
+                            ></span>
                             Non Valid Calls
                           </div>
-                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.total_dead?.total_invalid}</div>
+                          <div className="fw-bold fs-5">
+                            {
+                              dataSource?.enquiry_summary?.total_dead
+                                ?.total_invalid
+                            }
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="col-12 col-md-4">
-                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fddde6, #e8e6f8)" }}>
+                      <div
+                        className="card shadow-sm stat-card h-75"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #fddde6, #e8e6f8)",
+                        }}
+                      >
                         <div className="card-body">
                           <div className="d-flex align-items-center justify-content-center mb-1">
-                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#9c27b0", width: "10px", height: "13px" }}></span>
+                            <span
+                              className="badge rounded-circle me-2"
+                              style={{
+                                backgroundColor: "#9c27b0",
+                                width: "10px",
+                                height: "13px",
+                              }}
+                            ></span>
                             Unanswered Calls
                           </div>
                           <div className="fw-bold fs-5">18</div>
@@ -939,26 +1181,57 @@ const Overview = ({filterOverviewData }) => {
                     </div>
 
                     <div className="col-12 col-md-4">
-                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #fdecea, #fbc9c9)" }}>
+                      <div
+                        className="card shadow-sm stat-card h-75"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #fdecea, #fbc9c9)",
+                        }}
+                      >
                         <div className="card-body">
                           <div className="d-flex align-items-center justify-content-center mb-1">
-                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#f44336", width: "10px", height: "13px" }}></span>
+                            <span
+                              className="badge rounded-circle me-2"
+                              style={{
+                                backgroundColor: "#f44336",
+                                width: "10px",
+                                height: "13px",
+                              }}
+                            ></span>
                             Dead Calls
                           </div>
-                          <div className="fw-bold fs-5">{dataSource?.enquiry_summary?.total_not_interested}</div>
+                          <div className="fw-bold fs-5">
+                            {dataSource?.enquiry_summary?.total_not_interested}
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="col-12 col-md-4">
-                      <div className="card shadow-sm stat-card h-75" style={{ background: "linear-gradient(135deg, #d7ccc8, #efebe9)" }}>
+                      <div
+                        className="card shadow-sm stat-card h-75"
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #d7ccc8, #efebe9)",
+                        }}
+                      >
                         <div className="card-body">
                           <div className="d-flex align-items-center justify-content-center mb-1">
-                            <span className="badge rounded-circle me-2" style={{ backgroundColor: "#795548", width: "10px", height: "13px" }}></span>
+                            <span
+                              className="badge rounded-circle me-2"
+                              style={{
+                                backgroundColor: "#795548",
+                                width: "10px",
+                                height: "13px",
+                              }}
+                            ></span>
                             Non Active Calls
                           </div>
-                          <div className="fw-bold fs-5">{(dataSource?.enquiry_summary?.aggregate_enquiries) -
-                            (dataSource?.enquiry_summary?.total_active_enquiries)}</div>
+                          <div className="fw-bold fs-5">
+                            {dataSource?.enquiry_summary?.aggregate_enquiries -
+                              dataSource?.enquiry_summary
+                                ?.total_active_enquiries}
+                          </div>
                         </div>
                       </div>
                     </div>

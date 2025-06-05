@@ -1,157 +1,270 @@
-import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import toast from "react-hot-toast";
 import OverviewTab from "./DashboardComponents/OverviewTab";
 import CallingTab from "./DashboardComponents/CallingTab";
 import PropertiesTab from "./DashboardComponents/PropertiesTab";
-import EmployeesTab from './DashboardComponents/EmployeesTab';
-import QuotationTab from './DashboardComponents/QuotationTab';
-import BookingTab from './DashboardComponents/BookingTab';
-import CommissionTab from './DashboardComponents/CommissionTab';
-import { getOverView } from '../../services/Dashboard/DashboardComponents/OverviewTab';
+import EmployeesTab from "./DashboardComponents/EmployeesTab";
+import EnquiryTab from "./DashboardComponents/EnquiriyTab";
+import SheduleTab from "./DashboardComponents/SheduleTab";
+import BuyerPersonaTab from "./DashboardComponents/BuyerPersonaTab";
+import SalesTab from "./DashboardComponents/SalesTab";
+import QuotationTab from "./DashboardComponents/QuotationTab";
+import BookingTab from "./DashboardComponents/BookingTab";
+import SourceTab from "./DashboardComponents/SourceTab";
+import CommissionTab from "./DashboardComponents/CommissionTab";
+
+import { getOverView } from "../../services/Dashboard/DashboardComponents/OverviewTab";
+import { getSourceTab } from "../../services/Dashboard/DashboardComponents/SourceTab";
+import { getProductTab } from "../../services/Dashboard/DashboardComponents/ProductTab";
+import { getFollowUpTab } from "../../services/Dashboard/DashboardComponents/FollowupTab";
 import { getEnquiryTab } from "../../services/Dashboard/DashboardComponents/EnquiryTab";
-import SourceTab from "./DashboardComponents/SourceTab"
-import toast from 'react-hot-toast';
-import EnquiryTab from './DashboardComponents/EnquiriyTab';
-import SheduleTab from './DashboardComponents/SheduleTab';
-import BuyerPersonaTab from './DashboardComponents/BuyerPersonaTab';
-import SalesTab from './DashboardComponents/SalesTab';
-
-// Mock components (replace with actual implementations)
-const MockOverviewTab = ({ filterOverviewData }) => <div className="p-4 bg-white rounded shadow">Overview Content {JSON.stringify(filterOverviewData)}</div>;
-const MockSourceTab = () => <div className="p-4 bg-white rounded shadow">Source Content</div>;
-const MockPropertiesTab = () => <div className="p-4 bg-white rounded shadow">Properties Content</div>;
-const MockCallingTab = () => <div className="p-4 bg-white rounded shadow">Calling Content</div>;
-const MockEnquiryTab = ({ filterEnquiryData }) => <div className="p-4 bg-white rounded shadow">Enquiry Content {JSON.stringify(filterEnquiryData)}</div>;
-const MockQuotationTab = () => <div className="p-4 bg-white rounded shadow">Quotation Content</div>;
-const MockBookingTab = () => <div className="p-4 bg-white rounded shadow">Booking Content</div>;
-const MockBuyerPersonaTab = () => <div className="p-4 bg-white rounded shadow">Buyer Persona Content</div>;
-const MockSheduleTab = () => <div className="p-4 bg-white rounded shadow">Schedule Content</div>;
-const MockSalesTab = () => <div className="p-4 bg-white rounded shadow">Sales Content</div>;
-
-// Mock API services (replace with actual implementations)
-const mockGetOverView = async (start_date, end_date) => ({ data: `Overview from ${start_date} to ${end_date}` });
-const mockGetEnquiryTab = async (start_date, end_date) => ({ data: `Enquiry from ${start_date} to ${end_date}` });
+import { getScheduleTab } from "../../services/Dashboard/DashboardComponents/SchedulesTab";
+import { getQuotationTab } from "../../services/Dashboard/DashboardComponents/QutationsTab";
+import { getBookingTab } from "../../services/Dashboard/DashboardComponents/BookingTab";
+import { getSalesTab } from "../../services/Dashboard/DashboardComponents/SalesTab";
+import { getBuyPersonaTab } from "../../services/Dashboard/DashboardComponents/BuyesPersonaTab";
 
 const Dashboard = () => {
-  const [activeComponent, setActiveComponent] = useState('Overview');
-  const [filterOverviewData, setFilterOverviewData] = useState(null);
-  const [overViewStartDate, setOverViewStartDate] = useState('');
-  const [overViewEndDate, setOverViewEndDate] = useState('');
-  const [filterEnquiryData, setFilterEnquiryData] = useState(null);
-  const [enquiryStartDate, setEnquiryStartDate] = useState('');
-  const [enquiryEndDate, setEnquiryEndDate] = useState('');
+  const [activeComponent, setActiveComponent] = useState("Overview");
+  const [OverviewData, setOverviewData] = useState(null);
+  const [sourceData, setsourceData] = useState(null);
+  const [productData, setproductData] = useState(null);
+  const [FollowUpData, setFollowUpData] = useState(null);
+  const [enquiryData, setenquiryData] = useState(null);
+  const [scheduleData, setscheduleData] = useState(null);
+  const [quotationData, setquotationData] = useState(null);
+  const [bookingData, setbookingData] = useState(null);
+  const [salesData, setsalesData] = useState(null);
+  const [buyersPersonaData, setbuyersPersonaData] = useState(null);
 
-  // API calls
-  const fetchFilterOverViewData = async (start_date, end_date) => {
+  const fetchOverViewData = async (enable, rawfilterData) => {
     try {
-      const response = await (getOverView || mockGetOverView)(start_date, end_date);
-      setFilterOverviewData(response);
+      const response = await getOverView(enable, rawfilterData);
+      setOverviewData(response);
     } catch (error) {
       console.error("Error fetching OverView data", error);
     }
   };
 
-  const handleOverViewSearch = () => {
-    if (overViewStartDate && overViewEndDate) {
-      fetchFilterOverViewData(overViewStartDate, overViewEndDate);
-    } else {
-      toast.error("Please select both start and end dates");
-    }
-  };
-
-  const handleOverViewReset = () => {
-    setOverViewStartDate('');
-    setOverViewEndDate('');
-    fetchFilterOverViewData();
-  };
-
-  const fetchFilterEnquiryData = async (start_date, end_date) => {
+  const fetchsourceData = async (enable, rawfilterData) => {
     try {
-      const response = await (getEnquiryTab || mockGetEnquiryTab)(start_date, end_date);
-      setFilterEnquiryData(response);
+      const response = await getSourceTab(enable, rawfilterData);
+      setsourceData(response);
     } catch (error) {
-      console.error("Error fetching Enquiry Tab data", error);
+      console.error("Error fetching source data", error);
     }
   };
 
-  const handleEnquirySearch = () => {
-    if (enquiryStartDate && enquiryEndDate) {
-      fetchFilterEnquiryData(enquiryStartDate, enquiryEndDate);
-    } else {
-      toast.error("Please select both start and end dates");
+  const fetchproductData = async (enable, rawfilterData) => {
+    try {
+      const response = await getProductTab(enable, rawfilterData);
+      setproductData(response);
+    } catch (error) {
+      console.error("Error fetching product data", error);
     }
   };
 
-  const handleEnquiryTabReset = () => {
-    setEnquiryStartDate('');
-    setEnquiryEndDate('');
-    fetchFilterEnquiryData();
+  const fetchFollowUpData = async (enable, rawfilterData) => {
+    try {
+      const response = await getFollowUpTab(enable, rawfilterData);
+      setFollowUpData(response);
+    } catch (error) {
+      console.error("Error fetching FollowUp data", error);
+    }
+  };
+
+  const fetchEnquiryData = async (enable, rawfilterData) => {
+    try {
+      const response = await getEnquiryTab(enable, rawfilterData);
+      setenquiryData(response);
+    } catch (error) {
+      console.error("Error fetching Enquiry data", error);
+    }
+  };
+
+  const fetchScheduleData = async (enable, rawfilterData) => {
+    try {
+      const response = await getScheduleTab(enable, rawfilterData);
+      setscheduleData(response);
+    } catch (error) {
+      console.error("Error fetching Schedule data", error);
+    }
+  };
+
+  const fetchQuotationData = async (enable, rawfilterData) => {
+    try {
+      const response = await getQuotationTab(enable, rawfilterData);
+      setquotationData(response);
+    } catch (error) {
+      console.error("Error fetching Quotation data", error);
+    }
+  };
+
+  const fetchBookingData = async (enable, rawfilterData) => {
+    try {
+      const response = await getBookingTab(enable, rawfilterData);
+      setbookingData(response);
+    } catch (error) {
+      console.error("Error fetching Booking data", error);
+    }
+  };
+
+  const fetchSalesData = async (enable, rawfilterData) => {
+    try {
+      const response = await getSalesTab(enable, rawfilterData);
+      setsalesData(response);
+    } catch (error) {
+      console.error("Error fetching Sales data", error);
+    }
+  };
+
+  const fetchBuyPersonaData = async (enable, rawfilterData) => {
+    try {
+      const response = await getBuyPersonaTab(enable, rawfilterData);
+      setbuyersPersonaData(response);
+    } catch (error) {
+      console.error("Error fetching BuyPersona data", error);
+    }
+  };
+
+  const functionSwitcher = (component, enable, filterData) => {
+    switch (component) {
+      case "Overview":
+        fetchOverViewData(enable, filterData);
+        break;
+      case "Source":
+        fetchsourceData(enable, filterData);
+        break;
+      case "Product":
+        fetchproductData(enable, filterData);
+        break;
+      case "FollowUp":
+        fetchFollowUpData(enable, filterData);
+        break;
+      case "Enquiry":
+        fetchEnquiryData(enable, filterData);
+        break;
+      case "Shedules":
+        fetchScheduleData(enable, filterData);
+        break;
+      case "Quotations":
+        fetchQuotationData(enable, filterData);
+        break;
+      case "Bookings":
+        fetchBookingData(enable, filterData);
+        break;
+      case "Sales":
+        fetchSalesData(enable, filterData);
+        break;
+      case "Buyer Persona":
+        fetchBuyPersonaData(enable, filterData);
+        break;
+
+      default:
+        break;
+    }
   };
 
   useEffect(() => {
-    fetchFilterOverViewData();
-    fetchFilterEnquiryData();
-  }, []);
+    functionSwitcher(activeComponent, false, {});
+  }, [activeComponent]);
+
+  const [fromDate, setfromDate] = useState("");
+  const [toDate, settoDate] = useState("");
+
+  const filterSearch = () => {
+    if (fromDate && toDate) {
+      if (fromDate < toDate) {
+        const formatedData = {
+          fromDate,
+          toDate,
+        };
+        functionSwitcher(activeComponent, true, formatedData);
+      } else {
+        toast.error("End Date Should be After Start Date");
+      }
+    } else {
+      toast.error("Please choose Both startDate and EndDate");
+    }
+    setfromDate("");
+    settoDate("");
+  };
 
   const renderComponent = () => {
     switch (activeComponent) {
-      case 'Overview': return <OverviewTab filterOverviewData={filterOverviewData} />;
-      case 'Source': return <SourceTab />;
-      case 'Product': return <PropertiesTab />;
-      case 'FollowUp': return <CallingTab />;
-      case 'Enquiry': return <EnquiryTab filterEnquiryData={filterEnquiryData} />;
-      case 'Quotations': return <QuotationTab />;
-      case 'Bookings': return <BookingTab />;
-      case 'Buyer Persona': return <BuyerPersonaTab />;
-      case 'Shedules': return <SheduleTab />;
-      case 'Sales': return <SalesTab />;
-      default: return null;
+      case "Overview":
+        return <OverviewTab OverviewData={OverviewData} />;
+      case "Source":
+        return <SourceTab sourceData={sourceData} />;
+      case "Product":
+        return <PropertiesTab productData={productData} />;
+      case "FollowUp":
+        return <CallingTab FollowUpData={FollowUpData} />;
+      case "Enquiry":
+        return <EnquiryTab enquiryData={enquiryData} />;
+      case "Shedules":
+        return <SheduleTab scheduleData={scheduleData} />;
+      case "Quotations":
+        return <QuotationTab quotationData={quotationData} />;
+      case "Bookings":
+        return <BookingTab bookingData={bookingData} />;
+      case "Sales":
+        return <SalesTab salesData={salesData} />;
+      case "Buyer Persona":
+        return <BuyerPersonaTab buyersPersonaData={buyersPersonaData} />;
+
+      default:
+        return null;
     }
   };
 
   const renderFilters = () => (
     <div>
-      {activeComponent === "Overview" && (
-        <div className="d-flex justify-content-end gap-3 pr-2 align-items-end">
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="start_date" className="form-label fw-bold">Start Date:</label>
-            <input
-              type="date"
-              className="form-control"
-              id="start_date"
-              name="start_date"
-              value={overViewStartDate}
-              onChange={(e) => setOverViewStartDate(e.target.value)}
-            />
-          </div>
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="end_date" className="form-label fw-bold">End Date:</label>
-            <input
-              type="date"
-              className="form-control"
-              id="end_date"
-              name="end_date"
-              value={overViewEndDate}
-              onChange={(e) => setOverViewEndDate(e.target.value)}
-            />
-          </div>
-          <div className="mb-3 d-flex gap-2">
-            <button className="btn btn-primary" onClick={handleOverViewSearch}>
-              Search
-            </button>
-            <div>
-              <button className="btn btn-light" onClick={handleOverViewReset}>
-                Reset
-              </button>
-            </div>
+      <div className="d-flex justify-content-end gap-3 pr-2 align-items-end">
+        <div className="mb-3" style={{ width: "200px" }}>
+          <label htmlFor="start_date" className="form-label fw-bold">
+            Start Date:
+          </label>
+          <input
+            type="date"
+            className="form-control"
+            id="start_date"
+            name="start_date"
+            value={fromDate}
+            onChange={(e) => setfromDate(e.target.value)}
+          />
+        </div>
+        <div className="mb-3" style={{ width: "200px" }}>
+          <label htmlFor="end_date" className="form-label fw-bold">
+            End Date:
+          </label>
+          <input
+            type="date"
+            className="form-control"
+            id="end_date"
+            name="end_date"
+            value={toDate}
+            onChange={(e) => settoDate(e.target.value)}
+          />
+        </div>
+        <div className="mb-3 d-flex gap-2">
+          <button className="btn btn-primary" onClick={filterSearch}>
+            Search
+          </button>
+          <div>
+            <button className="btn btn-light">Reset</button>
           </div>
         </div>
-      )}
+      </div>
+
       {activeComponent === "FollowUp" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
+              <label htmlFor="timePeriod" className="form-label fw-bold">
+                Date Range:
+              </label>
               <select className="form-select" id="timePeriod">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -161,7 +274,9 @@ const Dashboard = () => {
               </select>
             </div>
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
+              <label htmlFor="employee" className="form-label fw-bold">
+                Employee:
+              </label>
               <select className="form-select" id="employee">
                 <option value="raj">Raj Tripathy</option>
                 <option value="abhishek">Abhishek Rathi</option>
@@ -171,7 +286,9 @@ const Dashboard = () => {
               </select>
             </div>
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="dataSource" className="form-label fw-bold">Data Source:</label>
+              <label htmlFor="dataSource" className="form-label fw-bold">
+                Data Source:
+              </label>
               <select className="form-select" id="dataSource">
                 <option value="website">Website</option>
                 <option value="newspaper">Newspaper</option>
@@ -186,7 +303,9 @@ const Dashboard = () => {
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
+              <label htmlFor="timePeriod" className="form-label fw-bold">
+                Date Range:
+              </label>
               <select className="form-select" id="timePeriod">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -202,7 +321,9 @@ const Dashboard = () => {
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
+              <label htmlFor="timePeriod" className="form-label fw-bold">
+                Date Range:
+              </label>
               <select className="form-select" id="timePeriod">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -212,7 +333,9 @@ const Dashboard = () => {
               </select>
             </div>
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
+              <label htmlFor="employee" className="form-label fw-bold">
+                Employee:
+              </label>
               <select className="form-select" id="employee">
                 <option value="raj">Raj Tripathy</option>
                 <option value="abhishek">Abhishek Rathi</option>
@@ -228,7 +351,9 @@ const Dashboard = () => {
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
+              <label htmlFor="timePeriod" className="form-label fw-bold">
+                Date Range:
+              </label>
               <select className="form-select" id="timePeriod">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -238,7 +363,9 @@ const Dashboard = () => {
               </select>
             </div>
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
+              <label htmlFor="employee" className="form-label fw-bold">
+                Employee:
+              </label>
               <select className="form-select" id="employee">
                 <option value="raj">Raj Tripathy</option>
                 <option value="abhishek">Abhishek Rathi</option>
@@ -254,7 +381,9 @@ const Dashboard = () => {
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
+              <label htmlFor="timePeriod" className="form-label fw-bold">
+                Date Range:
+              </label>
               <select className="form-select" id="timePeriod">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -264,7 +393,9 @@ const Dashboard = () => {
               </select>
             </div>
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
+              <label htmlFor="employee" className="form-label fw-bold">
+                Employee:
+              </label>
               <select className="form-select" id="employee">
                 <option value="raj">Raj Tripathy</option>
                 <option value="abhishek">Abhishek Rathi</option>
@@ -280,7 +411,9 @@ const Dashboard = () => {
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">Date Range:</label>
+              <label htmlFor="timePeriod" className="form-label fw-bold">
+                Date Range:
+              </label>
               <select className="form-select" id="timePeriod">
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -290,7 +423,9 @@ const Dashboard = () => {
               </select>
             </div>
             <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="employee" className="form-label fw-bold">Employee:</label>
+              <label htmlFor="employee" className="form-label fw-bold">
+                Employee:
+              </label>
               <select className="form-select" id="employee">
                 <option value="raj">Raj Tripathy</option>
                 <option value="abhishek">Abhishek Rathi</option>
@@ -302,47 +437,20 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      {activeComponent === "Enquiry" && (
-        <div className="d-flex justify-content-end gap-3 pr-2 align-items-end">
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="start_date" className="form-label fw-bold">Start Date:</label>
-            <input
-              type="date"
-              className="form-control"
-              id="start_date"
-              name="start_date"
-              value={enquiryStartDate}
-              onChange={(e) => setEnquiryStartDate(e.target.value)}
-            />
-          </div>
-          <div className="mb-3" style={{ width: "200px" }}>
-            <label htmlFor="end_date" className="form-label fw-bold">End Date:</label>
-            <input
-              type="date"
-              className="form-control"
-              id="end_date"
-              name="end_date"
-              value={enquiryEndDate}
-              onChange={(e) => setEnquiryEndDate(e.target.value)}
-            />
-          </div>
-          <div className="mb-3 d-flex gap-2">
-            <button className="btn btn-primary" onClick={handleEnquirySearch}>
-              Search
-            </button>
-            <div>
-              <button className="btn btn-light" onClick={handleEnquiryTabReset}>
-                Reset
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 
   const buttons = [
-    'Overview', 'Source', 'Product', 'FollowUp', 'Enquiry', 'Shedules', 'Quotations', 'Bookings', 'Sales', 'Buyer Persona',
+    "Overview",
+    "Source",
+    "Product",
+    "FollowUp",
+    "Enquiry",
+    "Shedules",
+    "Quotations",
+    "Bookings",
+    "Sales",
+    "Buyer Persona",
   ];
 
   return (
@@ -384,11 +492,16 @@ const Dashboard = () => {
         </div>
 
         <div className="container-fluid p-0 ps-lg-4 mt-3">
-          <div className="d-flex justify-content-between flex-nowrap overflow-auto" style={{ whiteSpace: 'nowrap', gap: '0.5rem' }}>
+          <div
+            className="d-flex justify-content-between flex-nowrap overflow-auto"
+            style={{ whiteSpace: "nowrap", gap: "0.5rem" }}
+          >
             {buttons.map((btn) => (
               <button
                 key={btn}
-                className={`custom-nav-button ${activeComponent === btn ? 'active' : ''}`}
+                className={`custom-nav-button ${
+                  activeComponent === btn ? "active" : ""
+                }`}
                 onClick={() => setActiveComponent(btn)}
               >
                 {btn}

@@ -12,7 +12,9 @@ import {
 import { Bar, Line, Pie } from 'react-chartjs-2';
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend);
 
-const SourceTab = () => {
+const SourceTab = ({sourceData}) => {
+  console.log(sourceData);
+  
   const [reportStats, setReportStats] = useState([
     {
       id: 1,
@@ -923,7 +925,7 @@ const SourceTab = () => {
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold"><span class="mdi mdi-bookmark"></span>Total Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">2,547</div>
+              <div className="fw-bold fs-4">{sourceData?.total_enquiry_count}</div>
             </div>
           </div>
         </div>
@@ -939,7 +941,7 @@ const SourceTab = () => {
                 {/* <HourglassEmptyIcon style={{ color: "#ff9800", fontSize: 20, marginRight: "6px" }} /> */}
                 <span className="fw-semibold"> <span class="mdi mdi-chart-bar"></span> Valid Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">1,923</div>
+              <div className="fw-bold fs-4">{sourceData?.valid_enquiry_count}</div>
             </div>
           </div>
         </div>
