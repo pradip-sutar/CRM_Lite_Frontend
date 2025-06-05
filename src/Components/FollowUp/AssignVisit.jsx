@@ -209,30 +209,6 @@ const formatedDataForActivity = {
 
                 <TableBody sx={{ border: "1px solid black" }}>
                   <TableRow>
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid black",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Team
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid black",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Employee
-                    </TableCell>
 
                     <TableCell
                       sx={{
@@ -270,65 +246,10 @@ const formatedDataForActivity = {
                     >
                       Instruction
                     </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid black",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Status
-                    </TableCell>
                   </TableRow>
 
                   {/* Additional rows for Report Data  inputs */}
                   <TableRow>
-                    <TableCell sx={{ border: "1px solid black" }}>
-                      <Controller
-                        name="team"
-                        control={control}
-                        render={({ field }) => (
-                          <textarea
-                            {...field}
-                            rows={3}
-                            className="Font-Assign"
-                            placeholder="Enter Team"
-                            disabled
-                            fullWidth
-                            style={{
-                              width: "6rem",
-                              border: "2px solid #ccc",
-                              borderRadius: "4px",
-                              padding: "8px",
-                            }}
-                          />
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ border: "1px solid black" }}>
-                      <Controller
-                        name="created_by"
-                        control={control}
-                        render={({ field }) => (
-                          <Select {...field} displayEmpty fullWidth>
-                            <MenuItem value="" disabled>
-                              Select Employee
-                            </MenuItem>
-                            {teamMembers?.length > 0 &&
-                              teamMembers?.map((data, index) => {
-                                return (
-                                  <MenuItem key={index} value={data?.id}>
-                                    {data?.name}
-                                  </MenuItem>
-                                );
-                              })}
-                          </Select>
-                        )}
-                      />
-                    </TableCell>
                     <TableCell sx={{ border: "1px solid black" }}>
                       <Controller
                         name="date"
@@ -390,50 +311,11 @@ const formatedDataForActivity = {
                         }}
                       />
                     </TableCell>
-                    <TableCell
-                      colSpan={2}
-                      sx={{ padding: 2, border: "1px solid black" }}
-                    >
-                      <FormGroup>
-                        <RadioGroup defaultValue="scheduled">
-                          <FormControlLabel
-                            control={
-                              <Radio
-                                {...register("status")}
-                                value="scheduled"
-                              />
-                            }
-                            label="Scheduled"
-                          />
-                          <FormControlLabel
-                            control={
-                              <Radio {...register("status")} value="pending" />
-                            }
-                            label="Pending"
-                          />
-                          <FormControlLabel
-                            control={
-                              <Radio
-                                {...register("status")}
-                                value="completed"
-                              />
-                            }
-                            label="Completed"
-                          />
-                        </RadioGroup>
-                      </FormGroup>
-                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
               {/* Submit Button */}
-              {(userType === "Super Admin" ||
-                hasRightsPermission(
-                  "FollowUp",
-                  "Follow Up",
-                  "write",
-                  Permissions
-                )) && (
+        
                 <Box textAlign="center" marginTop={2}>
                   <Button
                     variant="contained"
@@ -444,7 +326,7 @@ const formatedDataForActivity = {
                     Submit
                   </Button>{" "}
                 </Box>
-              )}
+          
             </Paper>
 
             {/* visit History */}

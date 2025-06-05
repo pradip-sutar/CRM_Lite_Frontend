@@ -55,7 +55,10 @@ const AssignQuote = () => {
 
   const fetchAssignQuotes = async () => {
     try {
-      const data = await getAssignQuote(logged_employee_Id, logged_employee_Type);
+      const data = await getAssignQuote(
+        logged_employee_Id,
+        logged_employee_Type
+      );
       setAssignedData(data);
     } catch (error) {
       console.log(error);
@@ -121,7 +124,7 @@ const AssignQuote = () => {
     if (res == 201) {
       reset();
       fetchAssignQuotes();
-     await postSchedule(formatedDataForActivity);
+      await postSchedule(formatedDataForActivity);
     }
   };
 
@@ -180,13 +183,7 @@ const AssignQuote = () => {
                   </TableHead>
                   <TableBody sx={{ border: "1px solid rgb(143 143 143)" }}>
                     <TableRow>
-                      {[
-                        "Team",
-                        "Employee",
-                        "Till Date",
-                        "Instruction",
-                        "Status",
-                      ].map((header) => (
+                      {["Quote Date", "Instruction"].map((header) => (
                         <TableCell
                           key={header}
                           sx={{
@@ -206,72 +203,6 @@ const AssignQuote = () => {
                     {/* Form Row */}
                     <TableRow>
                       {/* Team Input */}
-                      <TableCell
-                        sx={{
-                          border: "1px solid rgb(143 143 143)",
-                          height: "100px",
-                        }}
-                      >
-                        <Controller
-                          name="team"
-                          control={control}
-                          render={({ field }) => (
-                            <textarea
-                              {...field}
-                              rows={3}
-                              className="Font-Assign"
-                              placeholder="Enter Team"
-                              disabled
-                              fullWidth
-                              style={{
-                                width: "6rem",
-                                border: "2px solid #ccc",
-                                borderRadius: "4px",
-                                padding: "8px",
-                              }}
-                            />
-                          )}
-                        />
-                      </TableCell>
-
-                      {/* Employee Dropdown */}
-                      <TableCell sx={{ border: "1px solid rgb(143 143 143)" }}>
-                        <Controller
-                          name="created_by"
-                          control={control}
-                          rules={{ required: "This field is required" }}
-                          render={({ field, fieldState: { error } }) => (
-                            <>
-                              <Select
-                                {...field}
-                                displayEmpty
-                                fullWidth
-                                className="Font-Assign"
-                                error={!!error}
-                              >
-                                <MenuItem value="" disabled>
-                                  Select Employee
-                                </MenuItem>
-                                {teamMembers?.map((employee) => (
-                                  <MenuItem
-                                    key={employee.id}
-                                    value={employee.id}
-                                  >
-                                    {employee.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                              {error && (
-                                <span
-                                  style={{ color: "red", fontSize: "0.875rem" }}
-                                >
-                                  {error.message}
-                                </span>
-                              )}
-                            </>
-                          )}
-                        />
-                      </TableCell>
 
                       {/* Date Input */}
                       <TableCell sx={{ border: "1px solid rgb(143 143 143)" }}>
@@ -283,7 +214,6 @@ const AssignQuote = () => {
                           render={({ field }) => (
                             <TextField {...field} type="date" fullWidth />
                           )}
-
                         />
                       </TableCell>
 
@@ -309,66 +239,22 @@ const AssignQuote = () => {
                           )}
                         />
                       </TableCell>
-
-                      {/* Status Radio Buttons */}
-                      <TableCell
-                        sx={{
-                          padding: 2,
-                          border: "1px solid rgb(143 143 143)",
-                        }}
-                      >
-                        <FormGroup>
-                          {["scheduled", "pending", "completed"].map(
-                            (status) => (
-                              <FormControlLabel
-                                key={status}
-                                className="Font-Assign"
-                                control={
-                                  <Controller
-                                    name="status"
-                                    className="Font-Assign"
-                                    defaultValue="scheduled"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <Radio
-                                        {...field}
-                                        value={status}
-                                        checked={field.value === status}
-                                      />
-                                    )}
-                                  />
-                                }
-                                label={
-                                  status.charAt(0).toUpperCase() +
-                                  status.slice(1)
-                                }
-                              />
-                            )
-                          )}
-                        </FormGroup>
-                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
 
                 {/* Submit Button */}
-                {(userType === "Super Admin" ||
-                  hasRightsPermission(
-                    "FollowUp",
-                    "Follow Up",
-                    "write",
-                    Permissions
-                  )) && (<Box textAlign="center" marginTop={2}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      sx={{ backgroundColor: "#666cff" }}
-                    >
-                      Submit
-                    </Button>
-                  </Box>)}
 
+                <Box textAlign="center" marginTop={2}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{ backgroundColor: "#666cff" }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
               </form>
             </Paper>
 
@@ -434,19 +320,7 @@ const AssignQuote = () => {
                       }}
                       className="Font-Assign"
                     >
-                      Name
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid rgb(143 143 143)",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Stage
+                      Instruction
                     </TableCell>
                     <TableCell
                       sx={{
@@ -473,43 +347,6 @@ const AssignQuote = () => {
                     >
                       Sub - Project
                     </TableCell> */}
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid rgb(143 143 143)",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Products
-                    </TableCell>
-
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid rgb(143 143 143)",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Status
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid rgb(143 143 143)",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Version
-                    </TableCell>
                   </TableRow>
 
                   {/* Additional rows for Report Data  inputs */}
@@ -535,34 +372,6 @@ const AssignQuote = () => {
                           {row.date}
                         </TableCell>
 
-                        <TableCell
-                          sx={{
-                            textAlign: "center",
-                            border: "1px solid rgb(143 143 143)",
-                          }}
-                          className="Font-Assign"
-                        >
-                          {row.created_by_name}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            textAlign: "center",
-                            border: "1px solid rgb(143 143 143)",
-                          }}
-                          className="Font-Assign"
-                        >
-                          {row.stage}
-                        </TableCell>
-
-                        <TableCell
-                          sx={{
-                            textAlign: "center",
-                            border: "1px solid rgb(143 143 143)",
-                          }}
-                          className="Font-Assign"
-                        >
-                          {row.project}
-                        </TableCell>
                         {/* <TableCell
                           sx={{
                             textAlign: "center",
@@ -572,26 +381,7 @@ const AssignQuote = () => {
                         >
                           {row.subProject}
                         </TableCell> */}
-                        <TableCell
-                          sx={{
-                            textAlign: "center",
-                            border: "1px solid rgb(143 143 143)",
-                          }}
-                          className="Font-Assign"
-                        >
-                          {row.product_details
-                            ?.map((data, index) => data.product_id)
-                            .join(", ")}
-                        </TableCell>
-                        <TableCell
-                          sx={{
-                            textAlign: "center",
-                            border: "1px solid rgb(143 143 143)",
-                          }}
-                          className="Font-Assign"
-                        >
-                          {row.status}
-                        </TableCell>
+
                         <TableCell
                           sx={{
                             textAlign: "center",
@@ -600,6 +390,15 @@ const AssignQuote = () => {
                           className="Font-Assign"
                         >
                           {row.instruction}
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            textAlign: "center",
+                            border: "1px solid rgb(143 143 143)",
+                          }}
+                          className="Font-Assign"
+                        >
+                          {row.project}
                         </TableCell>
                       </TableRow>
                     ))}
