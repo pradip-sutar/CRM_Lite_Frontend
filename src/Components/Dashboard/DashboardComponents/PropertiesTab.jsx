@@ -1,10 +1,31 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
-ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+} from "chart.js";
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement
+);
 
-const Properties = () => {
+const Properties = ({ productData }) => {
+  console.log(productData);
+
   const [employeeStats, setEmployeeStats] = useState([
     {
       id: 1,
@@ -19,7 +40,6 @@ const Properties = () => {
       amount: 45000,
       stage: "Opportunity",
       status: "Hot",
-
     },
     {
       id: 2,
@@ -37,33 +57,29 @@ const Properties = () => {
     },
   ]);
 
-  const activityData = {
-    labels: ["Enquiry", "Quote", "Schedule", "Sales"],
-    datasets: [
-      {
-        label: "Project A",
-        data: [60, 30, 20, 10],
-        backgroundColor: "#007bff",
-        borderColor: "#1E90FF",
-        borderWidth: 1,
-      },
-      {
-        label: "Project B",
-        data: [50, 25, 15, 18],
-        backgroundColor: "#28a745",
-        borderColor: "#2E8B57",
-        borderWidth: 1,
-      },
-      {
-        label: "Project C",
-        data: [40, 35, 25, 20],
-        backgroundColor: "#ffc107",
-        borderColor: "#FFA500",
-        borderWidth: 1,
-      },
-    ],
-  };
+ const colors = [
+  { background: "#007bff", border: "#1E90FF" },
+  { background: "#28a745", border: "#2E8B57" },
+  { background: "#ffc107", border: "#FFA500" },
+  { background: "#dc3545", border: "#B22222" }, // Add more if needed
+];
 
+// Create Chart.js dataset format
+const activityData = {
+  labels: ["Enquiry", "Quote", "Schedule", "Sales"],
+  datasets: productData?.map((project, index) => ({
+    label: project.project_name,
+    data: [
+      project.enquiry_count,
+      project.quotation_count,
+      project.visit_count,
+      project.sale_count,
+    ],
+    backgroundColor: colors[index % colors.length].background,
+    borderColor: colors[index % colors.length].border,
+    borderWidth: 1,
+  }))
+};
   const options = {
     responsive: true,
     plugins: {
@@ -97,10 +113,9 @@ const Properties = () => {
     },
   };
 
-
   // Tab Button
   const [activeTab, setActiveTab] = useState("Enquiry");
-  const buttons = ["Enquiry", "Sales", "Quote", "Schedule"]
+  const buttons = ["Enquiry", "Sales", "Quote", "Schedule"];
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case "hot":
@@ -113,8 +128,6 @@ const Properties = () => {
         return "bg-secondary-subtle text-secondary fw-semibold px-3 py-1 rounded-pill";
     }
   };
-
-
 
   return (
     <div className="container-fluid p-0 pr-1">
@@ -299,7 +312,6 @@ const Properties = () => {
         `}
       </style>
 
-
       {/* Charts Section */}
       <div className="row g-3 mb-4">
         <div className="col-12 col-md-12">
@@ -307,10 +319,12 @@ const Properties = () => {
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="mb-0">Top Performing Product</h6>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Export
+                </button>
               </div>
               <div className="chart-container">
-                <Bar data={activityData} options={options} height={80} />
+                {productData && <Bar data={activityData} options={options} height={80} /> }
               </div>
             </div>
           </div>
@@ -323,14 +337,15 @@ const Properties = () => {
         {buttons?.map((tab) => (
           <button
             key={tab}
-            className={`btn ${activeTab === tab ? "btn-primary" : "btn-outline-primary"}`}
+            className={`btn ${
+              activeTab === tab ? "btn-primary" : "btn-outline-primary"
+            }`}
             onClick={() => setActiveTab(tab)}
           >
             {tab}
           </button>
         ))}
       </div>
-
 
       {activeTab === "Enquiry" && (
         <div className="row">
@@ -345,7 +360,9 @@ const Properties = () => {
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
                         <tr>
-                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col" style={{ width: "60px" }}>
+                            SL No.
+                          </th>
                           <th scope="col">Product Name</th>
                           <th scope="col">Type</th>
                           <th scope="col">Enquiries</th>
@@ -379,17 +396,24 @@ const Properties = () => {
                 {employeeStats?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
-                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                      Showing 1 to {employeeStats.length} of{" "}
+                      {employeeStats.length} entries
                     </div>
                     <ul className="pagination mb-0">
                       <li className="page-item disabled">
-                        <a className="page-link" href="#">Previous</a>
+                        <a className="page-link" href="#">
+                          Previous
+                        </a>
                       </li>
                       <li className="page-item active">
-                        <a className="page-link" href="#">1</a>
+                        <a className="page-link" href="#">
+                          1
+                        </a>
                       </li>
                       <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
+                        <a className="page-link" href="#">
+                          Next
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -413,7 +437,9 @@ const Properties = () => {
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
                         <tr>
-                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col" style={{ width: "60px" }}>
+                            SL No.
+                          </th>
                           <th scope="col">Product Name</th>
                           <th scope="col">Latest Date</th>
                           <th scope="col">Enquiry Stage</th>
@@ -432,7 +458,13 @@ const Properties = () => {
                             <td>{row?.date}</td>
                             <td>{row?.stage}</td>
                             <td>
-                              <span className={`badge-pill ${getStatusBadgeClass(row?.status)}`}>{row?.status}</span>
+                              <span
+                                className={`badge-pill ${getStatusBadgeClass(
+                                  row?.status
+                                )}`}
+                              >
+                                {row?.status}
+                              </span>
                             </td>
                             <td>{row?.customerName}</td>
                             <td>{`QID-${row?.id}`}</td>
@@ -453,17 +485,24 @@ const Properties = () => {
                 {employeeStats?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
-                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                      Showing 1 to {employeeStats.length} of{" "}
+                      {employeeStats.length} entries
                     </div>
                     <ul className="pagination mb-0">
                       <li className="page-item disabled">
-                        <a className="page-link" href="#">Previous</a>
+                        <a className="page-link" href="#">
+                          Previous
+                        </a>
                       </li>
                       <li className="page-item active">
-                        <a className="page-link" href="#">1</a>
+                        <a className="page-link" href="#">
+                          1
+                        </a>
                       </li>
                       <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
+                        <a className="page-link" href="#">
+                          Next
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -487,7 +526,9 @@ const Properties = () => {
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
                         <tr>
-                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col" style={{ width: "60px" }}>
+                            SL No.
+                          </th>
                           <th scope="col">Product Name</th>
                           <th scope="col">Latest Date</th>
                           <th scope="col">Enquiry Stage</th>
@@ -506,7 +547,11 @@ const Properties = () => {
                             <td>{row?.date}</td>
                             <td>{row?.stage}</td>
                             <td>
-                              <span className={`badge-pill ${getStatusBadgeClass(row?.status)}`}>
+                              <span
+                                className={`badge-pill ${getStatusBadgeClass(
+                                  row?.status
+                                )}`}
+                              >
                                 {row?.status}
                               </span>
                             </td>
@@ -533,17 +578,24 @@ const Properties = () => {
                 {employeeStats?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
-                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                      Showing 1 to {employeeStats.length} of{" "}
+                      {employeeStats.length} entries
                     </div>
                     <ul className="pagination mb-0">
                       <li className="page-item disabled">
-                        <a className="page-link" href="#">Previous</a>
+                        <a className="page-link" href="#">
+                          Previous
+                        </a>
                       </li>
                       <li className="page-item active">
-                        <a className="page-link" href="#">1</a>
+                        <a className="page-link" href="#">
+                          1
+                        </a>
                       </li>
                       <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
+                        <a className="page-link" href="#">
+                          Next
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -552,7 +604,6 @@ const Properties = () => {
             </div>
           </div>
         </div>
-
       )}
 
       {activeTab === "Sales" && (
@@ -568,7 +619,9 @@ const Properties = () => {
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
                         <tr>
-                          <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                          <th scope="col" style={{ width: "60px" }}>
+                            SL No.
+                          </th>
                           <th scope="col">Product Name</th>
                           <th scope="col">Date</th>
                           <th scope="col">Customer Name</th>
@@ -598,17 +651,24 @@ const Properties = () => {
                 {employeeStats?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
-                      Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                      Showing 1 to {employeeStats.length} of{" "}
+                      {employeeStats.length} entries
                     </div>
                     <ul className="pagination mb-0">
                       <li className="page-item disabled">
-                        <a className="page-link" href="#">Previous</a>
+                        <a className="page-link" href="#">
+                          Previous
+                        </a>
                       </li>
                       <li className="page-item active">
-                        <a className="page-link" href="#">1</a>
+                        <a className="page-link" href="#">
+                          1
+                        </a>
                       </li>
                       <li className="page-item">
-                        <a className="page-link" href="#">Next</a>
+                        <a className="page-link" href="#">
+                          Next
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -618,9 +678,6 @@ const Properties = () => {
           </div>
         </div>
       )}
-
-
-
     </div>
   );
 };

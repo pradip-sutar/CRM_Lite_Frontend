@@ -2,11 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ValidationCard from "../../ui/ValidationCard";
 import crmStore from "../../Utils/crmStore";
-import { hasRightsPermission } from "../../Private/premissionChecker";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 function Report() {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [reportData, setReportData] = useState([
     {
       id: 1,
@@ -49,7 +47,6 @@ function Report() {
           </span>{" "}
           Report
         </h5>
-
 
         <div className="mb-2 text-end">
           <div
@@ -120,7 +117,6 @@ function Report() {
                                     <i className="mdi mdi-eye"></i>
                                   </div>
 
-
                                   <div
                                     onClick={() =>
                                       navigate("/systemAdmin/reportForm", {
@@ -134,7 +130,6 @@ function Report() {
                                   >
                                     <i className="mdi mdi-pencil-outline"></i>
                                   </div>
-
 
                                   <div
                                     onClick={() => {
@@ -173,43 +168,13 @@ function Report() {
               {/* Pagination */}
               <div className="d-flex justify-content-between align-items-center mt-3">
                 <div className="text-muted">
-                  Showing {Math.min(paginationInfo.perPage, reportData.length)} of{" "}
-                  {paginationInfo.total} entries
+                  Showing {Math.min(paginationInfo.perPage, reportData.length)}{" "}
+                  of {paginationInfo.total} entries
                 </div>
-                <ul className="pagination m-0">
-                  <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                    <button
-                      className="page-link"
-                      onClick={handlePrev}
-                      disabled={currentPage === 1}
-                    >
-                      Previous
-                    </button>
-                  </li>
-
-                  <li className="page-item active">
-                    <div className="page-link">{currentPage}</div>
-                  </li>
-
-                  <li
-                    className={`page-item ${reportData.length < paginationInfo.perPage ||
-                        paginationInfo.total <= currentPage * paginationInfo.perPage
-                        ? "disabled"
-                        : ""
-                      }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={handleNext}
-                      disabled={
-                        reportData.length < paginationInfo.perPage ||
-                        paginationInfo.total <= currentPage * paginationInfo.perPage
-                      }
-                    >
-                      Next
-                    </button>
-                  </li>
-                </ul>
+                 <NumberedPagination
+                  totalPages={2}
+                  onPageChange={setCurrentPage}
+                />
               </div>
             </div>
           </div>

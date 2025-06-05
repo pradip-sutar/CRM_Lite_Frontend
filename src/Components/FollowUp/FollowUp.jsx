@@ -8,9 +8,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Button,
   Modal,
   TextField,
@@ -18,6 +15,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -31,9 +35,10 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { Chart } from "chart.js/auto";
 import InitiatedComponent from "./InitiatedComponent";
 import "./CSS/Follow.css";
-import { hasRightsPermission } from "../../Private/premissionChecker";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import crmStore from "../../Utils/crmStore";
-import ValidationCard from "../../ui/ValidationCard";
+import SearchIcon from "@mui/icons-material/Search";
 import UpcomingActivity from "./UpcomingActivity";
 import ListofActivity from "./ListofActivity";
 import PendingActivity from "./PendingActivity";
@@ -61,8 +66,9 @@ function FollowUp() {
   const doughnutChartRef = useRef(null);
   const doughnutChartInstance = useRef(null);
   const navigate = useNavigate();
-
+  const [reportData, setReportData] = useState([]);
   const [open, setOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -76,6 +82,45 @@ function FollowUp() {
   const [souceType, setSourceType] = useState([]);
   const [filterUrl, setFilterUrl] = useState("");
   const [filterTabname, setFilterTabName] = useState("");
+  const [mobileSearchBarValue, setMobileSearchBarValue] = useState("");
+
+  const mobileNumberSearch = async () => {
+    console.log(mobileSearchBarValue);
+
+    const url = `/api/enquiry_table_handler/?page=1&customer_phone=${mobileSearchBarValue}`;
+    const response = await fetchPageData(url);
+    console.log(response);
+
+    if (response?.data?.length === 1) {
+      setFilterData(response);
+      const nextDateTime = response?.data?.[0]?.next_date_time;
+      console.log("Next Date Time:", nextDateTime);
+
+      if (nextDateTime) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const nextDate = new Date(nextDateTime);
+        nextDate.setHours(0, 0, 0, 0);
+
+        if (nextDate < today) {
+          setContent("pending");
+          setActiveTab("pending");
+        } else if (nextDate > today) {
+          setContent("upcoming");
+          setActiveTab("upcoming");
+        } else if (nextDate.getTime() === today.getTime()) {
+          setContent("today");
+          setActiveTab("today");
+
+          console.log("today");
+        } else {
+          setContent("new");
+          setActiveTab("new");
+        }
+      }
+    }
+  };
 
   const fetchSourceType = async () => {
     try {
@@ -133,6 +178,23 @@ function FollowUp() {
       setDateError(false);
     }
   };
+  const columns = [
+    { id: "Enquiry ID", label: "Enquiry ID" },
+    { id: "Employee", label: "Employee" },
+    { id: "Customer Name", label: "Customer Name" },
+    { id: "Phone", label: "Phone" },
+    { id: "Email", label: "Email" },
+    { id: "Source", label: "Source" },
+    { id: "Confirmed Project", label: "Confirmed Project" },
+    { id: "Team", label: "Team" },
+    { id: "Date", label: "Date" },
+    { id: "Discussion Point", label: "Discussion Point" },
+    { id: "Stage", label: "Stage" },
+    { id: "Status", label: "Status" },
+    { id: "Rating", label: "Rating" },
+    { id: "Percentage (%)", label: "Percentage (%)" },
+    { id: "Next FollowUp Date", label: "Next FollowUp Date" },
+  ];
 
   const fetchDataAndExport = async () => {
     if (!startDate || !endDate || dateError) {
@@ -155,8 +217,9 @@ function FollowUp() {
         return;
       }
 
-      const formattedData = response?.flatMap((entry) => {
+      const formattedData = response?.flatMap((entry, index) => {
         return entry.enquiries.map((action) => ({
+          id: `${entry.employee}-${action.enquiry_id}-${index}`,
           "Enquiry ID": action.enquiry_id,
           Employee: entry.employee,
           "Customer Name": action.customer_name,
@@ -174,19 +237,38 @@ function FollowUp() {
           "Next FollowUp Date": action.enquiry_actions?.[0]?.next_date_time,
         }));
       });
-      const worksheet = XLSX.utils.json_to_sheet(formattedData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Activity Report");
-
-      XLSX.writeFile(
-        workbook,
-        `Report_${formattedStartDate}_to_${formattedEndDate}.xlsx`
-      );
-      handleClose();
+      handlePreviewModalOpen();
+      setReportData(formattedData);
+      setOpen(true);
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Failed to fetch data");
     }
+  };
+
+  const handleExport = () => {
+    const worksheet = XLSX.utils.json_to_sheet(reportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Activity Report");
+
+    const formattedStartDate = dayjs(startDate).format("YYYY-MM-DD");
+    const formattedEndDate = dayjs(endDate).format("YYYY-MM-DD");
+
+    XLSX.writeFile(
+      workbook,
+      `Report_${formattedStartDate}_to_${formattedEndDate}.xlsx`
+    );
+    setOpen(false);
+    handleClose();
+  };
+
+  const handlePreviewModalOpen = () => {
+    setPreviewOpen(true);
+    handleClose();
+  };
+  const handlePreviewModalClose = () => {
+    setPreviewOpen(false);
+    handleClose();
   };
 
   useEffect(() => {
@@ -226,328 +308,121 @@ function FollowUp() {
         <Card sx={{ width: "100%", m: 0, boxShadow: "none", border: "none" }}>
           <CardContent sx={{ p: 0 }} className="card-contentFo">
             <Grid container spacing={0} className="grid-container">
-              <Grid
-                item
-                xs={2}
-                sx={{ borderRight: 1, borderColor: "divider" }}
-                className="analytical-section"
-              >
-                <Box
-                  sx={{ height: "100%", overflow: "auto" }}
-                  className="analytical-box"
-                >
-                  <Box
-                    sx={{
-                      py: 0.5,
-                      px: 2,
-                      borderBottom: 1,
-                      borderColor: "divider",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Typography variant="h5" color="#666cff">
-                        Analytical
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Enquiries
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      <div style={{ width: "120px", height: "150px" }}>
-                        <canvas
-                          ref={chartRef}
-                          id="polarChart"
-                          style={{ width: "100%", height: "100%" }}
-                        ></canvas>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          marginLeft: "3px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginBottom: "5px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              backgroundColor: "#FF8A33",
-                              width: "8px",
-                              height: "8px",
-                              borderRadius: "10px",
-                              // display: "inline-block",
-                              marginRight: "4px",
-                            }}
-                          ></span>
-                          <span
-                            style={{
-                              color: "#828393",
-                              fontSize: "13px",
-                            }}
-                          >
-                            Hot Lead 35{" "}
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginBottom: "5px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              backgroundColor: "#33D9FF",
-                              width: "8px",
-                              height: "8px",
-                              borderRadius: "10px",
-                              // display: "inline-block",
-                              marginRight: "4px",
-                            }}
-                          ></span>
-                          <span
-                            style={{
-                              color: "#828393",
-                              fontSize: "13px",
-                            }}
-                          >
-                            Cold Lead 25
-                          </span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <span
-                            style={{
-                              backgroundColor: "#FFD633",
-                              width: "8px",
-                              height: "8px",
-                              borderRadius: "10px",
-                              // display: "inline-block",
-                              marginRight: "4px",
-                            }}
-                          ></span>
-                          <span
-                            style={{
-                              color: "#828393",
-                              fontSize: "13px",
-                            }}
-                          >
-                            Warm Lead 40
-                          </span>
-                        </div>
-                      </div>
-                    </AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography sx={{ color: "#424242d1" }}>Lead</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <div
-                        style={{
-                          position: "relative",
-                          height: "150px",
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <canvas
-                          ref={doughnutChartRef}
-                          id="doughnutChart"
-                          style={{ width: "100%", height: "100%" }}
-                        ></canvas>
-                      </div>
-                      <Grid container spacing={2} sx={{ marginTop: "auto" }}>
-                        <Grid item xs={4}>
-                          <Typography variant="body1" sx={{ color: "#636578" }}>
-                            Desktop
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              backgroundColor: "rgb(102,110,232)",
-                              width: 35,
-                              height: 6,
-                              borderRadius: 1,
-                              my: 1,
-                              color: "#636578",
-                            }}
-                          ></Box>
-                          <Typography variant="body2" sx={{ color: "#636578" }}>
-                            80%
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Typography variant="body1" sx={{ color: "#636578" }}>
-                            Tablet
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              backgroundColor: "rgb(40,208,148)",
-                              width: 35,
-                              height: 6,
-                              borderRadius: 1,
-                              my: 1,
-                            }}
-                          ></Box>
-                          <Typography variant="body2" sx={{ color: "#636578" }}>
-                            10%
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Typography variant="body1" sx={{ color: "#636578" }}>
-                            Mobile
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              backgroundColor: "rgb(253,172,52)",
-                              width: 35,
-                              height: 6,
-                              borderRadius: 1,
-                              my: 1,
-                            }}
-                          ></Box>
-                          <Typography variant="body2" sx={{ color: "#636578" }}>
-                            10%
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Opportunity
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Visit
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Quotes
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Sales
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Registration
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Full and Final Settlement
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                  </Accordion>
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography
-                        sx={{
-                          color: "#424242d1",
-                        }}
-                      >
-                        Key Handover
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
-                  </Accordion>
-                </Box>
-              </Grid>
-
               {/* Follow Up List */}
-              <Grid item xs={10} className="followup-section">
+              <Grid item className="followup-section">
                 <div className="text-end mb-3"></div>
 
                 <Box className="followup-box">
-                  <div className="d-flex justify-content-between">
-                    <div>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 2,
+                      flexDirection: { xs: "column", sm: "row" },
+                      px: { xs: 1, sm: 2 },
+                      py: 2,
+                      backgroundColor: "background.default",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        flexGrow: 1,
+                        width: { xs: "100%", sm: "auto" },
+                      }}
+                    >
                       <Box
                         sx={{
+                          border: 1,
+                          borderColor: "grey.200",
+                          borderRadius: 2,
+                          p: 2,
+                          backgroundColor: "background.paper",
+                          boxShadow: 1,
                           display: "flex",
                           justifyContent: "space-between",
-                          borderColor: "divider",
+                          alignItems: "center",
                           flexDirection: { xs: "column", sm: "row" },
+                          gap: 2,
                         }}
                       >
-                        <Typography
-                          variant="h5"
-                          color="#666cff"
-                          className="followup-heading"
+                        <Box
                           sx={{
-                            marginLeft: 2,
-                            fontWeight: 500,
-                            fontSize: { xs: "16px", sm: "17px", md: "18px" },
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: { xs: "column", sm: "row" },
+                            gap: 1.5,
+                            px: { xs: 1, sm: 2 },
+                            width: { xs: "100%", sm: "auto" },
                           }}
                         >
-                          <strong className="text-nowrap ">
-                            {" "}
+                          <TextField
+                            type="number"
+                            label="Mobile Number"
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            sx={{
+                              maxWidth: 300,
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 1,
+                                backgroundColor: "white",
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "primary.main",
+                                },
+                              },
+                              "& .MuiInputLabel-root": {
+                                color: "grey.600",
+                                "&.Mui-focused": {
+                                  color: "primary.main",
+                                },
+                              },
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "grey.300",
+                              },
+                            }}
+                            value={mobileSearchBarValue}
+                            onChange={(e) => {
+                              if (e.target.value.length > 10)
+                                e.target.value = e.target.value.slice(0, 10);
+                              setMobileSearchBarValue(e.target.value);
+                            }}
+                          />
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={mobileNumberSearch}
+                            sx={{
+                              minWidth: 48,
+                              height: 40,
+                              borderRadius: 1,
+                              boxShadow: 2,
+                              "&:hover": {
+                                boxShadow: 4,
+                                backgroundColor: "primary.dark",
+                              },
+                            }}
+                          >
+                            <SearchIcon />
+                          </Button>
+                        </Box>
+
+                        <Typography
+                          variant="h5"
+                          sx={{
+                            color: "primary.main",
+                            fontWeight: 600,
+                            fontSize: {
+                              xs: "1rem",
+                              sm: "1.125rem",
+                              md: "1.25rem",
+                            },
+                            px: 2,
+                            py: 1,
+                            letterSpacing: "0.02em",
+                          }}
+                        >
+                          <strong className="text-nowrap">
                             FollowUp List:
                           </strong>
                         </Typography>
@@ -560,15 +435,26 @@ function FollowUp() {
                             justifyContent: "flex-start",
                             width: "100%",
                             whiteSpace: "nowrap",
-                            "-webkit-overflow-scrolling": "touch",
+                            scrollbarWidth: "thin",
+                            "&::-webkit-scrollbar": {
+                              height: 6,
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                              backgroundColor: "grey.400",
+                              borderRadius: 3,
+                            },
+                            "&::-webkit-scrollbar-track": {
+                              backgroundColor: "grey.100",
+                            },
                           }}
                         >
-                          <div
-                            className="d-flex flex-md-nowrap gap-2"
-                            style={{
+                          <Box
+                            sx={{
                               display: "flex",
                               flexWrap: "nowrap",
+                              gap: 1.5,
                               minWidth: "max-content",
+                              p: 1,
                             }}
                           >
                             <Button
@@ -576,15 +462,22 @@ function FollowUp() {
                               startIcon={<AssessmentIcon />}
                               className="nonInitiated"
                               sx={{
-                                backgroundColor: "#e7e7ff !important",
-                                color: "#666cff",
+                                backgroundColor: "grey.100",
+                                color: "primary.main",
                                 whiteSpace: "nowrap",
                                 width: "auto",
-                                height: "25px",
+                                height: 32,
                                 fontSize: {
-                                  xs: "10px",
-                                  sm: "12px",
-                                  md: "14px",
+                                  xs: "0.75rem",
+                                  sm: "0.875rem",
+                                  md: "0.875rem",
+                                },
+                                borderRadius: 1,
+                                boxShadow: 1,
+                                textTransform: "capitalize",
+                                "&:hover": {
+                                  backgroundColor: "grey.200",
+                                  boxShadow: 2,
                                 },
                               }}
                               onClick={handleOpen}
@@ -611,63 +504,110 @@ function FollowUp() {
                                 sx={{
                                   backgroundColor:
                                     activeTab === item.label
-                                      ? "#666cff !important"
-                                      : "#e7e7ff !important",
+                                      ? "primary.main"
+                                      : "grey.100",
                                   color:
                                     activeTab === item.label
-                                      ? "#fff"
-                                      : "#666cff",
+                                      ? "white"
+                                      : "primary.main",
                                   whiteSpace: "nowrap",
                                   width: "auto",
-                                  height: "25px",
+                                  height: 32,
                                   fontSize: {
-                                    xs: "10px",
-                                    sm: "12px",
-                                    md: "14px",
+                                    xs: "0.75rem",
+                                    sm: "0.875rem",
+                                    md: "0.875rem",
+                                  },
+                                  borderRadius: 1,
+                                  boxShadow: 1,
+                                  textTransform: "capitalize",
+                                  "&:hover": {
+                                    backgroundColor:
+                                      activeTab === item.label
+                                        ? "primary.dark"
+                                        : "grey.200",
+                                    boxShadow: 2,
                                   },
                                 }}
                               >
                                 {item.label}
                               </Button>
                             ))}
-                          </div>
+                          </Box>
                         </Box>
                       </Box>
-                    </div>
+                    </Box>
 
-                    <div>
-                      <button
-                        className="btn btn-outline-primary btn-sm me-2 position-relative"
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        flexShrink: 0,
+                        px: { xs: 1, sm: 2 },
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        color="primary"
                         onClick={() => handleFilterOpen()}
                         title="Filter"
+                        sx={{
+                          position: "relative",
+                          minWidth: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          borderColor: "primary.main",
+                          backgroundColor: "white",
+                          "&:hover": {
+                            backgroundColor: "primary.light",
+                            borderColor: "primary.dark",
+                          },
+                        }}
                       >
-                        <i
-                          className="mdi mdi-filter"
-                          style={{ fontSize: "0.85rem" }}
-                        ></i>
-
+                        <FilterListIcon sx={{ fontSize: "1.25rem" }} />
                         {Object.keys(filterData).length > 0 &&
                           filterTabname === activeTab && (
-                            <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: -4,
+                                right: -4,
+                                width: 10,
+                                height: 10,
+                                backgroundColor: "error.main",
+                                borderRadius: "50%",
+                                border: "1px solid",
+                                borderColor: "background.paper",
+                              }}
+                            />
                           )}
-                      </button>
+                      </Button>
 
-                      <button
-                        className="btn btn-secondary me-2"
+                      <Button
+                        variant="outlined"
+                        color="secondary"
                         onClick={() => {
                           setFilterData({});
                           setFilterUrl("");
                         }}
                         title="Reset"
-                        style={{ padding: "4px 15px", fontSize: "0.75rem" }}
+                        sx={{
+                          minWidth: 40,
+                          height: 40,
+                          borderRadius: 1,
+                          borderColor: "grey.400",
+                          backgroundColor: "white",
+                          "&:hover": {
+                            backgroundColor: "grey.100",
+                            borderColor: "grey.500",
+                          },
+                        }}
                       >
-                        <i
-                          className="mdi mdi-refresh"
-                          style={{ fontSize: "0.85rem" }}
-                        ></i>
-                      </button>
-                    </div>
-                  </div>
+                        <RefreshIcon sx={{ fontSize: "1.25rem" }} />
+                      </Button>
+                    </Box>
+                  </Box>
 
                   {content === "today" && (
                     <InitiatedComponent
@@ -807,7 +747,7 @@ function FollowUp() {
                       }}
                     >
                       <Typography variant="h6" gutterBottom>
-                        Filter Options
+                        Filter Options for {content}
                       </Typography>
 
                       <Grid container spacing={2}>
@@ -908,6 +848,86 @@ function FollowUp() {
                           </Button>
                         </Grid>
                       </Grid>
+                    </Box>
+                  </Modal>
+                  <Modal open={previewOpen} onClose={handlePreviewModalClose}>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: "90%",
+                        maxWidth: 1200,
+                        bgcolor: "background.paper",
+                        boxShadow: 24,
+                        p: 4,
+                        maxHeight: "90vh",
+                        overflow: "auto",
+                      }}
+                    >
+                      <Typography variant="h6" component="h2" gutterBottom>
+                        Activity Report Preview
+                      </Typography>
+                      <TableContainer
+                        component={Paper}
+                        sx={{ maxHeight: 400, mb: 2 }}
+                      >
+                        <Table
+                          stickyHeader
+                          sx={{ minWidth: 650 }}
+                          aria-label="activity report table"
+                        >
+                          <TableHead>
+                            <TableRow>
+                              {columns.map((column) => (
+                                <TableCell
+                                  key={column.id}
+                                  sx={{
+                                    fontWeight: "bold",
+                                    backgroundColor: "#f5f5f5",
+                                  }}
+                                >
+                                  {column.label}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {reportData.map((row) => (
+                              <TableRow key={row.id}>
+                                {columns.map((column) => (
+                                  <TableCell key={`${row.id}-${column.id}`}>
+                                    {row[column.id] || "-"}
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          gap: 2,
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleExport}
+                          sx={{
+                            backgroundColor: "#666cff",
+                            "&:hover": { backgroundColor: "#5050cc" },
+                          }}
+                        >
+                          Download Excel
+                        </Button>
+                        <Button variant="outlined" onClick={handlePreviewModalClose}>
+                          Close
+                        </Button>
+                      </Box>
                     </Box>
                   </Modal>
                 </Box>

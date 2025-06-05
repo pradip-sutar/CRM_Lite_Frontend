@@ -1,27 +1,18 @@
 import { useState, useEffect } from "react";
-import React from "react";
 import { Box, Button } from "@mui/material";
-import { deadTableget } from "../../services/EnquiryBucket/apiDeadTable";
-import crmStore from "../../Utils/crmStore";
 import { getTeam } from "../../services/apiTeamManagement";
 import { getTeamMembers } from "../../services/EnquiryBucket/apiEnquiry";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { hasRightsPermission } from "../../Private/premissionChecker";
-import ValidationCard from "../../ui/ValidationCard";
 import { fetchPageData } from "../../services/Pagination/Pagination";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 function DeadTable() {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
-  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
-  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const { register, handelSubmit, watch } = useForm();
   const [selectedRows, setSelectedRows] = useState([]);
   const [deadData, setDeadData] = useState([]);
   const [teams, setTeams] = useState([]);
   const [teamMember, setTeamMember] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [selectedTeamMember, setSelectedTeamMember] = useState("");
   const team = watch("team");
 
@@ -34,16 +25,19 @@ function DeadTable() {
     perPage: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const initialUrl = `${
-    import.meta.env.VITE_URL_BASE
-  }/api/dead_table_handler/?page=${currentPage}`;
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/dead_table_handler/?page=${currentPage}`;
+    loadData(url);
+  }, [currentPage]);
 
   const loadData = async (url) => {
     setLoading(true);
     const result = await fetchPageData(url);
     console.log("result", result);
 
-    setDeadData(result.data);
+    setDeadData(result);
     setNextUrl(result.nextUrl);
     setPrevUrl(result.prevUrl);
     setCount(result.total);
@@ -52,20 +46,6 @@ function DeadTable() {
       perPage: result.perPage || 10,
     });
     setLoading(false);
-  };
-
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl);
-      setCurrentPage(currentPage - 1);
-    }
   };
 
   useEffect(() => {
@@ -111,7 +91,6 @@ function DeadTable() {
   };
 
   useEffect(() => {
-    loadData(initialUrl);
     fetchTeam();
   }, []);
 
@@ -149,7 +128,7 @@ function DeadTable() {
                     </tr>
                   </thead>
                   <tbody>
-                    {deadData?.map((row, index) => (
+                    {deadData?.data?.map((row, index) => (
                       <tr key={row.id}>
                         <td>
                           <input
@@ -190,31 +169,7 @@ function DeadTable() {
             <div className="text-muted">
               Showing {paginationInfo.perPage} of {count} entries
             </div>
-            <ul className="pagination m-0">
-              <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  onClick={handlePrev}
-                  disabled={!prevUrl}
-                >
-                  Previous
-                </button>
-              </li>
-
-              <li className="page-item active">
-                <div className="page-link">{currentPage}</div>
-              </li>
-
-              <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  onClick={handleNext}
-                  disabled={!nextUrl}
-                >
-                  Next
-                </button>
-              </li>
-            </ul>
+            <NumberedPagination totalPages={deadData?.total_pages} onPageChange={setCurrentPage} />
           </div>
         </div>
       </div>

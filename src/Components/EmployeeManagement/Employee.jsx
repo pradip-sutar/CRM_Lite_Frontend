@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 import { employeeReport } from "../../services/Reports/apiEmpolyeeReport";
 import toast from "react-hot-toast";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 const Employee = () => {
   const userType = crmStore.getState().user?.userInfo?.userType;
@@ -56,13 +57,18 @@ const Employee = () => {
     setDesignations(data);
   };
 
-  const initialUrl = `${
+
+
+  useEffect(()=>{
+  const url = `${
     import.meta.env.VITE_URL_BASE
   }/api/employee_management_handler/?page=${currentPage}`;
+  loadData(url);
+  },[currentPage])
 
   const loadData = async (url) => {
     const result = await fetchPageData(url);
-    setEmployees(result.data);
+    setEmployees(result);
     setNextUrl(result.nextUrl);
     setPrevUrl(result.prevUrl);
     setCount(result.total);
@@ -72,19 +78,6 @@ const Employee = () => {
     });
   };
 
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl);
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   const startDate = watch("startDate");
 
@@ -186,14 +179,10 @@ const Employee = () => {
   };
 
   useEffect(() => {
-    loadData(initialUrl);
     fetchAllDepartment();
     fetchAlldesignations();
   }, []);
 
-  useEffect(() => {
-    console.log(employees);
-  }, [employees]);
 
   return (
     <div
@@ -227,7 +216,7 @@ const Employee = () => {
 
           <button
             className="btn btn-success btn-sm me-2"
-            onClick={() => generateExcelReport(employees)}
+            onClick={() => generateExcelReport(employees?.data)}
             title="Report"
           >
             <i className="mdi mdi-file-document"></i>
@@ -301,7 +290,7 @@ const Employee = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {employees?.map((employee, index) => (
+                      {employees?.data?.map((employee, index) => (
                         <tr key={employee.empid}>
                           <td>
                             {(currentPage - 1) * paginationInfo.perPage +
@@ -373,29 +362,7 @@ const Employee = () => {
               <div className="text-muted">
                 Showing {paginationInfo.perPage} of {count} entries
               </div>
-              <ul className="pagination m-0">
-                <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={handlePrev}
-                    disabled={!prevUrl}
-                  >
-                    Previous
-                  </button>
-                </li>
-                <li className="page-item active">
-                  <div className="page-link">{currentPage}</div>
-                </li>
-                <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={handleNext}
-                    disabled={!nextUrl}
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
+             <NumberedPagination totalPages={employees?.total_pages} onPageChange={setCurrentPage} />
             </div>
             <div className="mt-2 mb-4"></div>
           </div>

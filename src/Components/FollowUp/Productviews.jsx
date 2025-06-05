@@ -17,7 +17,9 @@ import { apiGetProductView } from "../../services/FollowUp/AccountProfileview/ap
 
 const Productviews = () => {
   const location = useLocation();
-  const { enquiry_id = "" } = location.state || {};
+  const { enquiry_id = "", confirm_project_name = null } = location.state || {};
+  console.log(location.state);
+
   const navigate = useNavigate();
   const { handleSubmit, watch, control } = useForm();
   const [assignedData, setAssignedData] = useState([]);
@@ -169,29 +171,27 @@ const Productviews = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {assignedData?.product_details?.length > 0 ? (
-                  assignedData.product_details.map((product, index) => (
-                    <TableRow key={index}>
-                      <TableCell
-                        sx={{
-                          textAlign: "center",
-                          border: "1px solid rgb(143 143 143)",
-                        }}
-                        className="Font-Assign"
-                      >
-                        {index + 1}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          textAlign: "center",
-                          border: "1px solid rgb(143 143 143)",
-                        }}
-                        className="Font-Assign"
-                      >
-                        {assignedData.confirm_project_name}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                {confirm_project_name !== null ? (
+                  <TableRow key={1}>
+                    <TableCell
+                      sx={{
+                        textAlign: "center",
+                        border: "1px solid rgb(143, 143, 143)",
+                      }}
+                      className="Font-Assign"
+                    >
+                      {1}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        textAlign: "center",
+                        border: "1px solid rgb(143, 143, 143)",
+                      }}
+                      className="Font-Assign"
+                    >
+                      {confirm_project_name}
+                    </TableCell>
+                  </TableRow>
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} sx={{ textAlign: "center" }}>

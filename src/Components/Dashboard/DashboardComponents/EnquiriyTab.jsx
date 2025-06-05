@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const EnquiryTab = ({ filterEnquiryData }) => {
+const EnquiryTab = ({ enquiryData }) => {
   const navigate = useNavigate();
-  console.log("Received Filter Enquiry Data:", filterEnquiryData);
+  console.log("Received Filter Enquiry Data:", enquiryData);
 
 
 
@@ -255,7 +255,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Total Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">{filterEnquiryData?.total_enquiries}</div>
+              <div className="fw-bold fs-4">{enquiryData?.total_enquiries}</div>
             </div>
           </div>
         </div>
@@ -270,7 +270,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">New Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">{filterEnquiryData?.new_enquiries}</div>
+              <div className="fw-bold fs-4">{enquiryData?.new_enquiries}</div>
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Old Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">{filterEnquiryData?.old_enquiries}</div>
+              <div className="fw-bold fs-4">{enquiryData?.old_enquiries}</div>
             </div>
           </div>
         </div>
@@ -304,7 +304,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
                   style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
                 >
                   <div className="fw-semibold mb-1">Enquiry</div>
-                  <div className="fw-bold fs-5">{filterEnquiryData?.stage_counts?.find(s => s.stage === "Enquiry FollowUp")?.count}</div>
+                  <div className="fw-bold fs-5">{enquiryData?.stage_counts?.find(s => s.stage === "Enquiry FollowUp")?.count}</div>
                 </div>
               </div>
 
@@ -315,7 +315,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
                   style={{ borderTop: "4px solid #DC3545", background: "linear-gradient(135deg, #ffffff, #FFB3BA)" }}
                 >
                   <div className="fw-semibold mb-1">Lead</div>
-                  <div className="fw-bold fs-5">{filterEnquiryData?.stage_counts?.find(s => s.stage === "Lead")?.count}</div>
+                  <div className="fw-bold fs-5">{enquiryData?.stage_counts?.find(s => s.stage === "Lead")?.count}</div>
                 </div>
               </div>
 
@@ -326,7 +326,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
                   style={{ borderTop: "4px solid #6F42C1", background: "linear-gradient(135deg, #ffffff, #C6B3FF)" }}
                 >
                   <div className="fw-semibold mb-1">Prospect</div>
-                  <div className="fw-bold fs-5">{filterEnquiryData?.stage_counts?.find(s => s.stage === "Opportunity")?.count}</div>
+                  <div className="fw-bold fs-5">{enquiryData?.stage_counts?.find(s => s.stage === "Opportunity")?.count}</div>
                 </div>
               </div>
             </div>
@@ -347,7 +347,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
                   }}
                 >
                   <div className="fw-semibold mb-1">Cold</div>
-                  <div className="fw-bold fs-5">{filterEnquiryData?.status_counts?.find(s => s.status === "Cold")?.count}</div>
+                  <div className="fw-bold fs-5">{enquiryData?.status_counts?.find(s => s.status === "Cold")?.count}</div>
                 </div>
               </div>
 
@@ -361,7 +361,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
 
                 >
                   <div className="fw-semibold mb-1">Hot</div>
-                  <div className="fw-bold fs-5">{filterEnquiryData?.status_counts?.find(s => s.status === "Hot")?.count}</div>
+                  <div className="fw-bold fs-5">{enquiryData?.status_counts?.find(s => s.status === "Hot")?.count}</div>
                 </div>
               </div>
 
@@ -374,7 +374,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
                   }}
                 >
                   <div className="fw-semibold mb-1">Warm</div>
-                  <div className="fw-bold fs-5">{filterEnquiryData?.status_counts?.find(s => s.status === "Warm")?.count}</div>
+                  <div className="fw-bold fs-5">{enquiryData?.status_counts?.find(s => s.status === "Warm")?.count}</div>
                 </div>
               </div>
             </div>
@@ -392,7 +392,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
               <h5 className="mb-0 fw-bold" style={{ color: "white" }}>Enquiry Table</h5>
             </div>
             <div className="card-body p-4">
-              {filterEnquiryData?.visit_details?.length > 0 ? (
+              {enquiryData?.visit_details?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered">
                     <thead>
@@ -414,7 +414,7 @@ const EnquiryTab = ({ filterEnquiryData }) => {
                       </tr>
                     </thead>
                     <tbody className='text-nowrap'>
-                      {filterEnquiryData?.visit_details?.map((row, index) => (
+                      {enquiryData?.visit_details?.map((row, index) => (
                         <tr key={index}>
                           <td>{new Date(row?.latest_action_datetime).toISOString().split('T')[0]}</td>
                           <td>{row?.enquiry_id}</td>
@@ -459,10 +459,10 @@ const EnquiryTab = ({ filterEnquiryData }) => {
                 </div>
               )}
 
-              {filterEnquiryData?.visit_details?.length > 0 && (
+              {enquiryData?.visit_details?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">
                   <div className="text-muted">
-                    Showing 1 to {filterEnquiryData?.visit_details.length} of {filterEnquiryData?.visit_details.length} entries
+                    Showing 1 to {enquiryData?.visit_details.length} of {enquiryData?.visit_details.length} entries
                   </div>
                   <ul className="pagination mb-0">
                     <li className="page-item disabled">

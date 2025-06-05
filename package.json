@@ -1,11 +1,12 @@
 {
   "name": "vichaarlab-crm-app",
+  "author":"Dinakrushna Agasti",
   "private": true,
   "version": "1.0.0",
   "main": "main.js",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3006",
+    "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite --host 0.0.0.0 --port 3006",
@@ -27,12 +28,12 @@
       "main.js",
       "electron-main.js",
       "dist/**/*",
-      "!build.exe"
+      "!CRM_Lite_backend.exe"
     ],
     "extraResources": [
       {
-        "from": "build.exe",
-        "to": "build.exe"
+        "from": "CRM_Lite_backend.exe",
+        "to": "CRM_Lite_backend.exe"
       }
     ],
     "win": {
@@ -108,15 +109,6 @@
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
-"scripts": {
-  "react:build": "vite build",
-  "electron:build": "electron-builder",
-  "build": "npm run react:build && npm run electron:build",
-  "preview": "vite preview --host 0.0.0.0 --port 3006",
-  "start": "electron .",
-  "dev": "vite --host 0.0.0.0 --port 3000"
-}
-,
   "eslintConfig": {
     "extends": [
       "react-app",

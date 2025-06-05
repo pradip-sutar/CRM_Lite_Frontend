@@ -19,10 +19,11 @@ import Select from "react-select";
 import { toast } from "react-toastify";
 //  import { getEnquiryReport } from "../../services/Reports/apiEnquiryReport";
 import { getSource } from "../../services/EnquiryBucket/apiSourceType";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 function EnquiryTable() {
   const { dropDowns: dropDownTeam } = useGetDropDowns(
-    "employee_management_handler/"
+    "employee_management_handler"
   );
   const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
 
@@ -61,11 +62,15 @@ function EnquiryTable() {
     perPage: 10,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const initialUrl = `${
-    import.meta.env.VITE_URL_BASE
-  }/api/enquiry_table_handler/?page=${currentPage}&page_size=${
-    paginationInfo.perPage
-  }`;
+
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/enquiry_table_handler/?page=${currentPage}&page_size=${
+      paginationInfo.perPage
+    }`;
+    loadData(url);
+  }, [currentPage]);
   const options = teamMember?.map((member) => ({
     value: member.id,
     label: member.name,
@@ -76,27 +81,12 @@ function EnquiryTable() {
     label: member.name,
   }));
 
-  const loadData = async (
-    url,
-    page = currentPage,
-    itemsPerPage = paginationInfo.perPage
-  ) => {
+  const loadData = async (url) => {
     setLoading(true);
-    const modifiedUrl = url.includes("page_size")
-      ? url
-      : `${url}${url.includes("?") ? "&" : "?"}page_size=${itemsPerPage}`;
-    const result = await fetchPageData(modifiedUrl);
+    const result = await fetchPageData(url);
     console.log("result", result);
 
-    setEnquiryData(result.data);
-    setNextUrl(result.nextUrl);
-    setPrevUrl(result.prevUrl);
-    setCount(result.total);
-    setPaginationInfo({
-      total: result.total || 0,
-      perPage: itemsPerPage,
-    });
-    setCurrentPage(page);
+    setEnquiryData(result);
     setLoading(false);
     setSelectedRows([]);
     setSelectAll(false);
@@ -112,23 +102,8 @@ function EnquiryTable() {
   };
 
   useEffect(() => {
-    loadData(initialUrl, 1, paginationInfo.perPage);
     fetchTeam();
   }, [paginationInfo.perPage]);
-
-  const handleNext = () => {
-    if (nextUrl) {
-      loadData(nextUrl, currentPage + 1, paginationInfo.perPage);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevUrl) {
-      loadData(prevUrl, currentPage - 1, paginationInfo.perPage);
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   const team = watch("team");
 
@@ -165,14 +140,14 @@ function EnquiryTable() {
     setSelectedRows(updatedSelectedRows);
 
     // Check if all rows on the current page are selected
-    const allIds = enquirydata.map((data) => data.enquiry_id);
+    const allIds = enquirydata?.data.map((data) => data.enquiry_id);
     const allSelected = allIds.every((id) => updatedSelectedRows.includes(id));
     setSelectAll(allSelected);
   };
 
   const handleSelectAllChange = (event) => {
     if (event.target.checked) {
-      const allIds = enquirydata.map((data) => data.enquiry_id);
+      const allIds = enquirydata?.data.map((data) => data.enquiry_id);
       setSelectedRows(allIds);
       setSelectAll(true);
     } else {
@@ -207,9 +182,7 @@ function EnquiryTable() {
       return;
     }
 
-    setEnquiryData(response?.data);
-    setNextUrl(response?.next);
-    setPrevUrl(response?.previous);
+    setEnquiryData(response);
     setCount(response?.total_count);
     reset();
   };
@@ -335,7 +308,7 @@ function EnquiryTable() {
 
           <button
             className="btn btn-dark btn-sm me-2"
-            onClick={() => generateExcelReport(enquirydata)}
+            onClick={() => generateExcelReport(enquirydata?.data)}
             title="Download Report"
           >
             <i className="mdi mdi-file-document"></i>
@@ -406,8 +379,8 @@ function EnquiryTable() {
                   </tr>
                 </thead>
                 <tbody>
-                  {enquirydata?.length > 0 &&
-                    enquirydata?.map((data, index) => (
+                  {enquirydata?.data?.length > 0 &&
+                    enquirydata?.data?.map((data, index) => (
                       <tr key={index}>
                         <td>
                           {(currentPage - 1) * paginationInfo.perPage +
@@ -451,31 +424,7 @@ function EnquiryTable() {
             <div className="text-muted">
               Showing {paginationInfo.perPage} of {count || 0} entries
             </div>
-            <ul className="pagination m-0">
-              <li className={`page-item ${!prevUrl ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  onClick={handlePrev}
-                  disabled={!prevUrl}
-                >
-                  Previous
-                </button>
-              </li>
-
-              <li className="page-item active">
-                <div className="page-link">{currentPage}</div>
-              </li>
-
-              <li className={`page-item ${!nextUrl ? "disabled" : ""}`}>
-                <button
-                  className="page-link"
-                  onClick={handleNext}
-                  disabled={!nextUrl}
-                >
-                  Next
-                </button>
-              </li>
-            </ul>
+            <NumberedPagination totalPages={enquirydata?.total_pages} onPageChange={setCurrentPage} />
           </div>
         </div>
       </div>

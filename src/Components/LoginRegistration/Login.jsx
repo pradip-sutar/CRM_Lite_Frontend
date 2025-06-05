@@ -210,18 +210,6 @@
 
 // // export default Login;
 
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useState, useEffect } from "react";
 // import "./Login.css";
 // import Illustration from "./auth-v2-login-illustration-light.png";
@@ -269,7 +257,7 @@
 //     if (email === staticUsername && password === staticPassword) {
 //       // Mock user data
 //       const mockUserData = {
-//         // user_type: "admin", 
+//         // user_type: "admin",
 //         refresh: "mock-refresh-token",
 //         access: "mock-access-token",
 //         employee_id: "employee-123",
@@ -453,19 +441,12 @@
 
 // export default Login;
 
-
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 import "./Login.css";
 import Illustration from "./auth-v2-login-illustration-light.png";
 import Mask from "./auth-v2-login-mask-light.png";
 import { useNavigate } from "react-router-dom";
 import crmStore from "../../Utils/crmStore";
-import { addRoleAndRights } from "../../Utils/Slices/roleAndRightSlice";
 import { addUserInfo } from "../../Utils/Slices/userInfoSlice";
 import { apiLogin } from "../../services/LoginRegistration/apiLoginRegistration";
 import { Spinner, Button } from "react-bootstrap";
@@ -473,6 +454,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
 import { persistor } from "../../Utils/crmStore";
+import axios from "axios";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -483,18 +465,147 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    handleLogout();
-  }, []);
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
+  
+  const getGoogleCodeFromUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("code");
+  };
+
+  const handleGoogleLogin = () => {
+    const clientId =
+      "213552927690-ae0nn2eiutbtv7nntd5ie6gg77lajb3l.apps.googleusercontent.com";
+    const redirectUri = "http://localhost:3000/";
+    const scope = "email profile openid";
+    const responseType = "code";
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=${responseType}&scope=${encodeURIComponent(
+      scope
+    )}&prompt=select_account`;
+
+    window.location.href = authUrl;
+  };
+
+  const handleGoogleCode = async (code) => {
+    setIsLoading(true); // Show loading spinner immediately
+    try {
+      const response = await axios.post("https://oauth2.googleapis.com/token", {
+        code,
+        redirect_uri: "http://localhost:3000/",
+        grant_type: "authorization_code",
+        client_id:
+          clientId,
+        client_secret: clientSecret,
+      });
+
+      const { access_token } = response.data;
+      if (access_token) {
+        const userInfo = await getGoogleUserInfo(access_token);
+        console.log(userInfo);
+        if (!userInfo) {
+          setErrorMessage("Failed to retrieve Google user info.");
+          return;
+        }
+        
+       try {
+  const authResponse = await axios.post(
+    "http://localhost:8000/api/googleauth/login/",
+    {
+      username: userInfo.email,
+    }
+  );
+
+  // ✅ Login successful
+  crmStore.dispatch(
+    addUserInfo({
+      userType: authResponse.data.user_type,
+      refresh_token: authResponse.data.accessToken,
+      access_token: authResponse.data.accessToken,
+      employee_id: authResponse.data.employee_id,
+      employee_name: authResponse.data.employee_name,
+      employee_mobno: authResponse.data.employee_mobno,
+      email: authResponse.data.email,
+      department_id: authResponse.data.department_id,
+      designation_id: authResponse.data.designation_id,
+    })
+  );
+  navigate("/dashboard");
+} catch (err) {
+  try {
+    const createResponse = await axios.post(
+      "http://localhost:8000/api/create-user/",
+      {
+        username: userInfo.email,
+        name: userInfo.name
+      }
+    );
+
+    crmStore.dispatch(
+      addUserInfo({
+        userType: createResponse.data.user_type,
+        refresh_token: createResponse.data.accessToken,
+        access_token: createResponse.data.accessToken,
+        employee_id: createResponse.data.employee_id,
+        employee_name: createResponse.data.employee_name,
+        employee_mobno: createResponse.data.employee_mobno,
+        email: createResponse.data.email,
+        department_id: createResponse.data.department_id,
+        designation_id: createResponse.data.designation_id,
+      })
+    );
+    navigate("/dashboard");
+  } catch (createErr) {
+    console.error("User creation failed:", createErr);
+    setErrorMessage("User creation failed. Please try again.");
+  }
+}
+
+      } else {
+        setErrorMessage("Failed to retrieve access token.");
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      setErrorMessage("Google login error. Please try again.");
+    } finally {
+      setIsLoading(false); // Hide loading spinner
+    }
+  };
+
+  const getGoogleUserInfo = async (accessToken) => {
+    try {
+      const response = await axios.get(
+        "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch Google user info:", error);
+      return null;
+    }
+  };
 
   const handleLogout = () => {
     dispatch({ type: "RESET_STORE" });
     persistor.purge();
   };
 
+  useEffect(() => {
+    const code = getGoogleCodeFromUrl();
+    if (code) {
+      handleGoogleCode(code); // Handle Google OAuth code
+    } else {
+      handleLogout(); // Perform logout if no code is present
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!email || !password) {
       setErrorMessage("Please enter both email and password");
       return;
@@ -506,29 +617,25 @@ const Login = () => {
     try {
       const prePairedData = {
         username: email.trim(),
-        password: password,
+        password,
       };
       const result = await apiLogin(prePairedData);
 
       if (result) {
-        
         crmStore.dispatch(
           addUserInfo({
-            userType: result?.user_type,
-            refresh_token: result?.refresh,
-            access_token: result?.access,
-            employee_id: result?.employee_id,
-            employee_name: result?.employee_name,
-            employee_mobno: result?.employee_mobno,
-            email: result?.email,
-            department_id: result?.department_id,
-            designation_id: result?.designation_id,
+            userType: result.user_type,
+            refresh_token: result.refresh,
+            access_token: result.access,
+            employee_id: result.employee_id,
+            employee_name: result.employee_name,
+            employee_mobno: result.employee_mobno,
+            email: result.email,
+            department_id: result.department_id,
+            designation_id: result.designation_id,
           })
         );
-
-        console.log("Employee ID:", result?.employee_id);
-        console.log("Login Data:", result);
-        navigate("/dashboard"); 
+        navigate("/dashboard");
       } else {
         setErrorMessage("Invalid email or password");
       }
@@ -559,7 +666,10 @@ const Login = () => {
         </p>
 
         {errorMessage && (
-          <p className="error-message" style={{ color: "red", marginBottom: "10px" }}>
+          <p
+            className="error-message"
+            style={{ color: "red", marginBottom: "10px" }}
+          >
             {errorMessage}
           </p>
         )}
@@ -572,6 +682,7 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={isLoading} // Disable input during loading
           />
           <div style={{ position: "relative", width: "100%" }}>
             <input
@@ -581,6 +692,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={isLoading} // Disable input during loading
               style={{
                 width: "100%",
                 paddingRight: "40px",
@@ -605,13 +717,13 @@ const Login = () => {
 
           <div className="form-options">
             <label>
-              <input type="checkbox" />
+              <input type="checkbox" disabled={isLoading} />
               <span> Remember Me</span>
             </label>
             <label
               className="forgot-password"
               onClick={() => {
-                navigate("/forgot-password");
+                if (!isLoading) navigate("/forgot-password");
               }}
             >
               Forgot Password?
@@ -643,6 +755,11 @@ const Login = () => {
             )}
           </Button>
         </form>
+        <div>
+          <Button onClick={handleGoogleLogin} disabled={isLoading}>
+            Login via Google
+          </Button>
+        </div>
       </div>
 
       {isLoading && (

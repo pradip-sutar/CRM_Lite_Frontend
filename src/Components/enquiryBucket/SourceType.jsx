@@ -8,18 +8,32 @@ import {
 import { useForm } from "react-hook-form";
 import { HandleDeleteById } from "../../services/DeleteSwal/HandleDeleteById";
 import "./CSS/enquiry.css";
-import crmStore from "../../Utils/crmStore";
+import { fetchPageData } from "../../services/Pagination/Pagination";
+import NumberedPagination from "../Pagination/NumberedPagination";
 
 function SourceType() {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
-  const [sourseTypeModal, setSourceTypeModal] = useState(false);
   const [sourceType, setSourceType] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [communication, setCommunication] = useState([]);
   const [editData, setEditData] = useState(null);
   const { register, reset, handleSubmit } = useForm();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationInfo, setPaginationInfo] = useState({
+    total: 2,
+    perPage: 10,
+  });
+
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/source_type_handler/?page=${currentPage}`;
+    fetchData(url);
+  }, [currentPage]);
+
+  const fetchData = async (url) => {
+    const response = await fetchPageData(url);
+    setProductData(response);
+  };
 
   const fetchSourceType = async () => {
     try {
@@ -75,29 +89,31 @@ function SourceType() {
 
   return (
     <div
-      className="container-xxl flex-grow-1 container-p-y"
+      className="container-fluid flex-grow-1 container-p-y"
       style={{ minHeight: "84%" }}
     >
-      <h5 className="breadcrumb mb-2 ml-2">
-        <span className="text-muted fw-light">Enquiry Bucket /</span> Source
-        Type
-      </h5>
+      <div className="d-flex justify-content-between">
+        <h5 className="breadcrumb mb-2 ml-2">
+          <span className="text-muted fw-light">Enquiry Bucket /</span> Source
+          Type
+        </h5>
 
-      <div className="mb-2 text-end">
-        <button
-          type="button"
-          className="btn btn-primary waves-effect waves-light"
-          onClick={() => {
-            setEditData(null);
-            setModalOpen(true);
-            reset({ name: "", comm_type: "", platform: "", status: "" });
-          }}
-        >
-          <span>
-            <i className="mdi mdi-plus me-0 me-sm-1"></i>
-          </span>
-          Source Type
-        </button>
+        <div className=" text-end">
+          <button
+            type="button"
+            className="btn btn-primary waves-effect waves-light"
+            onClick={() => {
+              setEditData(null);
+              setModalOpen(true);
+              reset({ name: "", comm_type: "", platform: "", status: "" });
+            }}
+          >
+            <span>
+              <i className="mdi mdi-plus me-0 me-sm-1"></i>
+            </span>
+            Source Type
+          </button>
+        </div>
       </div>
 
       <div className="col-sm ml-2">
@@ -152,6 +168,10 @@ function SourceType() {
                   ))}
                 </tbody>
               </table>
+              <NumberedPagination
+                totalPages={2}
+                onPageChange={setCurrentPage}
+              />
             </div>
           </div>
         </div>
@@ -188,10 +208,7 @@ function SourceType() {
                   {/* Source Platform Dropdown */}
                   <div className="col-md-12 mb-2">
                     <label className="form-label">Source Platform</label>
-                    <select
-                      className="form-select"
-                      {...register("platform")}
-                    >
+                    <select className="form-select" {...register("platform")}>
                       <option value="">Select Source Platform</option>
                       <option value="walk-in">Walk-in</option>
                       <option value="exhibition">Exhibition</option>
@@ -205,9 +222,7 @@ function SourceType() {
                     </select>
                   </div>
 
-
                   {/* Type Of Communication */}
-
 
                   {/* Communication Mode Dropdown */}
                   <div className="col-md-12 mb-2">
