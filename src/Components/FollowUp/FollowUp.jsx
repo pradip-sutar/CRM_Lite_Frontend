@@ -104,20 +104,29 @@ function FollowUp() {
         nextDate.setHours(0, 0, 0, 0);
 
         if (nextDate < today) {
+          setFilterTabName("pending");
+          setFilterUrl(`/api/enquiry_table_handler/?page=1&customer_phone=${mobileSearchBarValue}&followup_category=pending`);
           setContent("pending");
           setActiveTab("pending");
         } else if (nextDate > today) {
+          setFilterTabName("upcoming");
+          setFilterUrl(`/api/enquiry_table_handler/?page=1&customer_phone=${mobileSearchBarValue}&followup_category=upcoming`);
           setContent("upcoming");
           setActiveTab("upcoming");
         } else if (nextDate.getTime() === today.getTime()) {
+          setFilterTabName("today");
+          setFilterUrl(`/api/enquiry_table_handler/?page=1&customer_phone=${mobileSearchBarValue}&followup_category=today`);
           setContent("today");
           setActiveTab("today");
 
           console.log("today");
-        } else {
-          setContent("new");
-          setActiveTab("new");
         }
+      }
+      if (response?.data?.[0]?.latest_action == "No status found") {
+        setFilterTabName("new");
+        setFilterUrl(`/api/enquiry_table_handler/?page=1&customer_phone=${mobileSearchBarValue}&followup_category=new`);
+        setContent("new");
+        setActiveTab("new");
       }
     }
   };
@@ -924,7 +933,10 @@ function FollowUp() {
                         >
                           Download Excel
                         </Button>
-                        <Button variant="outlined" onClick={handlePreviewModalClose}>
+                        <Button
+                          variant="outlined"
+                          onClick={handlePreviewModalClose}
+                        >
                           Close
                         </Button>
                       </Box>
