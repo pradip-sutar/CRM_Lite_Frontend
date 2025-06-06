@@ -68,9 +68,9 @@ const Employee = () => {
 
   const loadData = async (url) => {
     const result = await fetchPageData(url);
+    console.log(result);
+    
     setEmployees(result);
-    setNextUrl(result.nextUrl);
-    setPrevUrl(result.prevUrl);
     setCount(result.total);
     setPaginationInfo({
       total: result.total || 0,
