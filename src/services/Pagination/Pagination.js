@@ -11,6 +11,7 @@ export const fetchPageData = async (url) => {
         nextUrl: response.data.next,
         prevUrl: response.data.previous,
         total: response.data.total_count,
+        total_pages:response.data.total_pages
       };
     
   } catch (error) {
