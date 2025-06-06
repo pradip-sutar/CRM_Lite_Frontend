@@ -19,6 +19,22 @@ import { getSourceTab } from "../../services/Dashboard/DashboardComponents/Sourc
 import { getProductTab } from "../../services/Dashboard/DashboardComponents/ProductTab";
 import { getFollowUpTab } from "../../services/Dashboard/DashboardComponents/FollowupTab";
 import { getEnquiryTab } from "../../services/Dashboard/DashboardComponents/EnquiryTab";
+
+// Mock components (replace with actual implementations)
+const MockOverviewTab = ({ filterOverviewData }) => <div className="p-4 bg-white rounded shadow">Overview Content {JSON.stringify(filterOverviewData)}</div>;
+const MockSourceTab = () => <div className="p-4 bg-white rounded shadow">Source Content</div>;
+const MockPropertiesTab = () => <div className="p-4 bg-white rounded shadow">Properties Content</div>;
+const MockCallingTab = () => <div className="p-4 bg-white rounded shadow">Calling Content</div>;
+const MockEnquiryTab = ({ filterEnquiryData }) => <div className="p-4 bg-white rounded shadow">Enquiry Content {JSON.stringify(filterEnquiryData)}</div>;
+const MockQuotationTab = () => <div className="p-4 bg-white rounded shadow">Quotation Content</div>;
+const MockBookingTab = () => <div className="p-4 bg-white rounded shadow">Booking Content</div>;
+const MockBuyerPersonaTab = () => <div className="p-4 bg-white rounded shadow">Buyer Persona Content</div>;
+const MockSheduleTab = () => <div className="p-4 bg-white rounded shadow">Schedule Content</div>;
+const MockSalesTab = () => <div className="p-4 bg-white rounded shadow">Sales Content</div>;
+
+// Mock API services (replace with actual implementations)
+const mockGetOverView = async (start_date, end_date) => ({ data: `Overview from ${start_date} to ${end_date}` });
+const mockGetEnquiryTab = async (start_date, end_date) => ({ data: `Enquiry from ${start_date} to ${end_date}` });
 import { getScheduleTab } from "../../services/Dashboard/DashboardComponents/SchedulesTab";
 import { getQuotationTab } from "../../services/Dashboard/DashboardComponents/QutationsTab";
 import { getBookingTab } from "../../services/Dashboard/DashboardComponents/BookingTab";

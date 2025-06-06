@@ -74,6 +74,7 @@ import ProformaInvoice from "./Components/BookingForm/ProformaInvoice";
 import EnquiryTabView from "./Components/Dashboard/DashboardComponents/TabView/EnquiryTabView";
 
 import PaymentReceiptPDF from "./Components/PaymentReceipt/PaymentReceiptPDF";
+import Callback from "./Components/Dashboard/Callback";
 
 
 const CallStatus = lazy(() => import("./Components/FollowUp/CallStatus"));
@@ -286,7 +287,9 @@ const App = () => {
                     path="/dashboard/enquiry/enquiryTabView"
                     element={<EnquiryTabView />}
                   />
-
+                  <Route path="/callback"
+                  element={<Callback />}
+                  />
                   <Route path="/*" element={<NotFound />} />
 
                 </Route>
