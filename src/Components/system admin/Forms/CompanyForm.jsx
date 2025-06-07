@@ -1184,7 +1184,7 @@ function CompanyForm() {
                               ) : editValue?.brand_info?.length > 0 ? (
                                 (() => {
                                   const imageUrl =
-                                    editValue.brand_info.find(
+                                    editValue.brand_info?.find(
                                       (info) => info[id]
                                     )?.[id] || "";
                                   return imageUrl ? (
@@ -1192,7 +1192,7 @@ function CompanyForm() {
                                       <img
                                         src={`${
                                           import.meta.env.VITE_URL_BASE
-                                        }/${imageUrl}`}
+                                        }${imageUrl}`}
                                         alt="Brand Image"
                                         className="img-thumbnail rounded"
                                         style={{

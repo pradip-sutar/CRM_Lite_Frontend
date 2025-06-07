@@ -128,7 +128,7 @@ function CompanyInfoDetails() {
                       Brand Logo:-
                     </label>
                     <img
-                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails[0]?.brand_logo}`}
+                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails?.[0]?.brands?.[0].brand_logo}`}
                       width={150}
                       className="thumbnail ezoom"
                       height={100}
@@ -142,7 +142,7 @@ function CompanyInfoDetails() {
                       Favicon:-
                     </label>
                     <img
-                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails[0]?.favicon}`}
+                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails?.[0]?.brands?.[0].favicon}`}
                       width={150}
                       className="thumbnail ezoom"
                       height={100}
@@ -156,7 +156,7 @@ function CompanyInfoDetails() {
                       Header (Letterhead):-
                     </label>
                     <img
-                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails[0]?.letter_header}`}
+                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails?.[0]?.brands?.[0].letter_header}`}
                       width={150}
                       className="thumbnail ezoom"
                       height={100}
@@ -170,7 +170,7 @@ function CompanyInfoDetails() {
                       Header (Letterhead):-
                     </label>
                     <img
-                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails[0]?.letter_footer}`}
+                      src={`${import.meta.env.VITE_URL_BASE}${companyDetails?.[0]?.brands?.[0].letter_footer}`}
                       width={150}
                       className="thumbnail ezoom"
                       height={100}

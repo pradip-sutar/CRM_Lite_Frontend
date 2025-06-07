@@ -12,7 +12,7 @@ export const postProductForm = async (data) => {
     toast.error("Error on Post of Product Data");
   }
 };
- 
+
 export const getProductForm = async (url) => {
   try {
     const res = await apiGateWay.get(`${url}`);
@@ -34,5 +34,14 @@ export const deleteProduct = async (id) => {
   } catch (error) {
     console.log(error);
     toast.error("Error on Delet Product");
+  }
+};
+
+export const editProduct = async (data) => {
+  try {
+    const response = apiGateWay.put(`/api/project_new_handler/`, data);
+  } catch (error) {
+    console.log(error);
+    toast.error("Error on Updata Product ");
   }
 };
