@@ -114,24 +114,7 @@ const AddEnquiry = () => {
   };
   console.log(confirmProject);
 
-  const handleCopy = (selectedId) => {
-    if (!selectedId) {
-      alert("Please select an option first.");
-      return;
-    }
 
-    const linkToCopy = `${
-      import.meta.env.VITE_LinkGenerate_Ip
-    }/enquiry/CreateLink/${selectedId}`;
-
-    navigator.clipboard
-      ?.writeText(linkToCopy)
-      .then(() => {
-        setCopySuccess(true);
-        setTimeout(() => setCopySuccess(false), 2000);
-      })
-      .catch((err) => console.log("Failed to copy:", err));
-  };
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -214,42 +197,7 @@ const AddEnquiry = () => {
             </a>
           </div>
         </div>
-        <div className="mb-2 text-end">
-          <button
-            className="btn btn-primary btn-sm"
-            onClick={() => setShowDropdown(!showDropdown)}
-          >
-            Generate Link
-          </button>
-          {showDropdown && (
-            <div
-              className="dropdown-menu show"
-              style={{ display: "inline-block", marginLeft: "10px" }}
-            >
-              {sourceType?.length > 0 &&
-                sourceType?.map((data, index) => {
-                  return (
-                    <button
-                      key={data.id}
-                      className="dropdown-item"
-                      onClick={() => {
-                        setShowDropdown(false);
-                        handleCopy(data.id);
-                      }}
-                    >
-                      {data.name}
-                    </button>
-                  );
-                })}
-            </div>
-          )}
-
-          {copySuccess && (
-            <span style={{ marginLeft: "10px", color: "green" }}>
-              ✔ Link Copied!
-            </span>
-          )}
-        </div>
+       
         <div className=" col-sm ml-2">
           <div className="card">
             <div className="title card-header d-flex justify-content-between align-items-center bg-label-primary py-2">

@@ -174,33 +174,7 @@ const EmployeeView = () => {
                 </div>
               </div>
 
-              <div className="col-md-4 col-12">
-                <div className="mb-3">
-                  <label
-                    className="fw-semibold"
-                    htmlFor="exampleFormControlReadOnlyInputPlain1"
-                  >
-                    Department:-
-                  </label>
-                  <span className="text-black">
-                    {empView?.company_data?.[0]?.department_name}
-                  </span>
-                </div>
-              </div>
-
-              <div className="col-md-4 col-12">
-                <div className="mb-3">
-                  <label
-                    className="fw-semibold"
-                    htmlFor="exampleFormControlReadOnlyInputPlain1"
-                  >
-                    Designation:-
-                  </label>
-                  <span className="text-black">
-                    {empView?.company_data?.[0]?.designation_name}
-                  </span>
-                </div>
-              </div>
+            
             </div>
 
             <div className="divider text-start">

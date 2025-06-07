@@ -53,10 +53,18 @@ function AddProductForm() {
         }
       }
     });
-    const res = await postProductForm(formData);
-    if (res == 201) {
-      reset();
-      navigate(-1);
+    if (editData) {
+      const res = await postProductForm(formData);
+      if (res == 201) {
+        reset();
+        navigate(-1);
+      }
+    } else {
+      const res = await postProductForm(formData);
+      if (res == 201) {
+        reset();
+        navigate(-1);
+      }
     }
   }
 

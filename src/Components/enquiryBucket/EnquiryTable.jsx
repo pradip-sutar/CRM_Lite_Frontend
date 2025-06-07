@@ -17,7 +17,7 @@ import { fetchPageData } from "../../services/Pagination/Pagination";
 import * as XLSX from "xlsx";
 import Select from "react-select";
 import { toast } from "react-toastify";
-//  import { getEnquiryReport } from "../../services/Reports/apiEnquiryReport";
+import { getEnquiryReport } from "../../services/Reports/apiEnquiryReport";
 import { getSource } from "../../services/EnquiryBucket/apiSourceType";
 import NumberedPagination from "../Pagination/NumberedPagination";
 
@@ -57,6 +57,7 @@ function EnquiryTable() {
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [souceType, setSourceType] = useState([]);
+  const [updatedUrl, setUpdatedUrl] = useState("");
   const [paginationInfo, setPaginationInfo] = useState({
     total: 0,
     perPage: 10,
@@ -69,6 +70,7 @@ function EnquiryTable() {
     }/api/enquiry_table_handler/?page=${currentPage}&page_size=${
       paginationInfo.perPage
     }`;
+    setUpdatedUrl(url);
     loadData(url);
   }, [currentPage]);
   const options = teamMember?.map((member) => ({
@@ -219,7 +221,11 @@ function EnquiryTable() {
       if (response.status === 201) {
         setIsExcelModalOpen(false);
         setSelectedFile(null);
-        loadData(initialUrl, 1, paginationInfo.perPage);
+        loadData(`${
+      import.meta.env.VITE_URL_BASE
+    }/api/enquiry_table_handler/?page=1&page_size=${
+      paginationInfo.perPage
+    }`);
       }
     } catch (error) {
       console.error("Error uploading Excel file:", error);
@@ -316,7 +322,7 @@ function EnquiryTable() {
 
           <button
             className="btn btn-secondary btn-sm me-2"
-            onClick={() => loadData(initialUrl, 1, paginationInfo.perPage)}
+            onClick={() => loadData(updatedUrl)}
             title="Reset"
           >
             <i className="mdi mdi-refresh"></i>
@@ -424,7 +430,10 @@ function EnquiryTable() {
             <div className="text-muted">
               Showing {paginationInfo.perPage} of {count || 0} entries
             </div>
-            <NumberedPagination totalPages={enquirydata?.total_pages} onPageChange={setCurrentPage} />
+            <NumberedPagination
+              totalPages={enquirydata?.total_pages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </div>

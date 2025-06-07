@@ -5,13 +5,17 @@ export const employeeReport = async (
   empNameorId,
   startdate,
   enddate,
-  department,
-  designation,
   isbpo
 ) => {
+  const params=new URLSearchParams();
+  if(empNameorId) params.append("emp_instance",empNameorId);
+  if(startdate) params.append("from_date",startdate);
+  if(enddate) params.append("to_date",enddate);
+  if(isbpo) params.append("call_center",isbpo);
+
   try {
     const response = await apiGateWay.get(
-      `/api/employee_reports/?emp_instance=${empNameorId}&from_date=${startdate}&to_date=${enddate}&department=${department}&designation=${designation}&call_center=${isbpo}`
+      `/api/employee_reports/?${params.toString()}`
     );
     if (response) {
       return response.data;

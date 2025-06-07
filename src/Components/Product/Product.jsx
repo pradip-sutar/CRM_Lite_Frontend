@@ -114,7 +114,7 @@ function Product() {
                                   <div
                                     onClick={() =>
                                       navigate("/product/product-form", {
-                                        state: { data: row },
+                                        state: { data: row,edit:"true" },
                                       })
                                     }
                                     className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"

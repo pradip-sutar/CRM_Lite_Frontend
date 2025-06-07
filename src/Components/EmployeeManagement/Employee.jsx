@@ -26,6 +26,7 @@ const Employee = () => {
   const [designations, setDesignations] = useState([]);
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [updateUrl, setUpdateUrl] = useState("");
   const {
     register,
     handleSubmit,
@@ -57,19 +58,18 @@ const Employee = () => {
     setDesignations(data);
   };
 
-
-
-  useEffect(()=>{
-  const url = `${
-    import.meta.env.VITE_URL_BASE
-  }/api/employee_management_handler/?page=${currentPage}`;
-  loadData(url);
-  },[currentPage])
+  useEffect(() => {
+    const url = `${
+      import.meta.env.VITE_URL_BASE
+    }/api/employee_management_handler/?page=${currentPage}`;
+    setUpdateUrl(url);
+    loadData(url);
+  }, [currentPage]);
 
   const loadData = async (url) => {
     const result = await fetchPageData(url);
     console.log(result);
-    
+
     setEmployees(result);
     setCount(result.total);
     setPaginationInfo({
@@ -77,7 +77,6 @@ const Employee = () => {
       perPage: result.perPage || 10,
     });
   };
-
 
   const startDate = watch("startDate");
 
@@ -103,7 +102,7 @@ const Employee = () => {
       toast.error("No employee data available to generate report");
       return;
     }
-    setEmployees(response.data);
+    setEmployees(response);
     setFilter(true);
     reset();
   };
@@ -150,7 +149,8 @@ const Employee = () => {
       if (response.status === 201) {
         setIsExcelModalOpen(false);
         setSelectedFile(null);
-        loadData(initialUrl);
+        loadData(`${import.meta.env.VITE_URL_BASE}
+  /api/employee_management_handler/?page=1`);
       }
     } catch (error) {
       console.error("Error uploading Excel file:", error);
@@ -167,7 +167,7 @@ const Employee = () => {
       const response = await editEmployeeStatus(empId, formData);
 
       if (response === 200) {
-        loadData(initialUrl);
+        loadData(updateUrl);
         toast.success(
           `Employee status updated to ${newStatus ? "Locked" : "Unlocked"}`
         );
@@ -182,7 +182,6 @@ const Employee = () => {
     fetchAllDepartment();
     fetchAlldesignations();
   }, []);
-
 
   return (
     <div
@@ -226,7 +225,7 @@ const Employee = () => {
             className="btn btn-secondary btn-sm me-2"
             onClick={() => {
               setFilter(false);
-              loadData(initialUrl);
+              loadData(updateUrl);
             }}
             title="Reset"
           >
@@ -343,7 +342,7 @@ const Employee = () => {
                                   employee?.empid,
                                   deleteEmployee,
                                   loadData,
-                                  initialUrl
+                                  updateUrl
                                 );
                                 EmpIVRDetails(employee.mobileno);
                               }}
@@ -362,7 +361,10 @@ const Employee = () => {
               <div className="text-muted">
                 Showing {paginationInfo.perPage} of {count} entries
               </div>
-             <NumberedPagination totalPages={employees?.total_pages} onPageChange={setCurrentPage} />
+              <NumberedPagination
+                totalPages={employees?.total_pages}
+                onPageChange={setCurrentPage}
+              />
             </div>
             <div className="mt-2 mb-4"></div>
           </div>

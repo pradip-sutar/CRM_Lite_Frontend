@@ -84,7 +84,7 @@ function BankInfo() {
                               <th style={{ width: "300px" }}>Bank Name</th>
                               <th style={{ width: "300px" }}>Branch Name</th>
                               <th style={{ width: "300px" }}>IFSC Code</th>
-                              <th style={{ width: "150px" }}>Account Name</th>
+                              <th style={{ width: "150px" }}>Account Holder Name</th>
                               <th style={{ width: "150px" }}>Account Type</th>
                               <th style={{ width: "150px" }}>Account No</th>
                               <th style={{ width: "100px" }}>Bank Logo</th>

@@ -218,7 +218,7 @@ function BankInfoForm() {
                           placeholder="Account Name"
                         />
                         <label htmlFor={`account_name_${index}`}>
-                          Account Name <span className="text-danger">*</span>
+                          Account Holder Name <span className="text-danger">*</span>
                         </label>
                         {errors?.Bankinfo?.[index]?.account_name && (
                           <small className="text-danger">
