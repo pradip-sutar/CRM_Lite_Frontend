@@ -511,7 +511,7 @@ const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
         
        try {
   const authResponse = await axios.post(
-    "http://localhost:8000/api/googleauth/login/",
+    "http://localhost:8001/api/googleauth/login/",
     {
       username: userInfo.email,
     }
@@ -535,7 +535,7 @@ const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
 } catch (err) {
   try {
     const createResponse = await axios.post(
-      "http://localhost:8000/api/create-user/",
+      "http://localhost:8001/api/create-user/",
       {
         username: userInfo.email,
         name: userInfo.name
