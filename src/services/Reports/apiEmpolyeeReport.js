@@ -11,7 +11,7 @@ export const employeeReport = async (
   if(empNameorId) params.append("emp_instance",empNameorId);
   if(startdate) params.append("from_date",startdate);
   if(enddate) params.append("to_date",enddate);
-  if(isbpo) params.append("call_center",isbpo);
+  if(isbpo) params.append("call_center","True");
 
   try {
     const response = await apiGateWay.get(

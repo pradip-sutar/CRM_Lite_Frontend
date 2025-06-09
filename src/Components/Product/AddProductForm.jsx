@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { postProductForm } from "../../services/Product/apiProductForm";
+import { postProductForm ,editProduct} from "../../services/Product/apiProductForm";
 
 function AddProductForm() {
   const navigate = useNavigate();
@@ -54,8 +54,8 @@ function AddProductForm() {
       }
     });
     if (editData) {
-      const res = await postProductForm(formData);
-      if (res == 201) {
+      const res = await editProduct(formData,data?.ProductInfo?.[0]?.project_id);
+      if (res == 200) {
         reset();
         navigate(-1);
       }

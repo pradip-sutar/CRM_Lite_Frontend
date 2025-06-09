@@ -37,9 +37,10 @@ export const deleteProduct = async (id) => {
   }
 };
 
-export const editProduct = async (data) => {
+export const editProduct = async (data,project_id) => {
   try {
-    const response = apiGateWay.put(`/api/project_new_handler/`, data);
+    const response = await apiGateWay.put(`/api/project_new_handler/?project_id=${project_id}`, data);
+    return response.status
   } catch (error) {
     console.log(error);
     toast.error("Error on Updata Product ");
