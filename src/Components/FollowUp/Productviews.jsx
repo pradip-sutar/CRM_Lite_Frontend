@@ -21,7 +21,7 @@ const Productviews = () => {
   console.log(location.state);
 
   const navigate = useNavigate();
-  const { handleSubmit, watch, control } = useForm();
+  const { register, handleSubmit, watch, control } = useForm();
   const [assignedData, setAssignedData] = useState([]);
   const choosedProject = watch("confirm_project");
   console.log(choosedProject);
@@ -31,13 +31,8 @@ const Productviews = () => {
 
   const fetchData = async () => {
     const response = await getProductForm(initialUrl);
+    setProductData(response);
     console.log(response);
-    setProductData(
-      response.map((data, index) => ({
-        value: data.project_name,
-        id: data.project_id,
-      }))
-    );
   };
 
   const fetchAssignedData = async () => {
@@ -51,9 +46,11 @@ const Productviews = () => {
   }, []);
 
   const onSubmit = async (data) => {
+    console.log(data);
+    
     try {
       const res = await apiPostProductView(
-        data?.confirm_project?.id,
+        data?.confirm_project,
         enquiry_id
       );
       if (res === 200) {
@@ -89,30 +86,14 @@ const Productviews = () => {
             <div className="row g-4">
               <div className="col-md-4">
                 <label>Project</label>
-                <Controller
-                  name="confirm_project"
-                  control={control}
-                  rules={{ required: "Project selection is required" }}
-                  render={({ field, fieldState: { error } }) => (
-                    <div>
-                      <Select
-                        {...field}
-                        options={productData}
-                        value={field.value || null} // ensures proper clearing
-                        onChange={(selectedOption) =>
-                          field.onChange(selectedOption)
-                        }
-                        placeholder="Select Project"
-                        isClearable
-                        getOptionLabel={(e) => e?.value || ""}
-                        getOptionValue={(e) => e?.index?.toString() || ""}
-                      />
-                      {error && (
-                        <span className="text-danger">{error.message}</span>
-                      )}
-                    </div>
-                  )}
-                />
+
+                <select className="dropdown form-control"
+                 {...register("confirm_project")}>
+                  <option value="">Select Projectd</option>
+                  {productData?.map((data) => (
+                    <option value={data.project_id}>{data.project_name}</option>
+                  ))}
+                </select>
               </div>
             </div>
 

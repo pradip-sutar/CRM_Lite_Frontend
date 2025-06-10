@@ -4,14 +4,12 @@ import toast from "react-hot-toast";
 export const getCustomerReport = async (
   startDate,
   endDate,
-  customerName,
-  empId
+  customerName
 ) => {
   const params = new URLSearchParams();
   if (startDate) params.append("from_date", startDate);
   if (endDate) params.append("to_date", endDate);
   if (customerName) params.append("customer_name", customerName);
-  if (empId) params.append("employee_id", empId);
   try {
     const response = await apiGateWay.get(
       `/api/customer_report/?${params.toString()}`

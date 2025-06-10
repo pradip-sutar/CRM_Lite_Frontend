@@ -51,7 +51,7 @@ const AssignVisit = () => {
   const [teamMembers, setTeamMembers] = useState([]);
   const { control, getValues, register, setValue } = useForm();
   const [isFocused, setIsFocused] = React.useState(false);
-  const [rows, setRows] = useState([]); 
+  const [rows, setRows] = useState([]);
   console.log(team_id);
 
   const options = {
@@ -67,7 +67,10 @@ const AssignVisit = () => {
   const fetchTeam = async () => {
     try {
       const data = await getTeam();
-      setValue("team", data?.data?.find((team) => team.id == team_id)?.team_name);
+      setValue(
+        "team",
+        data?.data?.find((team) => team.id == team_id)?.team_name
+      );
     } catch (error) {
       console.error("Error fetching team data:", error);
     }
@@ -84,16 +87,15 @@ const AssignVisit = () => {
 
   const getAssignedVisitByEmployee = async () => {
     try {
-      if(userType === "Super Admin"){
+      if (userType === "Super Admin") {
         const result = await getVisitAssignedBy();
         setRows(result);
         console.log(result);
-      }else{
+      } else {
         const result = await getVisitAssignedBy(logged_employee_Id);
         setRows(result);
         console.log(result);
       }
-      
     } catch (error) {
       console.log(error);
     }
@@ -109,23 +111,22 @@ const AssignVisit = () => {
   }, []);
 
   const now = new Date();
-const year = now.getFullYear();
-const month = String(now.getMonth() + 1).padStart(2, "0");
-const day = String(now.getDate()).padStart(2, "0");
-const hours = String(now.getHours()).padStart(2, "0");
-const minutes = String(now.getMinutes()).padStart(2, "0");
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const next_date_time = `${year}-${month}-${day}T${hours}:${minutes}`;
+  const next_date_time = `${year}-${month}-${day}T${hours}:${minutes}`;
 
-const formatedDataForActivity = {
-  enquiry_id,
-  action: "Visit Assigned Successfully",
-  next_discussion_point: "Do Next Follow-Up",
-  next_date_time,
-};
-
+  const formatedDataForActivity = {
+    enquiry_id,
+    action: "Visit Assigned Successfully",
+    next_discussion_point: "Do Next Follow-Up",
+    next_date_time,
+  };
 
   const handleSubmit = async () => {
     const data = getValues();
@@ -183,139 +184,139 @@ const formatedDataForActivity = {
               borderColor: "divider",
             }}
           >
-            <Paper
-              elevation={5}
-              sx={{ padding: 2, marginBottom: 4 }}
-              className="table-responsive"
-            >
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      colSpan={6}
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid black",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="BoldFont-Assign"
-                    >
-                      VISIT
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+            {rows?.length < 1 && (
+              <Paper
+                elevation={5}
+                sx={{ padding: 2, marginBottom: 4 }}
+                className="table-responsive"
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        colSpan={6}
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          textAlign: "center",
+                          border: "1px solid black",
+                          color: "rgb(126 126 126 / 87%)",
+                        }}
+                        className="BoldFont-Assign"
+                      >
+                        VISIT
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
 
-                <TableBody sx={{ border: "1px solid black" }}>
-                  <TableRow>
+                  <TableBody sx={{ border: "1px solid black" }}>
+                    <TableRow>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          textAlign: "center",
+                          border: "1px solid black",
+                          color: "rgb(126 126 126 / 87%)",
+                        }}
+                        className="Font-Assign"
+                      >
+                        Date & Time
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          textAlign: "center",
+                          border: "1px solid black",
+                          color: "rgb(126 126 126 / 87%)",
+                        }}
+                        className="Font-Assign"
+                      >
+                        VisitType
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          textAlign: "center",
+                          border: "1px solid black",
+                          color: "rgb(126 126 126 / 87%)",
+                        }}
+                        className="Font-Assign"
+                      >
+                        Instruction
+                      </TableCell>
+                    </TableRow>
 
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid black",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Date & Time
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid black",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      VisitType
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: 20,
-                        textAlign: "center",
-                        border: "1px solid black",
-                        color: "rgb(126 126 126 / 87%)",
-                      }}
-                      className="Font-Assign"
-                    >
-                      Instruction
-                    </TableCell>
-                  </TableRow>
-
-                  {/* Additional rows for Report Data  inputs */}
-                  <TableRow>
-                    <TableCell sx={{ border: "1px solid black" }}>
-                      <Controller
-                        name="date"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            {...field}
-                            type="datetime-local"
-                            style={{
-                              borderRadius: "4px",
-                              padding: "8px",
-                            }}
-                          />
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ border: "1px solid black" }}>
-                      <Controller
-                        name="visit_type"
-                        control={control}
-                        render={({ field }) => (
-                          <Select {...field} displayEmpty fullWidth>
-                            <MenuItem value="" disabled>
-                              Select Type Of Visit
-                            </MenuItem>
-
-                            <MenuItem value="Company visit">
-                              Company Visit
-                            </MenuItem>
-                            <MenuItem value="Site visit">Site Visit</MenuItem>
-                          </Select>
-                        )}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ border: "1px solid black" }}>
-                      <Controller
-                        name="instruction"
-                        control={control}
-                        render={({ field }) => {
-                          return (
-                            <textarea
+                    {/* Additional rows for Report Data  inputs */}
+                    <TableRow>
+                      <TableCell sx={{ border: "1px solid black" }}>
+                        <Controller
+                          name="date"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField
                               {...field}
-                              rows={3}
-                              placeholder="Enter Instruction"
+                              type="datetime-local"
                               style={{
-                                width: "100%",
-                                border: `2px solid ${
-                                  isFocused ? "#007bff" : "#ccc"
-                                }`, // Border color changes on focus
                                 borderRadius: "4px",
                                 padding: "8px",
-                                boxSizing: "border-box",
-                                outline: "none", // Remove default outline
                               }}
-                              onFocus={() => setIsFocused(true)}
-                              onBlur={() => setIsFocused(false)}
                             />
-                          );
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              {/* Submit Button */}
-        
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ border: "1px solid black" }}>
+                        <Controller
+                          name="visit_type"
+                          control={control}
+                          render={({ field }) => (
+                            <Select {...field} displayEmpty fullWidth>
+                              <MenuItem value="" disabled>
+                                Select Type Of Visit
+                              </MenuItem>
+
+                              <MenuItem value="Company visit">
+                                Company Visit
+                              </MenuItem>
+                              <MenuItem value="Site visit">Site Visit</MenuItem>
+                            </Select>
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ border: "1px solid black" }}>
+                        <Controller
+                          name="instruction"
+                          control={control}
+                          render={({ field }) => {
+                            return (
+                              <textarea
+                                {...field}
+                                rows={3}
+                                placeholder="Enter Instruction"
+                                style={{
+                                  width: "100%",
+                                  border: `2px solid ${
+                                    isFocused ? "#007bff" : "#ccc"
+                                  }`, // Border color changes on focus
+                                  borderRadius: "4px",
+                                  padding: "8px",
+                                  boxSizing: "border-box",
+                                  outline: "none", // Remove default outline
+                                }}
+                                onFocus={() => setIsFocused(true)}
+                                onBlur={() => setIsFocused(false)}
+                              />
+                            );
+                          }}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+                {/* Submit Button */}
+
                 <Box textAlign="center" marginTop={2}>
                   <Button
                     variant="contained"
@@ -326,8 +327,8 @@ const formatedDataForActivity = {
                     Submit
                   </Button>{" "}
                 </Box>
-          
-            </Paper>
+              </Paper>
+            )}
 
             {/* visit History */}
             <TableContainer>

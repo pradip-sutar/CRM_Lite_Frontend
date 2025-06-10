@@ -91,8 +91,7 @@ function Customer() {
     const response = await getCustomerReport(
       data.startDate,
       data.endDate,
-      data.customerName,
-      data.employee
+      data.customerName
     );
     if (!response || response.length === 0) {
       toast.error("No customer data available to generate report");
@@ -288,7 +287,10 @@ function Customer() {
           <div className="text-muted">
             Showing {paginationInfo.perPage} of {count} entries
           </div>
-          <NumberedPagination totalPages={customers?.total_pages} onPageChange={setCurrentPage} />
+          <NumberedPagination
+            totalPages={customers?.total_pages}
+            onPageChange={setCurrentPage}
+          />
         </div>
 
         {isModalOpen && (
@@ -387,16 +389,10 @@ function Customer() {
 
                   <div style={{ marginBottom: "15px" }}>
                     <label style={{ display: "block", marginBottom: "5px" }}>
-                      Select Employee
+                      Customer Name
                     </label>
-                    <Select
-                      options={employees}
-                      onChange={(selectedOption) =>
-                        setValue("employee", selectedOption.value)
-                      }
-                      placeholder="Search Employee..."
-                      isSearchable
-                    />
+                    <input className="form-control"
+                    type="text" {...register("customerName")} />
                   </div>
 
                   <div
