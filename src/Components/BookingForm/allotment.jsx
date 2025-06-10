@@ -208,7 +208,8 @@ const Allotment = () => {
       cost: allFormData.cost,
       quantity: allFormData.quantity,
       customer: allFormData.customer_id,
-      customer_gst_no: allFormData.customerGstNo,
+      customer_gst_no: allFormData.customer_gst_no,
+      customer_pincode:allFormData.customer_pincode,
       payment_details: paymentDetails,
       enquiry_id,
       payable_amount: paymentDetails.amount,
@@ -240,6 +241,7 @@ const Allotment = () => {
     if (editData) {
       setTimeout(() => {
         reset(editData);
+        setValue("")
         setValue("PaymentType", editData?.payment_details?.mode_of_payment);
         setValue("totalAmmountcash", editData?.payment_details?.amount);
         setValue("BankModeType", editData?.payment_details?.bankMode);
@@ -502,7 +504,7 @@ const Allotment = () => {
                     type="email"
                     className="form-control controlFoorm"
                     id="carpetArea"
-                    {...register("customerEmail")}
+                    {...register("customer_email")}
                   />
                 </div>
                 <div className="col-md-4 d-flex flex-d align-items-center">
@@ -516,7 +518,7 @@ const Allotment = () => {
                     type="text"
                     className="form-control controlFoorm"
                     id="carpetArea"
-                    {...register("customerAddress")}
+                    {...register("customer_address")}
                   />
                 </div>
 
@@ -531,7 +533,7 @@ const Allotment = () => {
                     type="number"
                     className="form-control controlFoorm"
                     id="carpetArea"
-                    {...register("customerPin")}
+                    {...register("customer_pincode")}
                   />
                 </div>
               </div>
