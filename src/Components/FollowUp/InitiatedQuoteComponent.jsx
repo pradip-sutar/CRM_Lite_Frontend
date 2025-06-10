@@ -202,7 +202,7 @@ const InitiatedQuoteComponent = () => {
                         <Typography
                           sx={{ fontSize: "0.7rem", color: "#666cff" }}
                         >
-                          {row?.project}
+                          {row?.project_name}
                         </Typography>
                       </Box>
                     </Box>

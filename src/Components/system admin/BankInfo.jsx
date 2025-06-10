@@ -11,6 +11,7 @@ function BankInfo() {
   const [prevUrl, setPrevUrl] = useState(null);
   const [count, setCount] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [updateUrl, setUpdateUrl] = useState("");
   const [paginationInfo, setPaginationInfo] = useState({
     total: 0,
     perPage: 10,
@@ -20,6 +21,7 @@ function BankInfo() {
     const url = `${
       import.meta.env.VITE_URL_BASE
     }/api/system_bank_details_handler/?page=${currentPage}`;
+    setUpdateUrl(url);
     loadData(url);
   }, [currentPage]);
 
@@ -147,7 +149,7 @@ function BankInfo() {
                                   <div
                                     onClick={() =>
                                       HandleDeleteById(row.id, deleteBank, () =>
-                                        loadData(initialUrl)
+                                        loadData(updateUrl)
                                       )
                                     }
                                     className="btn btn-text-danger btn-sm small py-1 px-2"

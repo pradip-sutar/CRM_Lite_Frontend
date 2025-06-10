@@ -24,6 +24,8 @@ export const HandleDeleteById = (id, deleteFunction, UpdateFunction,argumentForU
           Swal.fire("Error", "Failed to delete item.", "error");
         }
       } catch (error) {
+        console.log(error);
+        
         Swal.fire("Error", "An unexpected error occurred.", "error");
       }
     }
