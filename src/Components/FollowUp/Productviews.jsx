@@ -47,12 +47,9 @@ const Productviews = () => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    
+
     try {
-      const res = await apiPostProductView(
-        data?.confirm_project,
-        enquiry_id
-      );
+      const res = await apiPostProductView(data?.confirm_project, enquiry_id);
       if (res === 200) {
         navigate("/FollowUp");
       }
@@ -87,9 +84,11 @@ const Productviews = () => {
               <div className="col-md-4">
                 <label>Project</label>
 
-                <select className="dropdown form-control"
-                 {...register("confirm_project")}>
-                  <option value="">Select Projectd</option>
+                <select
+                  className="dropdown form-control"
+                  {...register("confirm_project")}
+                >
+                  <option value="">Select Project</option>
                   {productData?.map((data) => (
                     <option value={data.project_id}>{data.project_name}</option>
                   ))}
