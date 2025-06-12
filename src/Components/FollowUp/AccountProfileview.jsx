@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useGetCustomerIVRDetails } from "../../hooks/IVR/useHookTeleCalling";
-import { UpdataContactForScheduleCall } from "../../services/IVR/apiTeleCalling";
-import { getCallReport } from "../../services/IVR/apiTeleCalling";
 import {
   Container,
   Box,
@@ -77,7 +75,6 @@ import { Tooltip } from "bootstrap";
 import Swal from "sweetalert2";
 import "./CSS/AccountproView.css";
 import crmStore from "../../Utils/crmStore";
-import { addEmployeetoIVR } from "../../services/IVR/apiTeleCalling";
 import { CalltoCustomer } from "../../services/IVR/apiTeleCalling";
 import { sendWPMessage } from "../../services/MetaIntigration/apiWhatsapp";
 import { sendEmail } from "../../services/MetaIntigration/apiEmail";
@@ -183,14 +180,6 @@ const AccountProfileview = ({ id }) => {
       const seconds = String(dateUTC.getUTCSeconds()).padStart(2, "0");
       const amPm = dateUTC.getUTCHours() >= 12 ? "PM" : "AM";
       const formattedTime = `${hours}.${minutes}.${seconds} ${amPm}`;
-      UpdataContactForScheduleCall(
-        CustomerIvrData?.[0]?.contact_id,
-        CustomerIvrData?.[0]?.contact_name,
-        formattedDate,
-        formattedTime,
-        logged_employee_name,
-        logged_employee_mob
-      );
       reset();
       setRefreshKey(refreshKey + 1);
       navigate("/followUp", { state: { activeTab } });

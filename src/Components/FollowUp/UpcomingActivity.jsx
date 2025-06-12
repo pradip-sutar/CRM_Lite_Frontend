@@ -75,7 +75,6 @@ const UpcomingActivity = ({ filterUrl, filterData, activeTab }) => {
           sx={{
             p: 2,
             overflow: "auto",
-            maxHeight: "330px",
             paddingBottom: "0",
             flexGrow: 1,
           }}
@@ -294,20 +293,23 @@ const UpcomingActivity = ({ filterUrl, filterData, activeTab }) => {
           )}
         </Box>
       </Box>
-      <Box
+       <Box
         sx={{
+          position: "fixed",
+          bottom: 50,
+          right: 0,
+          zIndex: 1100,
           borderTop: "1px solid #e0e0e0",
           display: "flex",
           flexDirection: "row-reverse",
-          padding: "1px",
-          top: 0,
+          padding: "8px 16px",
         }}
       >
         <NumberedPagination
-          totalPages={enquiryData?.totalPageCount}
+          totalPages={enquiryData?.total_pages}
           onPageChange={setCurrentPage}
         />
-      </Box>{" "}
+      </Box>
     </>
   );
 };

@@ -16,7 +16,6 @@ import "react-circular-progressbar/dist/styles.css";
 import {
   getIVRDashboardSummary,
   ProfileAndSubscriptionDetails,
-  getCallReport,
 } from "../../../services/IVR/apiTeleCalling";
 import * as XLSX from "xlsx";
 
@@ -50,7 +49,6 @@ const CallMonitoring = () => {
     if (callerNumber) {
       formData.append("caller_num", callerNumber);
     }
-    fetchCallReport(formData);
     console.log(startDate, endDate, memberNumber, callerNumber);
   };
 
@@ -97,19 +95,11 @@ const CallMonitoring = () => {
     }
   };
 
-  const fetchCallReport = async (data) => {
-    try {
-      const response = await getCallReport(data);
-      setFilteredCalls(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   useEffect(() => {
     fetchIvrDashboardSummary();
     fetchProfileAndSubscriptionDetails();
-    fetchCallReport();
   }, []);
 
   const callData = [
@@ -440,7 +430,6 @@ const CallMonitoring = () => {
                         setEndDate("");
                         setMemberNumber("");
                         setCallerNumber("");
-                        fetchCallReport;
                       }}
                     >
                       Reset Filter

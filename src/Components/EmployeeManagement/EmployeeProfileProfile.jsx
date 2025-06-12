@@ -11,7 +11,6 @@ import {
 // import { useGetDropDowns } from "../../hooks/useGetDropDowns";
 import "./CSS/CompanyProfile.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import { addEmployeetoIVR } from "../../services/IVR/apiTeleCalling";
 
 const EmployeeProfileProfile = () => {
   const location = useLocation();
@@ -721,7 +720,6 @@ const EmployeeProfileProfile = () => {
     } else {
       const res = await PostEmployee(formDatas);
       if (res == 201) {
-        addEmployeetoIVR(name, mobileno);
         navigate(-1);
       }
     }

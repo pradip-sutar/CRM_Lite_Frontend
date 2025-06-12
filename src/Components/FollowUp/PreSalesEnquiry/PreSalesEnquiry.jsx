@@ -237,7 +237,7 @@ function PreSalesEnquiry() {
           </div>
 
           <NumberedPagination
-            totalPages={enquirydata?.totalPageCount}
+            totalPages={enquiryData?.total_pages}
             onPageChange={setCurrentPage}
           />
         </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getCallReport } from "../../services/IVR/apiTeleCalling";
 
 const CallReport = () => {
   const IVR_acessKey = import.meta.env.VITE_IVR_key;
@@ -9,12 +8,9 @@ const CallReport = () => {
   const { customer_name = " ", customer_phone = " " } = location.state || {};
   const [callData, setCallData] = useState([]);
 
-  const formData=new FormData();
+  const formData = new FormData();
   formData.append("authcode", IVR_acessKey);
   formData.append("caller_num", customer_phone);
-  useEffect(() => {
-    getCallReport(formData).then((data) => setCallData(data));
-  }, [customer_phone]);
 
   return (
     <div className="container mt-4 p-4 bg-white shadow-lg rounded border border-primary">

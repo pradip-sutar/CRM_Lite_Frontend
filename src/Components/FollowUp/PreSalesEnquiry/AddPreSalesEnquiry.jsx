@@ -17,7 +17,6 @@ import { getConfirmPreProject } from "../../../services/apiPreProject";
 import { Link, useNavigate } from "react-router-dom";
 import crmStore from "../../../Utils/crmStore";
 import { hasRightsPermission } from "../../../Private/premissionChecker";
-import { AddCustomerContact } from "../../../services/IVR/apiTeleCalling";
 
 const AddPreSalesEnquiry = () => {
   const [copySuccess, setCopySuccess] = useState(false);
@@ -177,10 +176,6 @@ const AddPreSalesEnquiry = () => {
 
         const response = await PostEnquiryTable(formatedData);
         if (response.status == 201) {
-          await AddCustomerContact(
-            response?.data?.enquiry_id,
-            response?.data?.customer_phone
-          );
           reset();
           navigate(-1);
         }

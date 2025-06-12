@@ -36,6 +36,8 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
     }
     const response = await fetchPageData(`${url}&page=${currentPage}`);
     setEnquiryData(response);
+    console.log(response);
+
     setLoading(false);
   };
 
@@ -71,7 +73,8 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
           sx={{
             p: 2,
             overflow: "auto",
-            maxHeight: "330px",
+            minHeight: "40%",
+            maxHeight: "100%",
             paddingBottom: "0",
             textWrap: "nowrap",
             flexGrow: 1,
@@ -307,14 +310,18 @@ const ListofActivity = ({ filterUrl, filterData, activeTab }) => {
       </Box>
       <Box
         sx={{
+          position: "fixed",
+          bottom: 50,
+          right: 0,
+          zIndex: 1100,
           borderTop: "1px solid #e0e0e0",
           display: "flex",
           flexDirection: "row-reverse",
-          top: 0,
+          padding: "8px 16px",
         }}
       >
         <NumberedPagination
-          totalPages={enquiryData?.totalPageCount}
+          totalPages={enquiryData?.total_pages}
           onPageChange={setCurrentPage}
         />
       </Box>

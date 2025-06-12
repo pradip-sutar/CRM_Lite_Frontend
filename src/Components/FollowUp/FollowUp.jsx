@@ -322,7 +322,7 @@ function FollowUp() {
       >
         <Card sx={{ m: 0, boxShadow: "none", border: "none" }}>
           <CardContent sx={{ p: 0 }} className="card-contentFo">
-            <Box className="followup-box">
+            <Box className="followup-box h-100" >
               <Box
                 sx={{
                   display: "flex",
