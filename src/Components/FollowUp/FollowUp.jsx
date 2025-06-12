@@ -197,7 +197,6 @@ function FollowUp() {
   };
   const columns = [
     { id: "Enquiry ID", label: "Enquiry ID" },
-    { id: "Employee", label: "Employee" },
     { id: "Customer Name", label: "Customer Name" },
     { id: "Phone", label: "Phone" },
     { id: "Email", label: "Email" },
@@ -235,9 +234,7 @@ function FollowUp() {
 
       const formattedData = response?.flatMap((entry, index) => {
         return entry.enquiries.map((action) => ({
-          id: `${entry.employee}-${action.enquiry_id}-${index}`,
           "Enquiry ID": action.enquiry_id,
-          Employee: entry.employee,
           "Customer Name": action.customer_name,
           Phone: action.customer_phone,
           Email: action.customer_email,
@@ -322,7 +319,7 @@ function FollowUp() {
       >
         <Card sx={{ m: 0, boxShadow: "none", border: "none" }}>
           <CardContent sx={{ p: 0 }} className="card-contentFo">
-            <Box className="followup-box">
+            <Box className="followup-box h-100" >
               <Box
                 sx={{
                   display: "flex",

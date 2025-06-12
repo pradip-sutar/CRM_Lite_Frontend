@@ -5,7 +5,8 @@ import crmStore from "../../Utils/crmStore";
 const array = [
   { value: "Follow Up", to: "/followUp" },
   // { value: "Pre Sales Enquiry", to: "/followUp/preSalesEnquiry" },
-  {value:"Call Status",  to:"/followUp/CallStatus"},
+  { value: "Call Status", to: "/followUp/CallStatus" },
+  { value: "Questions", to: "/FollowUp/questions" },
 ];
 
 function FollowUp() {

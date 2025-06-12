@@ -8,8 +8,6 @@ import {
 } from "../../services/EmpManagement/apiCompanyProfile";
 import { HandleDeleteById } from "../../services/DeleteSwal/HandleDeleteById";
 import crmStore from "../../Utils/crmStore";
-import { getEmployeeIVRDetails } from "../../services/IVR/apiTeleCalling";
-import { deleteEmployeeFromIVR } from "../../services/IVR/apiTeleCalling";
 import * as XLSX from "xlsx";
 import { useForm } from "react-hook-form";
 import { fetchPageData } from "../../services/Pagination/Pagination";
@@ -116,12 +114,7 @@ const Employee = () => {
     XLSX.writeFile(workbook, fileName);
   };
 
-  const EmpIVRDetails = (number) => {
-    const member_id = getEmployeeIVRDetails(number);
-    if (member_id) {
-      deleteEmployeeFromIVR(member_id);
-    }
-  };
+
 
   const handleExcelUpload = (event) => {
     const file = event.target.files[0];
@@ -344,7 +337,6 @@ const Employee = () => {
                                   loadData,
                                   updateUrl
                                 );
-                                EmpIVRDetails(employee.mobileno);
                               }}
                             >
                               <i className="mdi mdi-trash-can" />

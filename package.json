@@ -1,6 +1,6 @@
 {
   "name": "vichaarlab-crm-app",
-  "author":"Dinakrushna Agasti",
+  "author": "Dinakrushna Agasti",
   "private": true,
   "version": "1.0.0",
   "main": "main.js",
@@ -80,6 +80,7 @@
     "apexcharts": "^4.3.0",
     "axios": "^1.7.4",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.4.8",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",

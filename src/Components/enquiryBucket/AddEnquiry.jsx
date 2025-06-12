@@ -17,8 +17,6 @@ import { getConfirmPreProject } from "../../services/apiPreProject";
 import { Link, useNavigate } from "react-router-dom";
 import "./CSS/enquiry.css";
 import crmStore from "../../Utils/crmStore";
-import { hasRightsPermission } from "../../Private/premissionChecker";
-import { AddCustomerContact } from "../../services/IVR/apiTeleCalling";
 import { getProductForm } from "../../services/Product/apiProductForm";
 
 const AddEnquiry = () => {
@@ -144,10 +142,7 @@ const AddEnquiry = () => {
 
         const response = await PostEnquiryTable(formatedData);
         if (response.status == 201) {
-          await AddCustomerContact(
-            response?.data?.enquiry_id,
-            response?.data?.customer_phone
-          );
+          
           reset();
           navigate(-1);
         }

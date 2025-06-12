@@ -2,6 +2,8 @@ import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import React, { lazy, Suspense } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -75,6 +77,8 @@ import EnquiryTabView from "./Components/Dashboard/DashboardComponents/TabView/E
 
 import PaymentReceiptPDF from "./Components/PaymentReceipt/PaymentReceiptPDF";
 import Callback from "./Components/Dashboard/Callback";
+
+import Questions from "./Components/FollowUp/Questions/Questions";
 
 
 const CallStatus = lazy(() => import("./Components/FollowUp/CallStatus"));
@@ -224,6 +228,10 @@ const App = () => {
                     <Route
                       path="/FollowUp/GeneratorPersona"
                       element={<GeneratorPersona />}
+                    />
+                      <Route
+                      path="/FollowUp/questions"
+                      element={<Questions />}
                     />
                     <Route
                       path="/FollowUp/Productviews"

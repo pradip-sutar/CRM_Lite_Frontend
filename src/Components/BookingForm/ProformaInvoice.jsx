@@ -46,6 +46,19 @@ const Invoice = ({ data, companyInfo }) => {
     "Ninety",
   ];
   const thousands = ["", "Thousand", "Lakh", "Crore"];
+  
+  function convertHundreds(num) {
+    if (num === 0) return "";
+    if (num < 20) return ones[num] + " ";
+    if (num < 100)
+      return tens[Math.floor(num / 10)] + (ones[num % 10] ? " " + ones[num % 10] : "");
+    return (
+      ones[Math.floor(num / 100)] +
+      " Hundred" +
+      (num % 100 ? " " + convertHundreds(num % 100) : "")
+    );
+  }
+
   function convertToWords(num) {
     const number = Math.floor(Number(num) || 0);
     if (number === 0) return "Zero";

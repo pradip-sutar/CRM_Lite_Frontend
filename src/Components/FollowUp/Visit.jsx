@@ -611,7 +611,7 @@ function Visit() {
                                       color: "#666cff",
                                     }}
                                   >
-                                    {row?.project}
+                                    {row?.project_name}
                                   </Typography>
                                 </Box>
                               </Box>
