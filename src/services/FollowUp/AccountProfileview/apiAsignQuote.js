@@ -16,18 +16,12 @@ export const postQuoteAsign = async (data) => {
 export const getAssignQuote = async (enquiry_id) => {
   try {
     let response;
-    if (enquiry_id) {
-      response = await apiGateWay.get(
-        `/api/quotation/?enquiry_id=${enquiry_id}`
-      );
-    } else {
-      response = await apiGateWay.get(`/api/quotation/`);
-    }
+
+    response = await apiGateWay.get(`/api/quotation/?enquiry_id=${enquiry_id}`);
 
     return response.data;
   } catch (error) {
     if (error.response.status == 404) {
-      toast.info("No quotes assigned found for this employee.");
     }
     console.log(error);
   }
@@ -39,7 +33,6 @@ export const getAssignedQuoteforEmployee = async () => {
     return response.data;
   } catch (error) {
     if (error.response.status == 404) {
-      toast.info("No quotes assigned found for this employee.");
     }
   }
 };

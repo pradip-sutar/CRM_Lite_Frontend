@@ -45,20 +45,20 @@ const AssignQuote = () => {
     customer_email = "",
     customer_address = "",
   } = useLocation()?.state || {};
-  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
-  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
+  console.log(useLocation()?.state);
+  
   const [teamMembers, setTeamMembers] = useState([]);
   const [assignedData, setAssignedData] = useState([]);
   const { handleSubmit, control, watch, setValue, reset } = useForm();
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
 
   const fetchAssignQuotes = async () => {
     try {
-      const data = await getAssignQuote(
-        logged_employee_Id,
-        logged_employee_Type
-      );
+      const data = await getAssignQuote(enquiry_id);
+      if (data?.length >= 1) {
+        navigate("/followUp/Quotation", {
+          state: { enquiry_id },
+        });
+      }
       setAssignedData(data);
     } catch (error) {
       console.log(error);
@@ -110,7 +110,6 @@ const AssignQuote = () => {
       status,
       instruction: data.instruction,
       follow_up_status: data?.status,
-      assigned_by: logged_employee_Id,
       created_by: data?.created_by,
       product_details: product_details,
       customer_name,
@@ -157,114 +156,107 @@ const AssignQuote = () => {
               borderColor: "divider",
             }}
           >
-            {assignedData?.length < 1 && (
-              <Paper elevation={5} sx={{ padding: 2, marginBottom: 4 }}>
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="table-responsive"
-                >
-                  <Table>
-                    <TableHead>
-                      <TableRow>
+            <Paper elevation={5} sx={{ padding: 2, marginBottom: 4 }}>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="table-responsive"
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        colSpan={11}
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: 20,
+                          textAlign: "center",
+                          margin: "auto",
+                          border: "1px solid rgb(143 143 143)",
+                          color: "rgb(126 126 126 / 87%)",
+                        }}
+                        className="BoldFont-Assign"
+                      >
+                        Quote
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody sx={{ border: "1px solid rgb(143 143 143)" }}>
+                    <TableRow>
+                      {["Quote Date", "Instruction"].map((header) => (
                         <TableCell
-                          colSpan={11}
+                          key={header}
                           sx={{
                             fontWeight: "bold",
                             fontSize: 20,
                             textAlign: "center",
-                            margin: "auto",
                             border: "1px solid rgb(143 143 143)",
                             color: "rgb(126 126 126 / 87%)",
                           }}
-                          className="BoldFont-Assign"
+                          className="Font-Assign"
                         >
-                          Quote
+                          {header}
                         </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody sx={{ border: "1px solid rgb(143 143 143)" }}>
-                      <TableRow>
-                        {["Quote Date", "Instruction"].map((header) => (
-                          <TableCell
-                            key={header}
-                            sx={{
-                              fontWeight: "bold",
-                              fontSize: 20,
-                              textAlign: "center",
-                              border: "1px solid rgb(143 143 143)",
-                              color: "rgb(126 126 126 / 87%)",
-                            }}
-                            className="Font-Assign"
-                          >
-                            {header}
-                          </TableCell>
-                        ))}
-                      </TableRow>
+                      ))}
+                    </TableRow>
 
-                      {/* Form Row */}
-                      <TableRow>
-                        {/* Team Input */}
+                    {/* Form Row */}
+                    <TableRow>
+                      {/* Team Input */}
 
-                        {/* Date Input */}
-                        <TableCell
-                          sx={{ border: "1px solid rgb(143 143 143)" }}
-                        >
-                          <Controller
-                            name="date"
-                            rules={{ required: "This field is required" }}
-                            className="Font-Assign"
-                            control={control}
-                            render={({ field }) => (
-                              <TextField {...field} type="date" fullWidth />
-                            )}
-                          />
-                        </TableCell>
+                      {/* Date Input */}
+                      <TableCell sx={{ border: "1px solid rgb(143 143 143)" }}>
+                        <Controller
+                          name="date"
+                          rules={{ required: "This field is required" }}
+                          className="Font-Assign"
+                          control={control}
+                          render={({ field }) => (
+                            <TextField {...field} type="date" fullWidth />
+                          )}
+                        />
+                      </TableCell>
 
-                        {/* Instruction Input */}
-                        <TableCell
-                          sx={{ border: "1px solid rgb(143 143 143)" }}
-                        >
-                          <Controller
-                            name="instruction"
-                            control={control}
-                            rules={{ required: "This field is required" }}
-                            render={({ field }) => (
-                              <textarea
-                                {...field}
-                                rows={3}
-                                className="Font-Assign"
-                                placeholder="Enter Instruction"
-                                style={{
-                                  width: "100%",
-                                  border: "2px solid #ccc",
-                                  borderRadius: "4px",
-                                  padding: "8px",
-                                }}
-                              />
-                            )}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                      {/* Instruction Input */}
+                      <TableCell sx={{ border: "1px solid rgb(143 143 143)" }}>
+                        <Controller
+                          name="instruction"
+                          control={control}
+                          rules={{ required: "This field is required" }}
+                          render={({ field }) => (
+                            <textarea
+                              {...field}
+                              rows={3}
+                              className="Font-Assign"
+                              placeholder="Enter Instruction"
+                              style={{
+                                width: "100%",
+                                border: "2px solid #ccc",
+                                borderRadius: "4px",
+                                padding: "8px",
+                              }}
+                            />
+                          )}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
 
-                  {/* Submit Button */}
+                {/* Submit Button */}
 
-                  <Box textAlign="center" marginTop={2}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      sx={{ backgroundColor: "#666cff" }}
-                    >
-                      Submit
-                    </Button>
-                  </Box>
-                </form>
-              </Paper>
-            )}
+                <Box textAlign="center" marginTop={2}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{ backgroundColor: "#666cff" }}
+                  >
+                    Submit
+                  </Button>
+                </Box>
+              </form>
+            </Paper>
 
-            {/* Quote History */}
             <TableContainer>
               <Paper
                 elevation={11}

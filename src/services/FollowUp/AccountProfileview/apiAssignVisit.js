@@ -31,15 +31,10 @@ export const getVisitAssignedBy = async () => {
 
 export const getVisitAssignToEmployee = async (enquiry_id) => {
   try {
-    if (enquiry_id) {
-      const response = await apiGateWay.get(
-        `/api/visit/?enquiry_id=${enquiry_id}`
-      );
-      return response.data;
-    } else {
-      const response = await apiGateWay.get(`/api/visit/`);
-      return response.data;
-    }
+    const response = await apiGateWay.get(
+      `/api/visit/?enquiry_id=${enquiry_id}`
+    );
+    return response.data;
   } catch (error) {
     console.log(error);
   }
