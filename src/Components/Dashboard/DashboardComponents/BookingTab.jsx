@@ -1,8 +1,27 @@
 import { useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+} from "chart.js";
 import { Chip } from "@mui/material";
-ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement
+);
 
 const BookingTab = ({bookingData}) => {
   // const [bookingData, setBookingData] = useState([
@@ -114,7 +133,6 @@ const BookingTab = ({bookingData}) => {
       />
     );
   };
-
 
   return (
     <div className="container-fluid">
@@ -300,7 +318,7 @@ const BookingTab = ({bookingData}) => {
       </style>
 
       {/* Filter Section */}
-      <div className="row g-3 mb-3">
+      {/* <div className="row g-3 mb-3">
         <div className="col-12">
           <div className="card shadow-sm px-3 py-3">
             <div className="d-flex align-items-center flex-wrap gap-3">
@@ -309,7 +327,7 @@ const BookingTab = ({bookingData}) => {
               </h6>
 
               
-                {/* Start Date */}
+            
                 <div style={{ width: "160px" }}>
                   <input
                     type="date"
@@ -320,7 +338,7 @@ const BookingTab = ({bookingData}) => {
 
                 <span>to</span>
 
-                {/* End Date */}
+           
                 <div style={{ width: "160px" }}>
                   <input
                     type="date"
@@ -332,7 +350,7 @@ const BookingTab = ({bookingData}) => {
                 <button className="btn btn-outline-primary btn-sm">Search </button>
               </div>
 
-              {/* Product Filter */}
+        
               <div className="d-flex" style={{ width: "200px" }}>
                 <span className="fw-bold mt-2">Product: </span>
                 <select className="form-select">
@@ -344,7 +362,7 @@ const BookingTab = ({bookingData}) => {
                 </select>
               </div>
 
-              {/* Search Input */}
+      
               <div className="flex-grow-1" style={{ minWidth: "200px" }}>
                 <div className="input-group">
                   <span className="input-group-text bg-white">
@@ -358,23 +376,24 @@ const BookingTab = ({bookingData}) => {
                 </div>
               </div>
 
-              {/* Reset Button */}
+           
               <div>
                 <button className="btn btn-outline-primary btn-sm"><span class="mdi mdi-refresh"></span> Reset</button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
+      </div> */}
 
       {/* Card Section */}
       <div className="row g-3">
-
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+            style={{
+              borderTop: "4px solid #3B82F6",
+              background: "linear-gradient(135deg, #ffffff, #DBEAFE)",
+            }}
           >
             <div className="card-body">
               <div className="d-flex align-items-left mb-2">
@@ -382,11 +401,11 @@ const BookingTab = ({bookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-dark">5</div>
+                  <div className="fw-bold fs-4 text-dark">{bookingData?.total_bookings}</div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-success">₹5850.00</div>
+                  <div className="fw-bold fs-4 text-success">₹{bookingData?.total_payable_amount_across_enquiries}</div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -394,11 +413,13 @@ const BookingTab = ({bookingData}) => {
           </div>
         </div>
 
-
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #CC3333", background: "linear-gradient(135deg, #ffffff, #E4ACAC)" }}
+            style={{
+              borderTop: "4px solid #CC3333",
+              background: "linear-gradient(135deg, #ffffff, #E4ACAC)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-left mb-2">
@@ -406,11 +427,11 @@ const BookingTab = ({bookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-danger">3</div>
+                  <div className="fw-bold fs-4 text-danger">{bookingData?.balance_due?.entry_count}</div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-danger">₹3050.00</div>
+                  <div className="fw-bold fs-4 text-danger">{bookingData?.balance_due?.total_balance_due}</div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -421,7 +442,10 @@ const BookingTab = ({bookingData}) => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
+            style={{
+              borderTop: "4px solid #52AA56",
+              background: "linear-gradient(135deg, #ffffff, #B6D9B8)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-left mb-2">
@@ -429,18 +453,17 @@ const BookingTab = ({bookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-success">2</div>
+                  <div className="fw-bold fs-4 text-success">{bookingData?.advance_payment?.entry_count}</div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-success">₹2800.00</div>
+                  <div className="fw-bold fs-4 text-success">₹{bookingData?.advance_payment?.total_advance_amount}</div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Table Section */}
@@ -448,17 +471,22 @@ const BookingTab = ({bookingData}) => {
         <div className="col-12">
           <div className="card stats-card">
             <div className="card-header py-3 d-flex justify-content-between align-items-center">
-              <h5 className="mb-0 fw-bold" style={{ color: "white" }}>Booking Details</h5>
-              <button className="btn btn-outline-primary btn-sm" style={{ color: "white" }}>
+              <h5 className="mb-0 fw-bold" style={{ color: "white" }}>
+                Booking Details
+              </h5>
+              <button
+                className="btn btn-outline-primary btn-sm"
+                style={{ color: "white" }}
+              >
                 <span class="mdi mdi-download"></span> Export
               </button>
             </div>
             <div className="card-body p-4">
-              {bookingData?.length > 0 ? (
+              {bookingData?.all_booking_data?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-bordered table-hover align-middle">
                     <thead>
-                      <tr className='text-nowrap'>
+                      <tr className="text-nowrap">
                         <th>SL No.</th>
                         <th>Date</th>
                         <th>Enquiry ID</th>
@@ -466,7 +494,7 @@ const BookingTab = ({bookingData}) => {
                         <th>Contact</th>
                         <th>Product</th>
                         <th>Booking Date</th>
-                        <th>Time</th>
+                        {/* <th>Time</th> */}
                         <th>Quote ID</th>
                         <th>Amount</th>
                         <th>Proforma Invoice</th>
@@ -475,20 +503,22 @@ const BookingTab = ({bookingData}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {bookingData.map((row, index) => (
-                        <tr key={index} className='text-nowrap'>
+                      {bookingData?.all_booking_data?.map((row, index) => (
+                        <tr key={index} className="text-nowrap">
                           <td>{index + 1}</td>
-                          <td>{row.date}</td>
-                          <td className="fw-bold">{row.enquiryId}</td>
-                          <td>{row.name}</td>
-                          <td>{row.contact}</td>
-                          <td>{row.product}</td>
-                          <td>{row.bookingDate}</td>
-                          <td>{row.time}</td>
+                          <td>{row.updated_at}</td>
+                          <td className="fw-bold">{row.enquiry_id}</td>
+                          <td>{row.customer_name}</td>
+                          <td>{row.customer_mob}</td>
+                          <td>{row.project_name}</td>
+                          <td>{row.created_at}</td>
+                          {/* <td>{row.time}</td> */}
                           <td>{row.quoteId}</td>
-                          <td className="fw-bold">${row.amount.toFixed(2)}</td>
-                          <td className="text-primary fw-medium">{row.invoice}</td>
-                          <td>{getModeChip(row.mode)}</td>
+                          <td className="fw-bold">{row.payable_amount}</td>
+                          <td className="text-primary fw-medium">
+                            {row.invoice}
+                          </td>
+                          <td>{row.payment_details.mode_of_payment}</td>
                           <td>{getPayStatusChip(row.payStatus)}</td>
                         </tr>
                       ))}
@@ -504,17 +534,24 @@ const BookingTab = ({bookingData}) => {
               {bookingData?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">
                   <div className="text-muted">
-                    Showing 1 to {bookingData.length} of {bookingData.length} entries
+                    Showing 1 to {bookingData.length} of {bookingData.length}{" "}
+                    entries
                   </div>
                   <ul className="pagination mb-0">
                     <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
+                      <a className="page-link" href="#">
+                        Previous
+                      </a>
                     </li>
                     <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
+                      <a className="page-link" href="#">
+                        1
+                      </a>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
+                      <a className="page-link" href="#">
+                        Next
+                      </a>
                     </li>
                   </ul>
                 </div>

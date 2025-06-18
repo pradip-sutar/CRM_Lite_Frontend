@@ -15,26 +15,14 @@ import SourceTab from "./DashboardComponents/SourceTab";
 import CommissionTab from "./DashboardComponents/CommissionTab";
 
 import { getOverView } from "../../services/Dashboard/DashboardComponents/OverviewTab";
-import { getSourceTab } from "../../services/Dashboard/DashboardComponents/SourceTab";
+import {
+  getSourceTabData,
+  getSourceTableData,
+  getEnquiryActionData,
+} from "../../services/Dashboard/DashboardComponents/SourceTab";
 import { getProductTab } from "../../services/Dashboard/DashboardComponents/ProductTab";
 import { getFollowUpTab } from "../../services/Dashboard/DashboardComponents/FollowupTab";
 import { getEnquiryTab } from "../../services/Dashboard/DashboardComponents/EnquiryTab";
-
-// Mock components (replace with actual implementations)
-const MockOverviewTab = ({ filterOverviewData }) => <div className="p-4 bg-white rounded shadow">Overview Content {JSON.stringify(filterOverviewData)}</div>;
-const MockSourceTab = () => <div className="p-4 bg-white rounded shadow">Source Content</div>;
-const MockPropertiesTab = () => <div className="p-4 bg-white rounded shadow">Properties Content</div>;
-const MockCallingTab = () => <div className="p-4 bg-white rounded shadow">Calling Content</div>;
-const MockEnquiryTab = ({ filterEnquiryData }) => <div className="p-4 bg-white rounded shadow">Enquiry Content {JSON.stringify(filterEnquiryData)}</div>;
-const MockQuotationTab = () => <div className="p-4 bg-white rounded shadow">Quotation Content</div>;
-const MockBookingTab = () => <div className="p-4 bg-white rounded shadow">Booking Content</div>;
-const MockBuyerPersonaTab = () => <div className="p-4 bg-white rounded shadow">Buyer Persona Content</div>;
-const MockSheduleTab = () => <div className="p-4 bg-white rounded shadow">Schedule Content</div>;
-const MockSalesTab = () => <div className="p-4 bg-white rounded shadow">Sales Content</div>;
-
-// Mock API services (replace with actual implementations)
-const mockGetOverView = async (start_date, end_date) => ({ data: `Overview from ${start_date} to ${end_date}` });
-const mockGetEnquiryTab = async (start_date, end_date) => ({ data: `Enquiry from ${start_date} to ${end_date}` });
 import { getScheduleTab } from "../../services/Dashboard/DashboardComponents/SchedulesTab";
 import { getQuotationTab } from "../../services/Dashboard/DashboardComponents/QutationsTab";
 import { getBookingTab } from "../../services/Dashboard/DashboardComponents/BookingTab";
@@ -45,6 +33,8 @@ const Dashboard = () => {
   const [activeComponent, setActiveComponent] = useState("Overview");
   const [OverviewData, setOverviewData] = useState(null);
   const [sourceData, setsourceData] = useState(null);
+  const [sourceTableDATA, setSourceTableData] = useState([]);
+  const [sourceEnquiryActionData, setSourceEnquiryActionData] = useState([]);
   const [productData, setproductData] = useState(null);
   const [FollowUpData, setFollowUpData] = useState(null);
   const [enquiryData, setenquiryData] = useState(null);
@@ -63,15 +53,35 @@ const Dashboard = () => {
     }
   };
 
+  //Source
   const fetchsourceData = async (enable, rawfilterData) => {
     try {
-      const response = await getSourceTab(enable, rawfilterData);
+      const response = await getSourceTabData(enable, rawfilterData);
       setsourceData(response);
     } catch (error) {
       console.error("Error fetching source data", error);
     }
   };
 
+  const fetchsourceTableData = async (enable, rawfilterData) => {
+    try {
+      const response = await getSourceTableData(enable, rawfilterData);
+      setSourceTableData(response);
+    } catch (error) {
+      console.error("Error fetching source data", error);
+    }
+  };
+
+  const fetchEnquiryActionData = async (enable, rawfilterData) => {
+    try {
+      const response = await getEnquiryActionData(enable, rawfilterData);
+      setSourceEnquiryActionData(response);
+    } catch (error) {
+      console.error("Error fetching source data", error);
+    }
+  };
+
+  //Product
   const fetchproductData = async (enable, rawfilterData) => {
     try {
       const response = await getProductTab(enable, rawfilterData);
@@ -151,6 +161,8 @@ const Dashboard = () => {
         break;
       case "Source":
         fetchsourceData(enable, filterData);
+        fetchsourceTableData(enable, filterData);
+        fetchEnquiryActionData(enable, filterData);
         break;
       case "Product":
         fetchproductData(enable, filterData);
@@ -212,7 +224,14 @@ const Dashboard = () => {
       case "Overview":
         return <OverviewTab OverviewData={OverviewData} />;
       case "Source":
-        return <SourceTab sourceData={sourceData} />;
+        return (
+          <SourceTab
+            sourceData={sourceData}
+            sourceTableDATA={sourceTableDATA}
+            sourceEnquiryActionData={sourceEnquiryActionData}
+            setSourceEnquiryActionData={setSourceEnquiryActionData}
+          />
+        );
       case "Product":
         return <PropertiesTab productData={productData} />;
       case "FollowUp":

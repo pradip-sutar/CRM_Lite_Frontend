@@ -1,39 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-const SalesTab = ({salesData}) => {
-    // const [salesData, setSalesData] = useState([
-    //     {
-    //         id: 1,
-    //         date: "23-05-2024",
-    //         enquiryId: "ENQ123",
-    //         name: "John Doe",
-    //         contactNumber: "9876543210",
-    //         product: "CRM",
-    //         time: "10:30 AM",
-    //         bookingId: "BK456",
-    //         amount: "₹15,000",
-    //         mode: "WhatsApp",
-    //         payReceipt: "Generated",
-    //     },
-    //     {
-    //         id: 2,
-    //         date: "24-05-2024",
-    //         enquiryId: "ENQ123",
-    //         name: "Jane Smith",
-    //         contactNumber: "9874563210",
-    //         product: "CRM",
-    //         time: "08:30 AM",
-    //         bookingId: "BK486",
-    //         amount: "₹15,000",
-    //         mode: "Email",
-    //         payReceipt: "Not Generated",
-    //     },
-    // ]);
+const SalesTab = ({ salesData }) => {
+  // const [salesData, setSalesData] = useState([
+  //     {
+  //         id: 1,
+  //         date: "23-05-2024",
+  //         enquiryId: "ENQ123",
+  //         name: "John Doe",
+  //         contactNumber: "9876543210",
+  //         product: "CRM",
+  //         time: "10:30 AM",
+  //         bookingId: "BK456",
+  //         amount: "₹15,000",
+  //         mode: "WhatsApp",
+  //         payReceipt: "Generated",
+  //     },
+  //     {
+  //         id: 2,
+  //         date: "24-05-2024",
+  //         enquiryId: "ENQ123",
+  //         name: "Jane Smith",
+  //         contactNumber: "9874563210",
+  //         product: "CRM",
+  //         time: "08:30 AM",
+  //         bookingId: "BK486",
+  //         amount: "₹15,000",
+  //         mode: "Email",
+  //         payReceipt: "Not Generated",
+  //     },
+  // ]);
 
-    return (
-        <div className="container-fluid p-0 pr-1 ">
-            <style>
-                {`
+  return (
+    <div className="container-fluid p-0 pr-1 ">
+      <style>
+        {`
           /* Card Styling */
           .stats-card {
             border: none;
@@ -213,133 +213,149 @@ const SalesTab = ({salesData}) => {
             }
           }
         `}
-            </style>
+      </style>
 
-
-            <div className="row g-3 justify-content-center">
-
-                <div className="col-12 col-md-4">
-                    <div
-                        className="card stats-card animate-card shadow-sm h-75"
-                        style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
-                    >
-                        <div className="card-body text-center">
-                            <div className="d-flex align-items-center justify-content-center mb-2">
-                                <span className="fw-semibold">Total Sales (Count)</span>
-                            </div>
-                            <div className="fw-bold fs-4">5</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-12 col-md-4">
-                    <div
-                        className="card stats-card animate-card shadow-sm h-75"
-                        style={{ borderTop: "4px solid #DC143C", background: "linear-gradient(135deg, #ffffff, #F4A6A6)" }}
-                    >
-                        <div className="card-body text-center">
-                            <div className="d-flex align-items-center justify-content-center mb-2">
-                                <span className="fw-semibold">Total Sales (Value)</span>
-                            </div>
-                            <div className="fw-bold fs-4">₹5,800</div>
-                        </div>
-                    </div>
-                </div>
+      <div className="row g-3 justify-content-center">
+        <div className="col-12 col-md-4">
+          <div
+            className="card stats-card animate-card shadow-sm h-75"
+            style={{
+              borderTop: "4px solid #52AA56",
+              background: "linear-gradient(135deg, #ffffff, #B6D9B8)",
+            }}
+          >
+            <div className="card-body text-center">
+              <div className="d-flex align-items-center justify-content-center mb-2">
+                <span className="fw-semibold">Total Sales (Count)</span>
+              </div>
+              <div className="fw-bold fs-4">{salesData?.total_sales_count}</div>
             </div>
-
-            <div className="row">
-                <div className="col-12">
-                    <div className="card stats-card">
-                        <div className="card-header py-3">
-                            <h5 className="mb-0 fw-bold" style={{color:"white"}}>Sales Data</h5>
-                        </div>
-                        <div className="card-body p-4">
-                            {salesData?.length > 0 ? (
-                                <div className="table-responsive">
-                                    <table className="table table-hover table-bordered align-middle">
-                                        <thead>
-                                            <tr className='text-nowrap'>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Enquiry ID</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Contact Number</th>
-                                                <th scope="col">Product</th>
-                                                <th scope="col">Time</th>
-                                                <th scope="col">Booking ID</th>
-                                                <th scope="col">Amount</th>
-                                                <th scope="col">Mode</th>
-                                                <th scope="col">Pay Receipt</th>
-                                                <th scope="col">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className='text-nowrap'>
-                                            {salesData?.map((row, index) => (
-                                                <tr key={index}>
-                                                    <td>{row?.date}</td>
-                                                    <td>{row?.enquiryId}</td>
-                                                    <td>{row?.name}</td>
-                                                    <td>{row?.contactNumber}</td>
-                                                    <td>{row?.product}</td>
-                                                    <td>{row?.time}</td>
-                                                    <td>{row?.bookingId}</td>
-                                                    <td>{row?.amount}</td>
-                                                    <td>{row?.mode}</td>
-                                                    <td className={row?.payReceipt === "Generated" ? "text-success fw-semibold" : "text-danger fw-semibold"}>
-                                                        {row?.payReceipt}
-                                                    </td>
-
-                                                    <td className="d-flex p-4">
-                                                        <button
-                                                            // onClick={() =>
-                                                            //     navigate("/dashboard/enquiry/enquiryTabView", {
-                                                            //         state: { enquiryViewData: row },
-                                                            //     })
-                                                            // }
-                                                            className="action-btn btn-text-primary"
-                                                            title="View Details"
-                                                        >
-                                                            <i className="mdi mdi-eye text-primary"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ) : (
-                                <div className="text-center py-5 no-data">
-                                    <i className="bi bi-exclamation-circle me-2"></i>
-                                    No Enquiry Stats Found
-                                </div>
-                            )}
-
-                            {salesData?.length > 0 && (
-                                <div className="d-flex justify-content-between align-items-center mt-4">
-                                    <div className="text-muted">
-                                        Showing 1 to {salesData.length} of {salesData.length} entries
-                                    </div>
-                                    <ul className="pagination mb-0">
-                                        <li className="page-item disabled">
-                                            <a className="page-link" href="#">Previous</a>
-                                        </li>
-                                        <li className="page-item active">
-                                            <a className="page-link" href="#">1</a>
-                                        </li>
-                                        <li className="page-item">
-                                            <a className="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
+          </div>
         </div>
-    )
-}
 
-export default SalesTab
+        <div className="col-12 col-md-4">
+          <div
+            className="card stats-card animate-card shadow-sm h-75"
+            style={{
+              borderTop: "4px solid #DC143C",
+              background: "linear-gradient(135deg, #ffffff, #F4A6A6)",
+            }}
+          >
+            <div className="card-body text-center">
+              <div className="d-flex align-items-center justify-content-center mb-2">
+                <span className="fw-semibold">Total Sales (Value)</span>
+              </div>
+              <div className="fw-bold fs-4">₹{salesData?.total_payable_amount_sum}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-12">
+          <div className="card stats-card">
+            <div className="card-header py-3">
+              <h5 className="mb-0 fw-bold" style={{ color: "white" }}>
+                Sales Data
+              </h5>
+            </div>
+            <div className="card-body p-4">
+              {salesData?.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-hover table-bordered align-middle">
+                    <thead>
+                      <tr className="text-nowrap">
+                        <th scope="col">Date</th>
+                        <th scope="col">Enquiry ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Contact Number</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Booking ID</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Mode</th>
+                        <th scope="col">Pay Receipt</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-nowrap">
+                      {salesData?.map((row, index) => (
+                        <tr key={index}>
+                          <td>{row?.date}</td>
+                          <td>{row?.enquiryId}</td>
+                          <td>{row?.name}</td>
+                          <td>{row?.contactNumber}</td>
+                          <td>{row?.product}</td>
+                          <td>{row?.time}</td>
+                          <td>{row?.bookingId}</td>
+                          <td>{row?.amount}</td>
+                          <td>{row?.mode}</td>
+                          <td
+                            className={
+                              row?.payReceipt === "Generated"
+                                ? "text-success fw-semibold"
+                                : "text-danger fw-semibold"
+                            }
+                          >
+                            {row?.payReceipt}
+                          </td>
+
+                          <td className="d-flex p-4">
+                            <button
+                              // onClick={() =>
+                              //     navigate("/dashboard/enquiry/enquiryTabView", {
+                              //         state: { enquiryViewData: row },
+                              //     })
+                              // }
+                              className="action-btn btn-text-primary"
+                              title="View Details"
+                            >
+                              <i className="mdi mdi-eye text-primary"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-5 no-data">
+                  <i className="bi bi-exclamation-circle me-2"></i>
+                  No Enquiry Stats Found
+                </div>
+              )}
+
+              {salesData?.length > 0 && (
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  <div className="text-muted">
+                    Showing 1 to {salesData.length} of {salesData.length}{" "}
+                    entries
+                  </div>
+                  <ul className="pagination mb-0">
+                    <li className="page-item disabled">
+                      <a className="page-link" href="#">
+                        Previous
+                      </a>
+                    </li>
+                    <li className="page-item active">
+                      <a className="page-link" href="#">
+                        1
+                      </a>
+                    </li>
+                    <li className="page-item">
+                      <a className="page-link" href="#">
+                        Next
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SalesTab;
