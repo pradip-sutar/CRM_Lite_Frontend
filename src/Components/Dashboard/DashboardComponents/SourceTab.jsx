@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import NumberedPagination from "../../Pagination/NumberedPagination";
+import { fetchPageData } from "../../../services/Pagination/Pagination";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,18 +10,42 @@ import {
   LineElement,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Bar, Line, Pie } from 'react-chartjs-2';
-ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Tooltip, Legend);
+} from "chart.js";
+import { Bar, Line, Pie } from "react-chartjs-2";
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend
+);
 
-const SourceTab = ({sourceData}) => {
+const SourceTab = ({
+  sourceData,
+  sourceTableDATA,
+  sourceEnquiryActionData,
+  setSourceEnquiryActionData,
+}) => {
   console.log(sourceData);
-  
+  console.log(sourceEnquiryActionData);
+
+  const [enquiryActionPageNo, setEnquiryActionPageNo] = useState(1);
+
+  const loadData = async (url) => {
+    const result = await fetchPageData(url);
+    setSourceEnquiryActionData(result);
+  };
+
+  useEffect(() => {
+    loadData(`/api/get_recent_enquiry_actions/?page=${enquiryActionPageNo}`);
+  }, [enquiryActionPageNo]);
   const [reportStats, setReportStats] = useState([
     {
       id: 1,
-      medium: 'Online',
-      source: 'Facebook',
+      medium: "Online",
+      source: "Facebook",
       totalEnquiry: 150,
       validEnquiry: 120,
       invalidEnquiry: 30,
@@ -32,7 +58,7 @@ const SourceTab = ({sourceData}) => {
       quotation: 40,
       schedule: 30,
       sales: 25,
-      uploadDate: '2025-05-21',
+      uploadDate: "2025-05-21",
       notInterested: 5,
       cold: 10,
       warm: 15,
@@ -47,12 +73,12 @@ const SourceTab = ({sourceData}) => {
       stage: "Lead",
       status: "Hot",
       rating: "4.5",
-      conversation: "Xyz"
+      conversation: "Xyz",
     },
     {
       id: 2,
-      medium: 'Offline',
-      source: 'Referral',
+      medium: "Offline",
+      source: "Referral",
       totalEnquiry: 100,
       validEnquiry: 90,
       invalidEnquiry: 10,
@@ -65,7 +91,7 @@ const SourceTab = ({sourceData}) => {
       quotation: 35,
       schedule: 20,
       sales: 15,
-      uploadDate: '2025-05-20',
+      uploadDate: "2025-05-20",
       notInterested: 3,
       cold: 8,
       warm: 10,
@@ -80,12 +106,12 @@ const SourceTab = ({sourceData}) => {
       stage: "Lead",
       status: "Hot",
       rating: "4.5",
-      conversation: "Xyz"
+      conversation: "Xyz",
     },
     {
       id: 3,
-      medium: 'Online',
-      source: 'Instagram',
+      medium: "Online",
+      source: "Instagram",
       totalEnquiry: 80,
       validEnquiry: 70,
       invalidEnquiry: 10,
@@ -98,7 +124,7 @@ const SourceTab = ({sourceData}) => {
       quotation: 35,
       schedule: 20,
       sales: 15,
-      uploadDate: '2025-05-19',
+      uploadDate: "2025-05-19",
       notInterested: 2,
       cold: 5,
       warm: 8,
@@ -113,81 +139,82 @@ const SourceTab = ({sourceData}) => {
       stage: "Lead",
       status: "Hot",
       rating: "4.5",
-      conversation: "Xyz"
+      conversation: "Xyz",
     },
   ]);
 
-
   const [showTable, setShowTable] = useState(true);
-  const [selectedReport, setSelectedReport] = useState('Source Wise Performance');
-  const [activeTab, setActiveTab] = useState('bar');
+  const [selectedReport, setSelectedReport] = useState(
+    "Source Wise Performance"
+  );
+  const [activeTab, setActiveTab] = useState("bar");
   const tabStyle = (tabName) => ({
-    backgroundColor: activeTab === tabName ? '#5f5dfc' : 'white',
-    border: '1px solid #5f5dfc',
-    color: activeTab === tabName ? 'white' : '#5f5dfc',
+    backgroundColor: activeTab === tabName ? "#5f5dfc" : "white",
+    border: "1px solid #5f5dfc",
+    color: activeTab === tabName ? "white" : "#5f5dfc",
     borderRadius: 0,
-    padding: '10px 20px',
-    outline: 'none',
-    boxShadow: activeTab === tabName ? '0 2px 6px rgba(0,0,0,0.1)' : 'none'
+    padding: "10px 20px",
+    outline: "none",
+    boxShadow: activeTab === tabName ? "0 2px 6px rgba(0,0,0,0.1)" : "none",
   });
 
   // Source Chart
   const sourceChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: sourceTableDATA.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: '#4e73df',
+        label: "Total Enquiry",
+        data: sourceTableDATA.map((item) => item.total_enquiry_count),
+        backgroundColor: "#4e73df",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
       {
-        label: 'Valid Enquiry',
-        data: reportStats.map(item => item.validEnquiry),
-        backgroundColor: '#1cc88a',
+        label: "Valid Enquiry",
+        data: sourceTableDATA.map((item) => item.valid_enquiry_count),
+        backgroundColor: "#1cc88a",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
       {
-        label: 'Lead',
-        data: reportStats.map(item => item.lead),
-        backgroundColor: '#36b9cc',
+        label: "Lead",
+        data: sourceTableDATA.map((item) => item.Lead),
+        backgroundColor: "#36b9cc",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
       {
-        label: 'Opportunity',
-        data: reportStats.map(item => item.opportunity),
-        backgroundColor: '#f6c23e',
+        label: "Opportunity",
+        data: sourceTableDATA.map((item) => item.Opportunity),
+        backgroundColor: "#f6c23e",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
       {
-        label: 'Sales',
-        data: reportStats.map(item => item.sales),
-        backgroundColor: '#e74a3b',
+        label: "Quote",
+        data: sourceTableDATA.map((item) => item.Quote),
+        backgroundColor: "#e74a3b",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
     ],
@@ -196,8 +223,8 @@ const SourceTab = ({sourceData}) => {
   const sourceChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
-      tooltip: { mode: 'index', intersect: false },
+      legend: { position: "top" },
+      tooltip: { mode: "index", intersect: false },
     },
     scales: {
       x: { grid: { display: false } },
@@ -206,96 +233,97 @@ const SourceTab = ({sourceData}) => {
   };
 
   const sourcePieChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Sales',
-        data: reportStats.map(item => item.sales),
-        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+        label: "Sales",
+        data: reportStats.map((item) => item.sales),
+        backgroundColor: [
+          "#4e73df",
+          "#1cc88a",
+          "#36b9cc",
+          "#f6c23e",
+          "#e74a3b",
+        ],
       },
     ],
   };
 
   // Bulk Chart
   const bulkChartData = {
-    labels: reportStats.map(item => item.source), // or item.uploadDate if grouping by date
+    labels: reportStats.map((item) => item.source), // or item.uploadDate if grouping by date
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: '#4e73df',
-        borderColor: '#4e73df',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: "#4e73df",
+        borderColor: "#4e73df",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'Valid Enquiry',
-        data: reportStats.map(item => item.validEnquiry),
-        backgroundColor: '#1cc88a',
-        borderColor: '#1cc88a',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'Invalid Enquiry',
-        data: reportStats.map(item => item.invalidEnquiry),
-        backgroundColor: '#e0a800',
-        borderColor: '#e0a800',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'New Enquiry',
-        data: reportStats.map(item => item.newEnquiry),
-        backgroundColor: '#36b9cc',
-        borderColor: '#36b9cc',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'Active Enquiry',
-        data: reportStats.map(item => item.activeEnquiry),
-        backgroundColor: '#6610f2',
-        borderColor: '#6610f2',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
       {
-        label: 'Dead Enquiry',
-        data: reportStats.map(item => item.deadEnquiry),
-        backgroundColor: '#e74a3b',
-        borderColor: '#e74a3b',
+        label: "Valid Enquiry",
+        data: reportStats.map((item) => item.validEnquiry),
+        backgroundColor: "#1cc88a",
+        borderColor: "#1cc88a",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
+      },
+      {
+        label: "Invalid Enquiry",
+        data: reportStats.map((item) => item.invalidEnquiry),
+        backgroundColor: "#e0a800",
+        borderColor: "#e0a800",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
+      },
+      {
+        label: "New Enquiry",
+        data: reportStats.map((item) => item.newEnquiry),
+        backgroundColor: "#36b9cc",
+        borderColor: "#36b9cc",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
+      },
+      {
+        label: "Active Enquiry",
+        data: reportStats.map((item) => item.activeEnquiry),
+        backgroundColor: "#6610f2",
+        borderColor: "#6610f2",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
+      },
+      {
+        label: "Dead Enquiry",
+        data: reportStats.map((item) => item.deadEnquiry),
+        backgroundColor: "#e74a3b",
+        borderColor: "#e74a3b",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
       },
     ],
   };
@@ -303,8 +331,8 @@ const SourceTab = ({sourceData}) => {
   const bulkChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
-      tooltip: { mode: 'index', intersect: false },
+      legend: { position: "top" },
+      tooltip: { mode: "index", intersect: false },
     },
     scales: {
       x: { grid: { display: false } },
@@ -313,13 +341,21 @@ const SourceTab = ({sourceData}) => {
   };
 
   const bulkPieChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6610f2', '#e0a800'],
-        borderColor: '#fff',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: [
+          "#4e73df",
+          "#1cc88a",
+          "#36b9cc",
+          "#f6c23e",
+          "#e74a3b",
+          "#6610f2",
+          "#e0a800",
+        ],
+        borderColor: "#fff",
         borderWidth: 1,
       },
     ],
@@ -328,103 +364,103 @@ const SourceTab = ({sourceData}) => {
   // Validation Chart
 
   const validChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: '#4e73df',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: "#4e73df",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#4e73df',
+        borderColor: "#4e73df",
       },
       {
-        label: 'Valid Enquiry',
-        data: reportStats.map(item => item.validEnquiry),
-        backgroundColor: '#1cc88a',
+        label: "Valid Enquiry",
+        data: reportStats.map((item) => item.validEnquiry),
+        backgroundColor: "#1cc88a",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#1cc88a',
+        borderColor: "#1cc88a",
       },
       {
-        label: 'Invalid Enquiry',
-        data: reportStats.map(item => item.invalidEnquiry),
-        backgroundColor: '#e0a800',
+        label: "Invalid Enquiry",
+        data: reportStats.map((item) => item.invalidEnquiry),
+        backgroundColor: "#e0a800",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#e0a800',
+        borderColor: "#e0a800",
       },
       {
-        label: 'New Enquiry',
-        data: reportStats.map(item => item.newEnquiry),
-        backgroundColor: '#36b9cc',
+        label: "New Enquiry",
+        data: reportStats.map((item) => item.newEnquiry),
+        backgroundColor: "#36b9cc",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#36b9cc',
+        borderColor: "#36b9cc",
       },
       {
-        label: 'Active Enquiry',
-        data: reportStats.map(item => item.activeEnquiry),
-        backgroundColor: '#6610f2',
+        label: "Active Enquiry",
+        data: reportStats.map((item) => item.activeEnquiry),
+        backgroundColor: "#6610f2",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#6610f2',
+        borderColor: "#6610f2",
       },
       {
-        label: 'Dead Enquiry',
-        data: reportStats.map(item => item.deadEnquiry),
-        backgroundColor: '#e74a3b',
+        label: "Dead Enquiry",
+        data: reportStats.map((item) => item.deadEnquiry),
+        backgroundColor: "#e74a3b",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#e74a3b',
+        borderColor: "#e74a3b",
       },
       {
-        label: 'No Response Enquiry',
-        data: reportStats.map(item => item.noResponseEnquiry),
-        backgroundColor: '#e74a3b',
+        label: "No Response Enquiry",
+        data: reportStats.map((item) => item.noResponseEnquiry),
+        backgroundColor: "#e74a3b",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#e74a3b',
+        borderColor: "#e74a3b",
       },
       {
-        label: 'Sales',
-        data: reportStats.map(item => item.sales),
-        backgroundColor: '#e74a3b',
+        label: "Sales",
+        data: reportStats.map((item) => item.sales),
+        backgroundColor: "#e74a3b",
         borderRadius: {
           topLeft: 10,
           topRight: 10,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-        borderColor: '#e74a3b',
+        borderColor: "#e74a3b",
       },
     ],
   };
@@ -432,8 +468,8 @@ const SourceTab = ({sourceData}) => {
   const validChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
-      tooltip: { mode: 'index', intersect: false },
+      legend: { position: "top" },
+      tooltip: { mode: "index", intersect: false },
     },
     scales: {
       x: { grid: { display: false } },
@@ -442,13 +478,21 @@ const SourceTab = ({sourceData}) => {
   };
 
   const validPieChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Sales',
-        data: reportStats.map(item => item.sales),
-        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6610f2', '#e0a800'],
-        borderColor: '#fff',
+        label: "Sales",
+        data: reportStats.map((item) => item.sales),
+        backgroundColor: [
+          "#4e73df",
+          "#1cc88a",
+          "#36b9cc",
+          "#f6c23e",
+          "#e74a3b",
+          "#6610f2",
+          "#e0a800",
+        ],
+        borderColor: "#fff",
         borderWidth: 1,
       },
     ],
@@ -456,84 +500,79 @@ const SourceTab = ({sourceData}) => {
 
   // Activity Chart
   const activeChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: '#4e73df',
-        borderColor: '#4e73df',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: "#4e73df",
+        borderColor: "#4e73df",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'Valid Enquiry',
-        data: reportStats.map(item => item.validEnquiry),
-        backgroundColor: '#1cc88a',
-        borderColor: '#1cc88a',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'Quotetion',
-        data: reportStats.map(item => item.quotation),
-        backgroundColor: '#e0a800',
-        borderColor: '#e0a800',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'Schedule',
-        data: reportStats.map(item => item.schedule),
-        backgroundColor: '#36b9cc',
-        borderColor: '#36b9cc',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
-        },
-
-      },
-      {
-        label: 'Sales',
-        data: reportStats.map(item => item.sales),
-        backgroundColor: '#6610f2',
-        borderColor: '#6610f2',
-        borderRadius: {
-          topLeft: 6,
-          topRight: 6,
-          bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
       {
-        label: 'Not-Interested',
-        data: reportStats.map(item => item.notInterested),
-        backgroundColor: '#e74a3b',
-        borderColor: '#e74a3b',
+        label: "Valid Enquiry",
+        data: reportStats.map((item) => item.validEnquiry),
+        backgroundColor: "#1cc88a",
+        borderColor: "#1cc88a",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
+      },
+      {
+        label: "Quotetion",
+        data: reportStats.map((item) => item.quotation),
+        backgroundColor: "#e0a800",
+        borderColor: "#e0a800",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
+      },
+      {
+        label: "Schedule",
+        data: reportStats.map((item) => item.schedule),
+        backgroundColor: "#36b9cc",
+        borderColor: "#36b9cc",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
+      },
+      {
+        label: "Sales",
+        data: reportStats.map((item) => item.sales),
+        backgroundColor: "#6610f2",
+        borderColor: "#6610f2",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
+      },
+      {
+        label: "Not-Interested",
+        data: reportStats.map((item) => item.notInterested),
+        backgroundColor: "#e74a3b",
+        borderColor: "#e74a3b",
+        borderRadius: {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0,
+        },
       },
     ],
   };
@@ -541,8 +580,8 @@ const SourceTab = ({sourceData}) => {
   const activeChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
-      tooltip: { mode: 'index', intersect: false },
+      legend: { position: "top" },
+      tooltip: { mode: "index", intersect: false },
     },
     scales: {
       x: { grid: { display: false } },
@@ -551,13 +590,21 @@ const SourceTab = ({sourceData}) => {
   };
 
   const activePieChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6610f2', '#e0a800'],
-        borderColor: '#fff',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: [
+          "#4e73df",
+          "#1cc88a",
+          "#36b9cc",
+          "#f6c23e",
+          "#e74a3b",
+          "#6610f2",
+          "#e0a800",
+        ],
+        borderColor: "#fff",
         borderWidth: 1,
       },
     ],
@@ -565,70 +612,66 @@ const SourceTab = ({sourceData}) => {
 
   // Stage Chart
   const stageChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: '#4e73df',
-        borderColor: '#4e73df',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: "#4e73df",
+        borderColor: "#4e73df",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
       },
       {
-        label: 'Active Enquiry',
-        data: reportStats.map(item => item.activeEnquiry),
-        backgroundColor: '#1cc88a',
-        borderColor: '#1cc88a',
+        label: "Active Enquiry",
+        data: reportStats.map((item) => item.activeEnquiry),
+        backgroundColor: "#1cc88a",
+        borderColor: "#1cc88a",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
       },
       {
-        label: 'Enquiry Stage',
-        data: reportStats.map(item => item.quotation),
-        backgroundColor: '#e0a800',
-        borderColor: '#e0a800',
+        label: "Enquiry Stage",
+        data: reportStats.map((item) => item.quotation),
+        backgroundColor: "#e0a800",
+        borderColor: "#e0a800",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
       },
       {
-        label: 'Lead Stage',
-        data: reportStats.map(item => item.schedule),
-        backgroundColor: '#36b9cc',
-        borderColor: '#36b9cc',
+        label: "Lead Stage",
+        data: reportStats.map((item) => item.schedule),
+        backgroundColor: "#36b9cc",
+        borderColor: "#36b9cc",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
       },
       {
-        label: 'Prospect Stage',
-        data: reportStats.map(item => item.sales),
-        backgroundColor: '#6610f2',
-        borderColor: '#6610f2',
+        label: "Prospect Stage",
+        data: reportStats.map((item) => item.sales),
+        backgroundColor: "#6610f2",
+        borderColor: "#6610f2",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
     ],
@@ -637,8 +680,8 @@ const SourceTab = ({sourceData}) => {
   const stageChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
-      tooltip: { mode: 'index', intersect: false },
+      legend: { position: "top" },
+      tooltip: { mode: "index", intersect: false },
     },
     scales: {
       x: { grid: { display: false } },
@@ -647,13 +690,21 @@ const SourceTab = ({sourceData}) => {
   };
 
   const stagePieChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6610f2', '#e0a800'],
-        borderColor: '#fff',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: [
+          "#4e73df",
+          "#1cc88a",
+          "#36b9cc",
+          "#f6c23e",
+          "#e74a3b",
+          "#6610f2",
+          "#e0a800",
+        ],
+        borderColor: "#fff",
         borderWidth: 1,
       },
     ],
@@ -661,44 +712,42 @@ const SourceTab = ({sourceData}) => {
 
   // Status Chart
   const statusChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Cold',
-        data: reportStats.map(item => item.cold),
-        backgroundColor: '#e0a800',
-        borderColor: '#e0a800',
+        label: "Cold",
+        data: reportStats.map((item) => item.cold),
+        backgroundColor: "#e0a800",
+        borderColor: "#e0a800",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
       },
       {
-        label: 'Warm',
-        data: reportStats.map(item => item.warm),
-        backgroundColor: '#36b9cc',
-        borderColor: '#36b9cc',
+        label: "Warm",
+        data: reportStats.map((item) => item.warm),
+        backgroundColor: "#36b9cc",
+        borderColor: "#36b9cc",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
-
       },
       {
-        label: 'Hot',
-        data: reportStats.map(item => item.hot),
-        backgroundColor: '#6610f2',
-        borderColor: '#6610f2',
+        label: "Hot",
+        data: reportStats.map((item) => item.hot),
+        backgroundColor: "#6610f2",
+        borderColor: "#6610f2",
         borderRadius: {
           topLeft: 6,
           topRight: 6,
           bottomLeft: 0,
-          bottomRight: 0
+          bottomRight: 0,
         },
       },
     ],
@@ -707,8 +756,8 @@ const SourceTab = ({sourceData}) => {
   const statusChartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: 'top' },
-      tooltip: { mode: 'index', intersect: false },
+      legend: { position: "top" },
+      tooltip: { mode: "index", intersect: false },
     },
     scales: {
       x: { grid: { display: false } },
@@ -717,13 +766,21 @@ const SourceTab = ({sourceData}) => {
   };
 
   const statusPieChartData = {
-    labels: reportStats.map(item => item.source),
+    labels: reportStats.map((item) => item.source),
     datasets: [
       {
-        label: 'Total Enquiry',
-        data: reportStats.map(item => item.totalEnquiry),
-        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#6610f2', '#e0a800'],
-        borderColor: '#fff',
+        label: "Total Enquiry",
+        data: reportStats.map((item) => item.totalEnquiry),
+        backgroundColor: [
+          "#4e73df",
+          "#1cc88a",
+          "#36b9cc",
+          "#f6c23e",
+          "#e74a3b",
+          "#6610f2",
+          "#e0a800",
+        ],
+        borderColor: "#fff",
         borderWidth: 1,
       },
     ],
@@ -915,17 +972,23 @@ const SourceTab = ({sourceData}) => {
 
       {/* Card Section */}
       <div className="row g-3">
-
         <div className="col-12 col-lg-3 col-md-6">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
+            style={{
+              borderTop: "4px solid #52AA56",
+              background: "linear-gradient(135deg, #ffffff, #B6D9B8)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
-                <span className="fw-semibold"><span class="mdi mdi-bookmark"></span>Total Enquiries</span>
+                <span className="fw-semibold">
+                  <span class="mdi mdi-bookmark"></span>Total Enquiries
+                </span>
               </div>
-              <div className="fw-bold fs-4">{sourceData?.total_enquiry_count}</div>
+              <div className="fw-bold fs-4">
+                {sourceData?.total_enquiry_count}
+              </div>
             </div>
           </div>
         </div>
@@ -933,15 +996,22 @@ const SourceTab = ({sourceData}) => {
         <div className="col-12 col-lg-3 col-md-6">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #DC143C", background: "linear-gradient(135deg, #ffffff, #F4A6A6)" }}
-
+            style={{
+              borderTop: "4px solid #DC143C",
+              background: "linear-gradient(135deg, #ffffff, #F4A6A6)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 {/* <HourglassEmptyIcon style={{ color: "#ff9800", fontSize: 20, marginRight: "6px" }} /> */}
-                <span className="fw-semibold"> <span class="mdi mdi-chart-bar"></span> Valid Enquiries</span>
+                <span className="fw-semibold">
+                  {" "}
+                  <span class="mdi mdi-chart-bar"></span> Valid Enquiries
+                </span>
               </div>
-              <div className="fw-bold fs-4">{sourceData?.valid_enquiry_count}</div>
+              <div className="fw-bold fs-4">
+                {sourceData?.valid_enquiry_count}
+              </div>
             </div>
           </div>
         </div>
@@ -949,12 +1019,17 @@ const SourceTab = ({sourceData}) => {
         <div className="col-12 col-lg-3 col-md-6">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #FFA500", background: "linear-gradient(135deg, #ffffff, #FFE5B4)" }}
+            style={{
+              borderTop: "4px solid #FFA500",
+              background: "linear-gradient(135deg, #ffffff, #FFE5B4)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 {/* <BlockIcon style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }} /> */}
-                <span className="fw-semibold"><span class="mdi mdi-chart-pie"></span>Conversion Rate</span>
+                <span className="fw-semibold">
+                  <span class="mdi mdi-chart-pie"></span>Conversion Rate
+                </span>
               </div>
               <div className="fw-bold fs-4">24.8%</div>
             </div>
@@ -964,12 +1039,17 @@ const SourceTab = ({sourceData}) => {
         <div className="col-12 col-lg-3 col-md-6">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+            style={{
+              borderTop: "4px solid #3B82F6",
+              background: "linear-gradient(135deg, #ffffff, #DBEAFE)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 {/* <BlockIcon style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }} /> */}
-                <span className="fw-semibold"><span class="mdi mdi-sale"></span>Total Sales</span>
+                <span className="fw-semibold">
+                  <span class="mdi mdi-sale"></span>Total Sales
+                </span>
               </div>
               <div className="fw-bold fs-4">631</div>
             </div>
@@ -983,7 +1063,6 @@ const SourceTab = ({sourceData}) => {
         <div className="col-12 col-md-6 col-lg-12 ">
           <div className="card shadow-sm px-3 py-3">
             <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-
               {/* Start Date */}
               <div style={{ width: "200px" }}>
                 <input
@@ -1004,7 +1083,9 @@ const SourceTab = ({sourceData}) => {
                 />
               </div>
               <div>
-                <button className="btn btn-outline-primary btn-sm">Search </button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Search{" "}
+                </button>
               </div>
 
               {/* Medium Filter */}
@@ -1032,20 +1113,24 @@ const SourceTab = ({sourceData}) => {
 
               {/* Reset Button */}
               <div>
-                <button className="btn btn-outline-primary btn-sm"><span class="mdi mdi-refresh"></span> Reset</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  <span class="mdi mdi-refresh"></span> Reset
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-     {/* Dropdown Section */}
-      <div >
+      {/* Dropdown Section */}
+      <div>
         {/* Inline Conditional Rendering */}
         <div className="card">
-          <div className='d-flex justify-content-between p-3'>
-            <div className="d-flex" style={{ width: '300px' }}>
-              <span className="fw-bold mt-2 me-2 text-nowrap">Report Type:</span>
+          <div className="d-flex justify-content-between p-3">
+            <div className="d-flex" style={{ width: "300px" }}>
+              <span className="fw-bold mt-2 me-2 text-nowrap">
+                Report Type:
+              </span>
               <select
                 className="form-select"
                 value={selectedReport}
@@ -1059,25 +1144,33 @@ const SourceTab = ({sourceData}) => {
                 <option>Status Wise Report</option>
               </select>
             </div>
-            <div className='d-flex'>
+            <div className="d-flex">
               {/* Graph Button */}
               <div className="text-end pr-2">
                 <div className="rounded overflow-hidden">
                   <button
-                    style={{ ...tabStyle('bar'), borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px' }}
-                    onClick={() => setActiveTab('bar')}
+                    style={{
+                      ...tabStyle("bar"),
+                      borderTopLeftRadius: "12px",
+                      borderBottomLeftRadius: "12px",
+                    }}
+                    onClick={() => setActiveTab("bar")}
                   >
                     <span class="mdi mdi-chart-bar"></span>
                   </button>
                   <button
-                    style={tabStyle('activity')}
-                    onClick={() => setActiveTab('activity')}
+                    style={tabStyle("activity")}
+                    onClick={() => setActiveTab("activity")}
                   >
                     <span class="mdi mdi-chart-line"></span>
                   </button>
                   <button
-                    style={{ ...tabStyle('clock'), borderTopRightRadius: '12px', borderBottomRightRadius: '12px' }}
-                    onClick={() => setActiveTab('clock')}
+                    style={{
+                      ...tabStyle("clock"),
+                      borderTopRightRadius: "12px",
+                      borderBottomRightRadius: "12px",
+                    }}
+                    onClick={() => setActiveTab("clock")}
                   >
                     <span class="mdi mdi-chart-pie"></span>
                   </button>
@@ -1085,51 +1178,55 @@ const SourceTab = ({sourceData}) => {
               </div>
               <button
                 className="btn btn-sm btn-light "
-                onClick={() => setShowTable(prev => !prev)}
+                onClick={() => setShowTable((prev) => !prev)}
               >
-                {showTable ? 'Hide Table' : 'Show Table'}
+                {showTable ? "Hide Table" : "Show Table"}
               </button>
             </div>
           </div>
-          {selectedReport === 'Source Wise Performance' && (
+          {selectedReport === "Source Wise Performance" && (
             <div className="row">
               <div className="py-3 d-flex justify-content-between align-items-center">
-                <h5 className="mb-0 fw-bold ps-3">Source Wise Performance Analysis</h5>
+                <h5 className="mb-0 fw-bold ps-3">
+                  Source Wise Performance Analysis
+                </h5>
               </div>
 
               <div className="card-body ps-4">
                 {showTable && (
                   <>
-                    {reportStats?.length > 0 ? (
+                    {sourceTableDATA?.length > 0 ? (
                       <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle">
                           <thead>
-                            <tr className='text-nowrap'>
-                              <th scope="col" style={{ width: "60px" }}>SL No.</th>
-                              <th scope="col">Medium</th>
+                            <tr className="text-nowrap">
+                              <th scope="col" style={{ width: "60px" }}>
+                                SL No.
+                              </th>
+
                               <th scope="col">Source</th>
                               <th scope="col">Total Enquiry</th>
                               <th scope="col">Valid Enquiry</th>
                               <th scope="col">Lead</th>
                               <th scope="col">Opportunity</th>
                               <th scope="col">Quote</th>
-                              <th scope="col">Schedule</th>
-                              <th scope="col">Sales</th>
+                              {/* <th scope="col">Schedule</th>
+                              <th scope="col">Sales</th> */}
                             </tr>
                           </thead>
                           <tbody>
-                            {reportStats.map((row, index) => (
+                            {sourceTableDATA.map((row, index) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{row.medium}</td>
+
                                 <td>{row.source}</td>
-                                <td>{row.totalEnquiry}</td>
-                                <td>{row.validEnquiry}</td>
-                                <td>{row.lead}</td>
-                                <td>{row.opportunity}</td>
-                                <td>{row.quotation}</td>
-                                <td>{row.schedule}</td>
-                                <td>{row.sales}</td>
+                                <td>{row.total_enquiry_count}</td>
+                                <td>{row.valid_enquiry_count}</td>
+                                <td>{row.Lead}</td>
+                                <td>{row.Opportunity}</td>
+                                <td>{row.Quote}</td>
+                                {/* <td>{row.schedule}</td>
+                                <td>{row.sales}</td> */}
                               </tr>
                             ))}
                           </tbody>
@@ -1141,62 +1238,53 @@ const SourceTab = ({sourceData}) => {
                         No Report Stats Found
                       </div>
                     )}
-
-                    {reportStats?.length > 0 && (
-                      <div className="d-flex justify-content-between align-items-center mt-4">
-                        <div className="text-muted">
-                          Showing 1 to {reportStats.length} of {reportStats.length} entries
-                        </div>
-                        <ul className="pagination mb-0">
-                          <li className="page-item disabled">
-                            <a className="page-link" href="#">Previous</a>
-                          </li>
-                          <li className="page-item active">
-                            <a className="page-link" href="#">1</a>
-                          </li>
-                          <li className="page-item">
-                            <a className="page-link" href="#">Next</a>
-                          </li>
-                        </ul>
-                      </div>
-                    )}
                   </>
                 )}
               </div>
 
-
-
-              <div className='p-4 '>
+              <div className="p-4 ">
                 {/* Conditional Rendering Below */}
                 <div className="card stats-card animate-card shadow-sm">
-                  {activeTab === 'bar' && (
-                    <div className='p-2' >
-                      <Bar data={sourceChartData} options={sourceChartOptions} height={100} width={400} />
+                  {activeTab === "bar" && (
+                    <div className="p-2">
+                      <Bar
+                        data={sourceChartData}
+                        options={sourceChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'activity' && (
-                    <div className='p-2' >
-                      <Line data={sourceChartData} options={sourceChartOptions} height={100} width={400} />
+                  {activeTab === "activity" && (
+                    <div className="p-2">
+                      <Line
+                        data={sourceChartData}
+                        options={sourceChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'clock' && (
-
-                    <div className="card-body d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-                      <div style={{ width: '250px', height: '250px' }}>
+                  {activeTab === "clock" && (
+                    <div
+                      className="card-body d-flex justify-content-center align-items-center"
+                      style={{ height: "300px" }}
+                    >
+                      <div style={{ width: "250px", height: "250px" }}>
                         <Pie data={sourcePieChartData} />
                       </div>
                     </div>
-
                   )}
                 </div>
               </div>
-
             </div>
           )}
-          {selectedReport === 'Bulk Upload Validation' && (
+          {selectedReport === "Bulk Upload Validation" && (
             <div className="row">
               <div className="py-3 d-flex justify-content-between align-items-center">
-                <h5 className="mb-0 fw-bold ps-3">Source Wise Bulk upload Enquiry validation</h5>
+                <h5 className="mb-0 fw-bold ps-3">
+                  Source Wise Bulk upload Enquiry validation
+                </h5>
               </div>
 
               <div className="card-body ps-4">
@@ -1206,8 +1294,10 @@ const SourceTab = ({sourceData}) => {
                       <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle">
                           <thead>
-                            <tr className='text-nowrap'>
-                              <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                            <tr className="text-nowrap">
+                              <th scope="col" style={{ width: "60px" }}>
+                                SL No.
+                              </th>
                               <th scope="col">Upload Date</th>
                               <th scope="col">Medium</th>
                               <th scope="col">Source</th>
@@ -1247,17 +1337,24 @@ const SourceTab = ({sourceData}) => {
                     {reportStats?.length > 0 && (
                       <div className="d-flex justify-content-between align-items-center mt-4">
                         <div className="text-muted">
-                          Showing 1 to {reportStats.length} of {reportStats.length} entries
+                          Showing 1 to {reportStats.length} of{" "}
+                          {reportStats.length} entries
                         </div>
                         <ul className="pagination mb-0">
                           <li className="page-item disabled">
-                            <a className="page-link" href="#">Previous</a>
+                            <a className="page-link" href="#">
+                              Previous
+                            </a>
                           </li>
                           <li className="page-item active">
-                            <a className="page-link" href="#">1</a>
+                            <a className="page-link" href="#">
+                              1
+                            </a>
                           </li>
                           <li className="page-item">
-                            <a className="page-link" href="#">Next</a>
+                            <a className="page-link" href="#">
+                              Next
+                            </a>
                           </li>
                         </ul>
                       </div>
@@ -1266,37 +1363,49 @@ const SourceTab = ({sourceData}) => {
                 )}
               </div>
 
-              <div className='p-4 '>
+              <div className="p-4 ">
                 {/* Conditional Rendering Below */}
                 <div className="card stats-card animate-card shadow-sm">
-                  {activeTab === 'bar' && (
-                    <div className='p-2' >
-                      <Bar data={bulkChartData} options={bulkChartOptions} height={100} width={400} />
+                  {activeTab === "bar" && (
+                    <div className="p-2">
+                      <Bar
+                        data={bulkChartData}
+                        options={bulkChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'activity' && (
-                    <div className='p-2' >
-                      <Line data={bulkChartData} options={bulkChartOptions} height={100} width={400} />
+                  {activeTab === "activity" && (
+                    <div className="p-2">
+                      <Line
+                        data={bulkChartData}
+                        options={bulkChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'clock' && (
-
-                    <div className="card-body d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-                      <div style={{ width: '250px', height: '250px' }}>
+                  {activeTab === "clock" && (
+                    <div
+                      className="card-body d-flex justify-content-center align-items-center"
+                      style={{ height: "300px" }}
+                    >
+                      <div style={{ width: "250px", height: "250px" }}>
                         <Pie data={bulkPieChartData} />
                       </div>
                     </div>
-
                   )}
                 </div>
               </div>
-
             </div>
           )}
-          {selectedReport === 'Validation Report' && (
+          {selectedReport === "Validation Report" && (
             <div className="row">
               <div className="py-3 d-flex justify-content-between align-items-center">
-                <h5 className="mb-0 fw-bold ps-3">Validation wise Enquiry Report</h5>
+                <h5 className="mb-0 fw-bold ps-3">
+                  Validation wise Enquiry Report
+                </h5>
               </div>
 
               <div className="card-body ps-4">
@@ -1306,8 +1415,10 @@ const SourceTab = ({sourceData}) => {
                       <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle">
                           <thead>
-                            <tr className='text-nowrap'>
-                              <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                            <tr className="text-nowrap">
+                              <th scope="col" style={{ width: "60px" }}>
+                                SL No.
+                              </th>
                               <th scope="col">Source</th>
                               <th scope="col">Total Enquiry</th>
                               <th scope="col">Valid Enquiry</th>
@@ -1347,17 +1458,24 @@ const SourceTab = ({sourceData}) => {
                     {reportStats?.length > 0 && (
                       <div className="d-flex justify-content-between align-items-center mt-4">
                         <div className="text-muted">
-                          Showing 1 to {reportStats.length} of {reportStats.length} entries
+                          Showing 1 to {reportStats.length} of{" "}
+                          {reportStats.length} entries
                         </div>
                         <ul className="pagination mb-0">
                           <li className="page-item disabled">
-                            <a className="page-link" href="#">Previous</a>
+                            <a className="page-link" href="#">
+                              Previous
+                            </a>
                           </li>
                           <li className="page-item active">
-                            <a className="page-link" href="#">1</a>
+                            <a className="page-link" href="#">
+                              1
+                            </a>
                           </li>
                           <li className="page-item">
-                            <a className="page-link" href="#">Next</a>
+                            <a className="page-link" href="#">
+                              Next
+                            </a>
                           </li>
                         </ul>
                       </div>
@@ -1366,37 +1484,49 @@ const SourceTab = ({sourceData}) => {
                 )}
               </div>
 
-              <div className='p-4 '>
+              <div className="p-4 ">
                 {/* Conditional Rendering Below */}
                 <div className="card stats-card animate-card shadow-sm">
-                  {activeTab === 'bar' && (
-                    <div className='p-2' >
-                      <Bar data={validChartData} options={validChartOptions} height={100} width={400} />
+                  {activeTab === "bar" && (
+                    <div className="p-2">
+                      <Bar
+                        data={validChartData}
+                        options={validChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'activity' && (
-                    <div className='p-2' >
-                      <Line data={validChartData} options={validChartOptions} height={100} width={400} />
+                  {activeTab === "activity" && (
+                    <div className="p-2">
+                      <Line
+                        data={validChartData}
+                        options={validChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'clock' && (
-
-                    <div className="card-body d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-                      <div style={{ width: '250px', height: '250px' }}>
+                  {activeTab === "clock" && (
+                    <div
+                      className="card-body d-flex justify-content-center align-items-center"
+                      style={{ height: "300px" }}
+                    >
+                      <div style={{ width: "250px", height: "250px" }}>
                         <Pie data={validPieChartData} />
                       </div>
                     </div>
-
                   )}
                 </div>
               </div>
-
             </div>
           )}
-          {selectedReport === 'Activity Report' && (
+          {selectedReport === "Activity Report" && (
             <div className="row">
               <div className="py-3 d-flex justify-content-between align-items-center">
-                <h5 className="mb-0 fw-bold ps-3">Activity wise Enquiry Report </h5>
+                <h5 className="mb-0 fw-bold ps-3">
+                  Activity wise Enquiry Report{" "}
+                </h5>
               </div>
 
               <div className="card-body ps-4">
@@ -1406,8 +1536,10 @@ const SourceTab = ({sourceData}) => {
                       <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle">
                           <thead>
-                            <tr className='text-nowrap'>
-                              <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                            <tr className="text-nowrap">
+                              <th scope="col" style={{ width: "60px" }}>
+                                SL No.
+                              </th>
                               <th scope="col">Upload Date</th>
                               <th scope="col">Source</th>
                               <th scope="col">Total Enquiry</th>
@@ -1436,7 +1568,6 @@ const SourceTab = ({sourceData}) => {
                             ))}
                           </tbody>
                         </table>
-
                       </div>
                     ) : (
                       <div className="text-center py-5 no-data">
@@ -1448,17 +1579,24 @@ const SourceTab = ({sourceData}) => {
                     {reportStats?.length > 0 && (
                       <div className="d-flex justify-content-between align-items-center mt-4">
                         <div className="text-muted">
-                          Showing 1 to {reportStats.length} of {reportStats.length} entries
+                          Showing 1 to {reportStats.length} of{" "}
+                          {reportStats.length} entries
                         </div>
                         <ul className="pagination mb-0">
                           <li className="page-item disabled">
-                            <a className="page-link" href="#">Previous</a>
+                            <a className="page-link" href="#">
+                              Previous
+                            </a>
                           </li>
                           <li className="page-item active">
-                            <a className="page-link" href="#">1</a>
+                            <a className="page-link" href="#">
+                              1
+                            </a>
                           </li>
                           <li className="page-item">
-                            <a className="page-link" href="#">Next</a>
+                            <a className="page-link" href="#">
+                              Next
+                            </a>
                           </li>
                         </ul>
                       </div>
@@ -1467,37 +1605,49 @@ const SourceTab = ({sourceData}) => {
                 )}
               </div>
 
-              <div className='p-4 '>
+              <div className="p-4 ">
                 {/* Conditional Rendering Below */}
                 <div className="card stats-card animate-card shadow-sm">
-                  {activeTab === 'bar' && (
-                    <div className='p-2' >
-                      <Bar data={activeChartData} options={activeChartOptions} height={100} width={400} />
+                  {activeTab === "bar" && (
+                    <div className="p-2">
+                      <Bar
+                        data={activeChartData}
+                        options={activeChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'activity' && (
-                    <div className='p-2' >
-                      <Line data={activeChartData} options={activeChartOptions} height={100} width={400} />
+                  {activeTab === "activity" && (
+                    <div className="p-2">
+                      <Line
+                        data={activeChartData}
+                        options={activeChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'clock' && (
-
-                    <div className="card-body d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-                      <div style={{ width: '250px', height: '250px' }}>
+                  {activeTab === "clock" && (
+                    <div
+                      className="card-body d-flex justify-content-center align-items-center"
+                      style={{ height: "300px" }}
+                    >
+                      <div style={{ width: "250px", height: "250px" }}>
                         <Pie data={activePieChartData} />
                       </div>
                     </div>
-
                   )}
                 </div>
               </div>
-
             </div>
           )}
-          {selectedReport === 'Stage Wise' && (
+          {selectedReport === "Stage Wise" && (
             <div className="row">
               <div className="py-3 d-flex justify-content-between align-items-center">
-                <h5 className="mb-0 fw-bold ps-3">Enquiry Stage Wise Enquiry Report</h5>
+                <h5 className="mb-0 fw-bold ps-3">
+                  Enquiry Stage Wise Enquiry Report
+                </h5>
               </div>
 
               <div className="card-body ps-4">
@@ -1507,8 +1657,10 @@ const SourceTab = ({sourceData}) => {
                       <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle">
                           <thead>
-                            <tr className='text-nowrap'>
-                              <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                            <tr className="text-nowrap">
+                              <th scope="col" style={{ width: "60px" }}>
+                                SL No.
+                              </th>
                               <th scope="col">Source</th>
                               <th scope="col">Total Enquiry</th>
                               <th scope="col">Active Enquiry</th>
@@ -1531,7 +1683,6 @@ const SourceTab = ({sourceData}) => {
                             ))}
                           </tbody>
                         </table>
-
                       </div>
                     ) : (
                       <div className="text-center py-5 no-data">
@@ -1543,17 +1694,24 @@ const SourceTab = ({sourceData}) => {
                     {reportStats?.length > 0 && (
                       <div className="d-flex justify-content-between align-items-center mt-4">
                         <div className="text-muted">
-                          Showing 1 to {reportStats.length} of {reportStats.length} entries
+                          Showing 1 to {reportStats.length} of{" "}
+                          {reportStats.length} entries
                         </div>
                         <ul className="pagination mb-0">
                           <li className="page-item disabled">
-                            <a className="page-link" href="#">Previous</a>
+                            <a className="page-link" href="#">
+                              Previous
+                            </a>
                           </li>
                           <li className="page-item active">
-                            <a className="page-link" href="#">1</a>
+                            <a className="page-link" href="#">
+                              1
+                            </a>
                           </li>
                           <li className="page-item">
-                            <a className="page-link" href="#">Next</a>
+                            <a className="page-link" href="#">
+                              Next
+                            </a>
                           </li>
                         </ul>
                       </div>
@@ -1562,37 +1720,49 @@ const SourceTab = ({sourceData}) => {
                 )}
               </div>
 
-              <div className='p-4 '>
+              <div className="p-4 ">
                 {/* Conditional Rendering Below */}
                 <div className="card stats-card animate-card shadow-sm">
-                  {activeTab === 'bar' && (
-                    <div className='p-2' >
-                      <Bar data={stageChartData} options={stageChartOptions} height={100} width={400} />
+                  {activeTab === "bar" && (
+                    <div className="p-2">
+                      <Bar
+                        data={stageChartData}
+                        options={stageChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'activity' && (
-                    <div className='p-2' >
-                      <Line data={stageChartData} options={stageChartOptions} height={100} width={400} />
+                  {activeTab === "activity" && (
+                    <div className="p-2">
+                      <Line
+                        data={stageChartData}
+                        options={stageChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'clock' && (
-
-                    <div className="card-body d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-                      <div style={{ width: '250px', height: '250px' }}>
+                  {activeTab === "clock" && (
+                    <div
+                      className="card-body d-flex justify-content-center align-items-center"
+                      style={{ height: "300px" }}
+                    >
+                      <div style={{ width: "250px", height: "250px" }}>
                         <Pie data={stagePieChartData} />
                       </div>
                     </div>
-
                   )}
                 </div>
               </div>
-
             </div>
           )}
-          {selectedReport === 'Status Wise Report' && (
+          {selectedReport === "Status Wise Report" && (
             <div className="row">
               <div className="py-3 d-flex justify-content-between align-items-center">
-                <h5 className="mb-0 fw-bold ps-3">Enquiry Stage Wise Enquiry Report</h5>
+                <h5 className="mb-0 fw-bold ps-3">
+                  Enquiry Stage Wise Enquiry Report
+                </h5>
               </div>
 
               <div className="card-body ps-4">
@@ -1602,8 +1772,10 @@ const SourceTab = ({sourceData}) => {
                       <div className="table-responsive">
                         <table className="table table-hover table-bordered align-middle">
                           <thead>
-                            <tr className='text-nowrap'>
-                              <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                            <tr className="text-nowrap">
+                              <th scope="col" style={{ width: "60px" }}>
+                                SL No.
+                              </th>
                               <th scope="col">Source</th>
                               <th scope="col">Total Enquiry</th>
                               <th scope="col">Active Enquiry</th>
@@ -1626,7 +1798,6 @@ const SourceTab = ({sourceData}) => {
                             ))}
                           </tbody>
                         </table>
-
                       </div>
                     ) : (
                       <div className="text-center py-5 no-data">
@@ -1638,17 +1809,24 @@ const SourceTab = ({sourceData}) => {
                     {reportStats?.length > 0 && (
                       <div className="d-flex justify-content-between align-items-center mt-4">
                         <div className="text-muted">
-                          Showing 1 to {reportStats.length} of {reportStats.length} entries
+                          Showing 1 to {reportStats.length} of{" "}
+                          {reportStats.length} entries
                         </div>
                         <ul className="pagination mb-0">
                           <li className="page-item disabled">
-                            <a className="page-link" href="#">Previous</a>
+                            <a className="page-link" href="#">
+                              Previous
+                            </a>
                           </li>
                           <li className="page-item active">
-                            <a className="page-link" href="#">1</a>
+                            <a className="page-link" href="#">
+                              1
+                            </a>
                           </li>
                           <li className="page-item">
-                            <a className="page-link" href="#">Next</a>
+                            <a className="page-link" href="#">
+                              Next
+                            </a>
                           </li>
                         </ul>
                       </div>
@@ -1657,31 +1835,41 @@ const SourceTab = ({sourceData}) => {
                 )}
               </div>
 
-              <div className='p-4 '>
+              <div className="p-4 ">
                 {/* Conditional Rendering Below */}
                 <div className="card stats-card animate-card shadow-sm">
-                  {activeTab === 'bar' && (
-                    <div className='p-2' >
-                      <Bar data={statusChartData} options={statusChartOptions} height={100} width={400} />
+                  {activeTab === "bar" && (
+                    <div className="p-2">
+                      <Bar
+                        data={statusChartData}
+                        options={statusChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'activity' && (
-                    <div className='p-2' >
-                      <Line data={statusChartData} options={statusChartOptions} height={100} width={400} />
+                  {activeTab === "activity" && (
+                    <div className="p-2">
+                      <Line
+                        data={statusChartData}
+                        options={statusChartOptions}
+                        height={100}
+                        width={400}
+                      />
                     </div>
                   )}
-                  {activeTab === 'clock' && (
-
-                    <div className="card-body d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
-                      <div style={{ width: '250px', height: '250px' }}>
+                  {activeTab === "clock" && (
+                    <div
+                      className="card-body d-flex justify-content-center align-items-center"
+                      style={{ height: "300px" }}
+                    >
+                      <div style={{ width: "250px", height: "250px" }}>
                         <Pie data={statusPieChartData} />
                       </div>
                     </div>
-
                   )}
                 </div>
               </div>
-
             </div>
           )}
         </div>
@@ -1703,14 +1891,14 @@ const SourceTab = ({sourceData}) => {
                         <th scope="col">SL No.</th>
                         <th scope="col">Source</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Assigned Member</th>
+                        {/* <th scope="col">Assigned Member</th> */}
                         <th scope="col">Ownership</th>
                         <th scope="col">Number</th>
                         <th scope="col">Customer Name</th>
-                        <th scope="col">Validation</th>
-                        <th scope="col">Response</th>
-                        <th scope="col">Activity</th>
-                        <th scope="col">Stage</th>
+                        {/* <th scope="col">Validation</th> */}
+                        {/* <th scope="col">Response</th> */}
+                        {/* <th scope="col">Activity</th> */}
+                        <th scope="col">Stage</th>=
                         <th scope="col">Status</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Last Date</th>
@@ -1718,24 +1906,23 @@ const SourceTab = ({sourceData}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {reportStats?.map((row, index) => (
+                      {sourceEnquiryActionData?.data?.map((row, index) => (
                         <tr key={index}>
-                          <td>{index + 1}</td>
+                          <td>{(enquiryActionPageNo-1)*10+index + 1}</td>
                           <td>{row?.source}</td>
-                          <td>{row?.uploadDate}</td>
-                          <td>{row?.assign}</td>
+                          <td>{row?.date}</td>
+                          {/* <td>{row?.assign}</td> */}
                           <td>{row?.ownership}</td>
-                          <td>{row?.number}</td>
-                          <td>{row?.customerName}</td>
-                          <td>{row?.validation}</td>
-                          <td>{row?.response}</td>
-                          <td>{row?.activity}</td>
+                          <td>{row?.customer_phone}</td>
+                          <td>{row?.customer_name}</td>
+                          {/* <td>{row?.validation}</td> */}
+                          {/* <td>{row?.response}</td>
+                          <td>{row?.activity}</td> */}
                           <td>{row?.stage}</td>
                           <td>{row?.status}</td>
                           <td>{row?.rating}</td>
-                          <td>{row?.uploadDate}</td>
-                          <td>{row?.conversation}</td>
-
+                          <td>{row?.last_date}</td>
+                          <td>{row?.conversion}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1749,31 +1936,17 @@ const SourceTab = ({sourceData}) => {
               )}
 
               {reportStats?.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center mt-4">
-                  <div className="text-muted">
-                    Showing 1 to {reportStats.length} of {reportStats.length} entries
-                  </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
-                </div>
+                <NumberedPagination
+                  totalPages={sourceEnquiryActionData?.total_pages}
+                  onPageChange={setEnquiryActionPageNo}
+                />
               )}
             </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+};
 
-
-    </div >
-  )
-}
-
-export default SourceTab
+export default SourceTab;
