@@ -235,15 +235,15 @@ const Dashboard = () => {
       case "Product":
         return <PropertiesTab productData={productData} />;
       case "FollowUp":
-        return <CallingTab FollowUpData={FollowUpData} />;
+        return <CallingTab FollowUpData={FollowUpData} setFollowUpData={setFollowUpData} />;
       case "Enquiry":
         return <EnquiryTab enquiryData={enquiryData} />;
       case "Shedules":
         return <SheduleTab scheduleData={scheduleData} />;
       case "Quotations":
-        return <QuotationTab quotationData={quotationData} />;
+        return <QuotationTab quotationData={quotationData} setquotationData={setquotationData} />;
       case "Bookings":
-        return <BookingTab bookingData={bookingData} />;
+        return <BookingTab bookingData={bookingData} setbookingData={setbookingData} />;
       case "Sales":
         return <SalesTab salesData={salesData} />;
       case "Buyer Persona":

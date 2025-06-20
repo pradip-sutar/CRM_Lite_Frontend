@@ -95,3 +95,4 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
 };
  
 export default NumberedPagination;
+ 

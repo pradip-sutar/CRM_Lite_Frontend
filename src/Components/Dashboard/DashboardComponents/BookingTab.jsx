@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { useState,useEffect } from "react";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
+import NumberedPagination from "../../Pagination/NumberedPagination";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -23,79 +24,18 @@ ChartJS.register(
   BarElement
 );
 
-const BookingTab = ({bookingData}) => {
-  // const [bookingData, setBookingData] = useState([
-  //   {
-  //     date: "2025-05-12",
-  //     enquiryId: "ENQ-001",
-  //     name: "John Smith",
-  //     contact: "+1 555-123-4567",
-  //     product: "Deluxe Package",
-  //     bookingDate: "2025-06-15",
-  //     time: "10:00 AM",
-  //     quoteId: "QT-001",
-  //     amount: 1250,
-  //     invoice: "INV-001",
-  //     mode: "Email",
-  //     payStatus: "Pending",
-  //   },
-  //   {
-  //     date: "2025-05-11",
-  //     enquiryId: "ENQ-002",
-  //     name: "Sarah Johnson",
-  //     contact: "+1 555-987-6543",
-  //     product: "Standard Package",
-  //     bookingDate: "2025-06-20",
-  //     time: "2:30 PM",
-  //     quoteId: "QT-002",
-  //     amount: 850,
-  //     invoice: "INV-002",
-  //     mode: "WhatsApp",
-  //     payStatus: "Received",
-  //   },
-  //   {
-  //     date: "2025-05-10",
-  //     enquiryId: "ENQ-003",
-  //     name: "Michael Chen",
-  //     contact: "+1 555-456-7890",
-  //     product: "Premium Package",
-  //     bookingDate: "2025-06-25",
-  //     time: "11:00 AM",
-  //     quoteId: "QT-003",
-  //     amount: 1950,
-  //     invoice: "INV-003",
-  //     mode: "Manual",
-  //     payStatus: "Received",
-  //   },
-  //   {
-  //     date: "2025-05-09",
-  //     enquiryId: "ENQ-004",
-  //     name: "Emily Rodriguez",
-  //     contact: "+1 555-234-5678",
-  //     product: "Basic Package",
-  //     bookingDate: "2025-07-05",
-  //     time: "9:15 AM",
-  //     quoteId: "QT-004",
-  //     amount: 550,
-  //     invoice: "INV-004",
-  //     mode: "Email",
-  //     payStatus: "Pending",
-  //   },
-  //   {
-  //     date: "2025-05-08",
-  //     enquiryId: "ENQ-005",
-  //     name: "David Williams",
-  //     contact: "+1 555-876-5432",
-  //     product: "Deluxe Package",
-  //     bookingDate: "2025-07-10",
-  //     time: "3:45 PM",
-  //     quoteId: "QT-005",
-  //     amount: 1250,
-  //     invoice: "INV-005",
-  //     mode: "WhatsApp",
-  //     payStatus: "Pending",
-  //   },
-  // ]);
+const BookingTab = ({bookingData,setbookingData}) => {
+    const [customerLeadsPageNo, setcustomerLeadsPageNo] = useState(1);
+
+  const loadData = async (url) => {
+    const result = await fetchPageData2(url);
+    setbookingData(result);
+    console.log(result);
+  };
+
+  useEffect(() => {
+    loadData(`/api/booking_summary/?page=${customerLeadsPageNo}`);
+  }, [customerLeadsPageNo]);
 
   const getModeChip = (mode) => {
     const colorMap = {
@@ -401,11 +341,11 @@ const BookingTab = ({bookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-dark">{bookingData?.total_bookings}</div>
+                  <div className="fw-bold fs-4 text-dark">{bookingData?.results?.total_bookings}</div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-success">₹{bookingData?.total_payable_amount_across_enquiries}</div>
+                  <div className="fw-bold fs-4 text-success">₹{bookingData?.results?.total_payable_amount_across_enquiries}</div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -427,11 +367,11 @@ const BookingTab = ({bookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-danger">{bookingData?.balance_due?.entry_count}</div>
+                  <div className="fw-bold fs-4 text-danger">{bookingData?.results?.balance_due?.entry_count}</div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-danger">{bookingData?.balance_due?.total_balance_due}</div>
+                  <div className="fw-bold fs-4 text-danger">{bookingData?.results?.balance_due?.total_balance_due}</div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -453,11 +393,11 @@ const BookingTab = ({bookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-success">{bookingData?.advance_payment?.entry_count}</div>
+                  <div className="fw-bold fs-4 text-success">{bookingData?.results?.advance_payment?.entry_count}</div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-success">₹{bookingData?.advance_payment?.total_advance_amount}</div>
+                  <div className="fw-bold fs-4 text-success">₹{bookingData?.results?.advance_payment?.total_advance_amount}</div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -482,7 +422,7 @@ const BookingTab = ({bookingData}) => {
               </button>
             </div>
             <div className="card-body p-4">
-              {bookingData?.all_booking_data?.length > 0 ? (
+              {bookingData?.results?.all_booking_data?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-bordered table-hover align-middle">
                     <thead>
@@ -503,9 +443,9 @@ const BookingTab = ({bookingData}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {bookingData?.all_booking_data?.map((row, index) => (
+                      {bookingData?.results?.all_booking_data?.map((row, index) => (
                         <tr key={index} className="text-nowrap">
-                          <td>{index + 1}</td>
+                          <td>{(customerLeadsPageNo-1)*10+index + 1}</td>
                           <td>{row.updated_at}</td>
                           <td className="fw-bold">{row.enquiry_id}</td>
                           <td>{row.customer_name}</td>
@@ -531,30 +471,11 @@ const BookingTab = ({bookingData}) => {
                   No Booking Found
                 </div>
               )}
-              {bookingData?.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center mt-4">
-                  <div className="text-muted">
-                    Showing 1 to {bookingData.length} of {bookingData.length}{" "}
-                    entries
-                  </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">
-                        Previous
-                      </a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        Next
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+              {bookingData?.results?.all_booking_data?.length > 0 && (
+               <NumberedPagination
+                  totalPages={bookingData?.total_pages}
+                  onPageChange={setcustomerLeadsPageNo}
+                />
               )}
             </div>
           </div>

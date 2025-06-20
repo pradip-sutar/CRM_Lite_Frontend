@@ -1,1 +1,20 @@
-have to put conversionBypass from PropVichaar into it and work on followUP
+  const [customerLeadsPageNo, setcustomerLeadsPageNo] = useState(1);
+
+  const loadData = async (url) => {
+    const result = await fetchPageData2(url);
+    setFollowUpData(result);
+    console.log(result);
+  };
+
+  useEffect(() => {
+    loadData(`/api/folloup-call-summary/?page=${customerLeadsPageNo}`);
+  }, [customerLeadsPageNo]);
+
+import NumberedPagination from "../../Pagination/NumberedPagination";
+
+
+                <NumberedPagination
+                  totalPages={FollowUpData?.total_pages}
+                  onPageChange={setcustomerLeadsPageNo}
+                />
+            

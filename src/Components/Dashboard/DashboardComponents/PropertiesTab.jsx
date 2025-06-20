@@ -24,8 +24,6 @@ ChartJS.register(
 );
 
 const Properties = ({ productData }) => {
-  console.log(productData);
-
   const [employeeStats, setEmployeeStats] = useState([
     {
       id: 1,
@@ -57,29 +55,29 @@ const Properties = ({ productData }) => {
     },
   ]);
 
- const colors = [
-  { background: "#007bff", border: "#1E90FF" },
-  { background: "#28a745", border: "#2E8B57" },
-  { background: "#ffc107", border: "#FFA500" },
-  { background: "#dc3545", border: "#B22222" }, // Add more if needed
-];
+  const colors = [
+    { background: "#007bff", border: "#1E90FF" },
+    { background: "#28a745", border: "#2E8B57" },
+    { background: "#ffc107", border: "#FFA500" },
+    { background: "#dc3545", border: "#B22222" }, // Add more if needed
+  ];
 
-// Create Chart.js dataset format
-const activityData = {
-  labels: ["Enquiry", "Quote", "Schedule", "Sales"],
-  datasets: productData?.map((project, index) => ({
-    label: project.project_name,
-    data: [
-      project.enquiry_count,
-      project.quotation_count,
-      project.visit_count,
-      project.sale_count,
-    ],
-    backgroundColor: colors[index % colors.length].background,
-    borderColor: colors[index % colors.length].border,
-    borderWidth: 1,
-  }))
-};
+  // Create Chart.js dataset format
+  const activityData = {
+    labels: ["Enquiry", "Quote", "Schedule", "Sales"],
+    datasets: productData?.map((project, index) => ({
+      label: project.project_name,
+      data: [
+        project.enquiry_count,
+        project.quotation_count,
+        project.visit_count,
+        project.sale_count,
+      ],
+      backgroundColor: colors[index % colors.length].background,
+      borderColor: colors[index % colors.length].border,
+      borderWidth: 1,
+    })),
+  };
   const options = {
     responsive: true,
     plugins: {
@@ -324,7 +322,9 @@ const activityData = {
                 </button>
               </div>
               <div className="chart-container">
-                {productData && <Bar data={activityData} options={options} height={80} /> }
+                {productData && (
+                  <Bar data={activityData} options={options} height={80} />
+                )}
               </div>
             </div>
           </div>
