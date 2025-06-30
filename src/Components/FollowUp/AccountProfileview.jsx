@@ -86,12 +86,6 @@ import { postQuoteAsign } from "../../services/FollowUp/AccountProfileview/apiAs
 import { postAssignVisit } from "../../services/FollowUp/AccountProfileview/apiAssignVisit";
 
 const AccountProfileview = ({ id }) => {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const logged_employee_name =
-    crmStore.getState().user?.userInfo?.employee_name;
-  const logged_employee_mob =
-    crmStore.getState().user?.userInfo?.employee_mobno;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const navigate = useNavigate();
   const { callStatusData } = useGetCallStatus();
   const [conversionDetail, setConversionDetail] = useState({});
@@ -111,6 +105,7 @@ const AccountProfileview = ({ id }) => {
     customer_id = null,
     customer_name = "",
     customer_phone = "",
+    alternative_phone = "N/A",
     customer_email = "",
     customer_country = "",
     customer_address = "",
@@ -131,6 +126,11 @@ const AccountProfileview = ({ id }) => {
   const [open, setOpen] = useState(false);
   const [fullNameInput, setFullNameInput] = useState(customer_name);
   const [customerName, setCustomerName] = useState(null);
+  const [mobilenoeditmodal, setmobilenoeditmodal] = useState(false);
+  const [customeraltMob, setcustomeraltMob] = useState("");
+  const [mobileInput, setmobileInput] = useState(alternative_phone);
+  const handleMobileOpen = () => setmobilenoeditmodal(true);
+  const handleMobileClose = () => setmobilenoeditmodal(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -151,6 +151,23 @@ const AccountProfileview = ({ id }) => {
     }
   };
   console.log(customerName);
+
+  const handlemobileEditSubmit = async () => {
+    try {
+      const payload = { alternative_phone: customeraltMob };
+      const response = await putEnquiryTable(enquiry_id, payload);
+      if (response.status === 200) {
+        console.log(response?.data);
+        setmobileInput(response.data.alternative_phone);
+        reset();
+        setmobilenoeditmodal(false);
+      } else {
+        console.error("Failed to update customer name");
+      }
+    } catch (error) {
+      console.error("Error updating name:", error);
+    }
+  };
 
   const { CustomerIvrData } = useGetCustomerIVRDetails(customer_phone);
   console.log(CustomerIvrData);
@@ -598,6 +615,28 @@ const AccountProfileview = ({ id }) => {
                         </Typography>
                       </Stack>
 
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={1}
+                        mb={1.5}
+                      >
+                        <Phone sx={{ color: "#636578b8" }} />
+                        <Typography variant="body2" sx={{ color: "#636578" }}>
+                          <strong>Alt.Contact:</strong> (+91){" "}
+                          {mobileInput || alternative_phone}
+                        </Typography>
+                        <div
+                          className="btn btn-text-primary btn-sm small py-1 px-2 waves-effect waves-light"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          data-bs-original-title="Edit"
+                          onClick={handleMobileOpen}
+                        >
+                          <i className="mdi mdi-pencil-outline"></i>
+                        </div>
+                      </Stack>
+
                       <Stack direction="row" alignItems="center" spacing={1}>
                         <MarkunreadOutlinedIcon sx={{ color: "#636578b8" }} />
                         <Typography
@@ -658,6 +697,56 @@ const AccountProfileview = ({ id }) => {
                       </Button>
                       <Button
                         onClick={handleEditSubmit}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Submit
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+
+                  <Dialog
+                    open={mobilenoeditmodal}
+                    onClose={handleMobileClose}
+                    PaperProps={{
+                      sx: {
+                        borderRadius: 4,
+                        p: 2,
+                        maxWidth: 500,
+                        mx: "auto",
+                      },
+                    }}
+                  >
+                    <DialogTitle>
+                      <Typography variant="h6" fontWeight="bold">
+                        Edit MobileNo
+                      </Typography>
+                    </DialogTitle>
+
+                    <DialogContent>
+                      <Box>
+                        <TextField
+                          autoFocus
+                          fullWidth
+                          margin="dense"
+                          label="Mobile No"
+                          variant="outlined"
+                          value={customeraltMob || alternative_phone}
+                          onChange={(e) => setcustomeraltMob(e.target.value)}
+                        />
+                      </Box>
+                    </DialogContent>
+
+                    <DialogActions sx={{ px: 2 }}>
+                      <Button
+                        onClick={handleMobileClose}
+                        variant="outlined"
+                        color="error"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handlemobileEditSubmit}
                         variant="contained"
                         color="primary"
                       >
@@ -1919,6 +2008,7 @@ const AccountProfileview = ({ id }) => {
                                         navigate("/FollowUp/Productviews", {
                                           state: {
                                             enquiry_id,
+                                            activeTab,
                                           },
                                         });
                                       }}
@@ -1989,6 +2079,7 @@ const AccountProfileview = ({ id }) => {
                                       state: {
                                         enquiry_id,
                                         confirm_project_name,
+                                        activeTab,
                                       },
                                     });
                                   }}
@@ -2012,6 +2103,88 @@ const AccountProfileview = ({ id }) => {
                               </Avatar>
                             </CardContent>
                           </Card>
+                          <Card sx={{ mb: 2 }}>
+                            <CardContent
+                              sx={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Box>
+                                <Typography
+                                  sx={{
+                                    fontSize: {
+                                      xs: "10px",
+                                      sm: "12px",
+                                      md: "16px",
+                                    },
+                                  }}
+                                >
+                                  Requirement Analysis
+                                </Typography>
+                                {confirm_project_name ? (
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                      ml: "auto",
+                                      width: {
+                                        xs: "10px",
+                                        sm: "12px",
+                                        md: "80px",
+                                      },
+                                      height: {
+                                        xs: "10px",
+                                        sm: "12px",
+                                        md: "19px",
+                                      },
+                                      backgroundColor: "#666cff",
+                                      "&:hover": {
+                                        backgroundColor: "#4f54c7",
+                                      },
+                                    }}
+                                    onClick={() => {
+                                      navigate("/FollowUp/questionsAnswer", {
+                                        state: {
+                                          enquiry_id,
+                                          customer_id,
+                                          confirm_project,
+                                        },
+                                      });
+                                    }}
+                                  >
+                                    Details
+                                  </Button>
+                                ) : (
+                                  <div
+                                    onClick={() => {
+                                      navigate("/FollowUp/Productviews", {
+                                        state: {
+                                          enquiry_id,
+                                          activeTab,
+                                        },
+                                      });
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    <p>Add Product First</p>
+                                  </div>
+                                )}
+                              </Box>
+                              <Avatar
+                                sx={{
+                                  backgroundColor: "#8b8ee55c",
+                                  color: "#5d3ff8",
+                                  ml: "auto",
+                                }}
+                              >
+                                <SignalCellularAltIcon
+                                  sx={{
+                                    backgroundColor: "#dadcff !important",
+                                    borderRadius: "50%",
+                                  }}
+                                />
+                              </Avatar>
+                            </CardContent>
+                          </Card>
+
                           <Card sx={{ mb: 2 }}>
                             <CardContent
                               sx={{ display: "flex", alignItems: "center" }}

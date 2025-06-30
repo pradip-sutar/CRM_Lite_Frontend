@@ -19,6 +19,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import Unauthorized from "./Components/LoginRegistration/Unauthorized";
 import PrivateRoute from "./Private/PrivateRoute";
 import Login from "./Components/LoginRegistration/Login";
+import Forgotpassword from "./Components/LoginRegistration/Forgotpassword";
 import AppLayout from "./ui/AppLayout";
 import NotFound from "./Components/LoginRegistration/NotFound";
 
@@ -79,7 +80,7 @@ import PaymentReceiptPDF from "./Components/PaymentReceipt/PaymentReceiptPDF";
 import Callback from "./Components/Dashboard/Callback";
 
 import Questions from "./Components/FollowUp/Questions/Questions";
-
+import QuestionAnswer from "./Components/FollowUp/Questions/QuestionAnswer";
 
 const CallStatus = lazy(() => import("./Components/FollowUp/CallStatus"));
 const CallStatusMaster = lazy(() =>
@@ -103,7 +104,7 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Login />} />
                 <Route path="/unauthorized" element={<Unauthorized />} />
-
+                <Route path="/forgot-password" element={<Forgotpassword />} />
                 {/* <Route element={<PrivateRoute />}> */}
                 <Route element={<AppLayout />}>
                   {/* <Route element={<FinancialGraph />} path="/dashboard"></Route> */}
@@ -177,7 +178,7 @@ const App = () => {
                       path="/employee/EmployeeProfile"
                       element={<EmployeeProfile />}
                     />
-                     <Route
+                    <Route
                       path="employee/EmployeeView"
                       element={<EmployeeView />}
                     />
@@ -196,7 +197,10 @@ const App = () => {
                     />
 
                     <Route path="/customer" element={<Customer />} />
-                    <Route path="/customer/addCustomer" element={<AddCustomerForm />} />
+                    <Route
+                      path="/customer/addCustomer"
+                      element={<AddCustomerForm />}
+                    />
 
                     <Route path="/followUp" element={<FollowUp />} />
                     <Route
@@ -229,9 +233,10 @@ const App = () => {
                       path="/FollowUp/GeneratorPersona"
                       element={<GeneratorPersona />}
                     />
-                      <Route
-                      path="/FollowUp/questions"
-                      element={<Questions />}
+                    <Route path="/FollowUp/questions" element={<Questions />} />
+                    <Route
+                      path="/FollowUp/questionsAnswer"
+                      element={<QuestionAnswer />}
                     />
                     <Route
                       path="/FollowUp/Productviews"
@@ -287,20 +292,18 @@ const App = () => {
                     path="/followUp/UpdateCallStatus"
                     element={<CallStatusMaster />}
                   />
-                    <Route
-                      path="/Sales/PaymetnReceiptPDF"
-                      element={<PaymentReceiptPDF />}
-                    />
+                  <Route
+                    path="/Sales/PaymetnReceiptPDF"
+                    element={<PaymentReceiptPDF />}
+                  />
                   <Route
                     path="/dashboard/enquiry/enquiryTabView"
                     element={<EnquiryTabView />}
                   />
-                  <Route path="/callback"
-                  element={<Callback />}
-                  />
+                  <Route path="/callback" element={<Callback />} />
                   <Route path="/*" element={<NotFound />} />
-
                 </Route>
+                {/* </Route> */}
               </Routes>
             </Suspense>
 

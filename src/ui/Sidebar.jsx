@@ -348,7 +348,7 @@ function Sidebar() {
               <li className="menu-card"><Visit /></li>
               <li className="menu-card"><Booking /></li>
               <li className="menu-card"><PaymentReceipt /></li>
-              <li className="menu-card"><Reports /></li>
+              {/* <li className="menu-card"><Reports /></li> */}
               <li className="menu-card"><Customer /></li>
             </ul>
           </div>

@@ -11,7 +11,7 @@ function Quatation() {
         }
       >
         <i className="menu-icon tf-icons mdi mdi-handshake-outline"></i>
-        <div>Quatation</div>
+        <div>Quotation</div>
       </NavLink>
     </li>
   );

@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./CSS/enquiry.css";
 import crmStore from "../../Utils/crmStore";
 import { getProductForm } from "../../services/Product/apiProductForm";
+import { formLabelClasses } from "@mui/material";
 
 const AddEnquiry = () => {
   const [copySuccess, setCopySuccess] = useState(false);
@@ -112,10 +113,11 @@ const AddEnquiry = () => {
   };
   console.log(confirmProject);
 
-
-
   const onSubmit = async (data) => {
     console.log(data);
+    if (!data.alternative_phone) {
+      delete data.alternative_phone;
+    }
     try {
       if (editData?.enquiry_id) {
         console.log(data);
@@ -142,7 +144,6 @@ const AddEnquiry = () => {
 
         const response = await PostEnquiryTable(formatedData);
         if (response.status == 201) {
-          
           reset();
           navigate(-1);
         }
@@ -192,7 +193,7 @@ const AddEnquiry = () => {
             </a>
           </div>
         </div>
-       
+
         <div className=" col-sm ml-2">
           <div className="card">
             <div className="title card-header d-flex justify-content-between align-items-center bg-label-primary py-2">
@@ -242,10 +243,36 @@ const AddEnquiry = () => {
                             }}
                           />
                           <p style={{ color: "red" }}>
-                            {errors.customer_Phone?.message}
+                            {errors.customer_phone?.message}
                           </p>
 
                           <label>Customer Phone</label>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        <div className="form-floating form-floating-outline">
+                          <input
+                            type="number"
+                            className={`form-control ${
+                              errors.alternative_phone ? "is-invalid" : ""
+                            }`}
+                            placeholder="Customer Phone"
+                            {...register("alternative_phone", {
+                              required: formLabelClasses,
+                              minLength: {
+                                value: 10,
+                                message: "Phone number must be 10 digits",
+                              },
+                            })}
+                            onInput={(e) => {
+                              e.target.value = e.target.value.slice(0, 10);
+                            }}
+                          />
+                          <p style={{ color: "red" }}>
+                            {errors.alternative_phone?.message}
+                          </p>
+
+                          <label>Alternative Phone number</label>
                         </div>
                       </div>
                       <div className="col-md-6">
@@ -387,10 +414,24 @@ const AddEnquiry = () => {
                             className={`form-control ${
                               errors.project ? "is-invalid" : ""
                             }`}
-                            placeholder="Customer Name"
+                            placeholder="Product Type"
                             {...register("project")}
                           />
                           <label htmlFor="productType">Product Type</label>
+                        </div>
+                      </div>
+
+                      <div className="col-md-6">
+                        <div className="form-floating form-floating-outline">
+                          <input
+                            type="text"
+                            className={`form-control ${
+                              errors.project ? "is-invalid" : ""
+                            }`}
+                            placeholder="Business Type"
+                            {...register("business_type")}
+                          />
+                          <label htmlFor="productType">Business Type</label>
                         </div>
                       </div>
 
@@ -447,9 +488,6 @@ const AddEnquiry = () => {
                             </option>
                             <option value="Lead">Lead</option>
                             <option value="Opportunity">Opportunity</option>
-                            <option value="Visit">Visit</option>
-                            <option value="Quote">Quote</option>
-                            <option value="Team Lead">Team Lead</option>
                           </select>
                           <label htmlFor="productType">Stage</label>
                         </div>

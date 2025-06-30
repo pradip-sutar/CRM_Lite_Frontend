@@ -16,8 +16,6 @@ import toast from "react-hot-toast";
 import NumberedPagination from "../Pagination/NumberedPagination";
 
 const Employee = () => {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const [employees, setEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allDepartment, setallDepartment] = useState([]);
@@ -35,8 +33,6 @@ const Employee = () => {
     reset,
   } = useForm();
   const [flter, setFilter] = useState(false);
-  const [nextUrl, setNextUrl] = useState(null);
-  const [prevUrl, setPrevUrl] = useState(null);
   const [count, setCount] = useState(null);
   const [paginationInfo, setPaginationInfo] = useState({
     total: 0,

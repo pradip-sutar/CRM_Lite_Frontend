@@ -17,9 +17,17 @@ export const getAssignQuote = async (enquiry_id) => {
   try {
     let response;
 
-    response = await apiGateWay.get(`/api/quotation/?enquiry_id=${enquiry_id}`);
+    if (enquiry_id) {
+      response = await apiGateWay.get(
+        `/api/quotation/?enquiry_id=${enquiry_id}`
+      );
 
-    return response.data;
+      return response.data;
+    } else {
+      response = await apiGateWay.get(`/api/quotation/`);
+
+      return response.data;
+    }
   } catch (error) {
     if (error.response.status == 404) {
     }

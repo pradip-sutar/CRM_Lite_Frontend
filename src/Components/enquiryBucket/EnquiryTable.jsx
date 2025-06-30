@@ -25,10 +25,6 @@ function EnquiryTable() {
   const { dropDowns: dropDownTeam } = useGetDropDowns(
     "employee_management_handler"
   );
-  const [selectedTeamMembers, setSelectedTeamMembers] = useState([]);
-
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const {
     register,
     watch,
@@ -45,10 +41,8 @@ function EnquiryTable() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectAll, setSelectAll] = useState(false); // New state for Select All
   const [showModal, setShowModal] = useState(false);
-  const [selectedTeamMember, setSelectedTeamMember] = useState("");
   const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
   const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [enquirydata, setEnquiryData] = useState([]);
   const [nextUrl, setNextUrl] = useState(null);
@@ -147,16 +141,6 @@ function EnquiryTable() {
     setSelectAll(allSelected);
   };
 
-  const handleSelectAllChange = (event) => {
-    if (event.target.checked) {
-      const allIds = enquirydata?.data.map((data) => data.enquiry_id);
-      setSelectedRows(allIds);
-      setSelectAll(true);
-    } else {
-      setSelectedRows([]);
-      setSelectAll(false);
-    }
-  };
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -221,11 +205,13 @@ function EnquiryTable() {
       if (response.status === 201) {
         setIsExcelModalOpen(false);
         setSelectedFile(null);
-        loadData(`${
-      import.meta.env.VITE_URL_BASE
-    }/api/enquiry_table_handler/?page=1&page_size=${
-      paginationInfo.perPage
-    }`);
+        loadData(
+          `${
+            import.meta.env.VITE_URL_BASE
+          }/api/enquiry_table_handler/?page=1&page_size=${
+            paginationInfo.perPage
+          }`
+        );
       }
     } catch (error) {
       console.error("Error uploading Excel file:", error);
@@ -238,20 +224,23 @@ function EnquiryTable() {
     const headers = [
       "customer_name",
       "customer_phone",
+      "alternative_phone",
       "customer_email",
       "customer_address",
       "customer_country",
       "customer_state",
       "date",
+      "ownership",
+      "business_type",
+      "next_date_time",
+      "source",
+      "product_type",
+      "project_name",
+      "enquiry_type",
       "stage",
       "status",
-      "activity",
-      "history",
-      "source",
-      "project",
-      "enquiry_type",
-      "assign",
-      "team",
+      "action",
+      "next_discussion_point",
     ];
     const excelData = [headers];
     const worksheet = XLSX.utils.aoa_to_sheet(excelData);

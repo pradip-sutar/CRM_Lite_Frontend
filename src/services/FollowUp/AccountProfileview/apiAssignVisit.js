@@ -18,9 +18,6 @@ export const getVisitAssignedBy = async () => {
     if (true) {
       const response = await apiGateWay.get(`/api/visit/`);
       return response.data;
-    } else {
-      const response = await apiGateWay.get(`/api/visit/`);
-      return response.data;
     }
   } catch (error) {
     if (error.response.status == 404) {
@@ -30,11 +27,17 @@ export const getVisitAssignedBy = async () => {
 };
 
 export const getVisitAssignToEmployee = async (enquiry_id) => {
+  let response;
   try {
-    const response = await apiGateWay.get(
-      `/api/visit/?enquiry_id=${enquiry_id}`
-    );
-    return response.data;
+    if (enquiry_id) {
+      const response = await apiGateWay.get(
+        `/api/visit/?enquiry_id=${enquiry_id}`
+      );
+      return response.data;
+    } else {
+      const response = await apiGateWay.get(`/api/visit/`);
+      return response.data;
+    }
   } catch (error) {
     console.log(error);
   }

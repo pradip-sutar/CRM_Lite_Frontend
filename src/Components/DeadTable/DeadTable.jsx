@@ -1,24 +1,14 @@
 import { useState, useEffect } from "react";
 import { Box, Button } from "@mui/material";
-import { getTeam } from "../../services/apiTeamManagement";
-import { getTeamMembers } from "../../services/EnquiryBucket/apiEnquiry";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 import NumberedPagination from "../Pagination/NumberedPagination";
+import { AssignDead } from "../../services/DeadTable/apiAsignDeadData";
 
 function DeadTable() {
-  const { register, handelSubmit, watch } = useForm();
   const [selectedRows, setSelectedRows] = useState([]);
   const [deadData, setDeadData] = useState([]);
-  const [teams, setTeams] = useState([]);
-  const [teamMember, setTeamMember] = useState([]);
-  const [selectedTeamMember, setSelectedTeamMember] = useState("");
-  const team = watch("team");
-
-  const [nextUrl, setNextUrl] = useState(null);
-  const [prevUrl, setPrevUrl] = useState(null);
-  const [count, setCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState({
     total: 0,
@@ -38,35 +28,11 @@ function DeadTable() {
     console.log("result", result);
 
     setDeadData(result);
-    setNextUrl(result.nextUrl);
-    setPrevUrl(result.prevUrl);
-    setCount(result.total);
     setPaginationInfo({
       total: result.total || 0,
       perPage: result.perPage || 10,
     });
     setLoading(false);
-  };
-
-  useEffect(() => {
-    if (team) {
-      fetchTeamMember(team);
-    }
-  }, [team]);
-
-  const fetchTeam = async () => {
-    try {
-      const data = await getTeam();
-      setTeams(data);
-    } catch (error) {
-      console.error("Error fetching team data:", error);
-    }
-  };
-
-  const fetchTeamMember = async (team_id) => {
-    const data = await getTeamMembers(team_id);
-    setTeamMember(data);
-    console.log(data);
   };
 
   const openModal = (event) => {
@@ -80,19 +46,26 @@ function DeadTable() {
 
   const handleCheckboxChange = (event, enquiry_id) => {
     if (event.target.checked) {
-      setSelectedRows((prev) => [...prev, enquiry_id]);
+      setSelectedRows((prev) => [...prev, Number(enquiry_id)]);
     } else {
-      setSelectedRows((prev) => prev.filter((i) => i !== enquiry_id));
+      setSelectedRows((prev) => prev.filter((i) => i !== Number(enquiry_id)));
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(selectedRows);
+    try {
+      const status = await AssignDead(selectedRows);
+      if (status == 200) {
+        const url = `${
+          import.meta.env.VITE_URL_BASE
+        }/api/dead_table_handler/?page=${currentPage}`;
+        loadData(url);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  useEffect(() => {
-    fetchTeam();
-  }, []);
 
   return (
     <div
@@ -133,7 +106,9 @@ function DeadTable() {
                         <td>
                           <input
                             type="checkbox"
-                            checked={selectedRows.includes(row.enquiry_id)}
+                            checked={selectedRows.includes(
+                              Number(row.enquiry_id)
+                            )}
                             onChange={(event) =>
                               handleCheckboxChange(event, row.enquiry_id)
                             }
@@ -166,10 +141,11 @@ function DeadTable() {
 
           {/* Pagination */}
           <div className="d-flex justify-content-between align-items-center mt-3">
-            <div className="text-muted">
-              Showing {paginationInfo.perPage} of {count} entries
-            </div>
-            <NumberedPagination totalPages={deadData?.total_pages} onPageChange={setCurrentPage} />
+            <div className="text-muted"></div>
+            <NumberedPagination
+              totalPages={deadData?.total_pages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </div>

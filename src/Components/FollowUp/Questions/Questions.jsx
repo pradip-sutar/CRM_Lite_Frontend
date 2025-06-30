@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { getProductForm } from "../../../services/Product/apiProductForm";
-import { postQuestions } from "../../../services/FollowUp/Questions/apiQuestions";
+import {
+  postQuestions,
+  getQuestions,
+} from "../../../services/FollowUp/Questions/apiQuestions";
 import toast from "react-hot-toast";
 
 const Questions = () => {
+  const [categories, setCategories] = useState([
+    { category: "", questions: [{ text: "", children: [] }] },
+  ]);
   const [productData, setProductData] = useState([]);
   const initialUrl = `/api/project_new_handler/`;
   const fetchData = async () => {
@@ -13,9 +19,16 @@ const Questions = () => {
   };
   const [selectedProject, setSelectedProject] = useState("");
 
-  const [categories, setCategories] = useState([
-    { category: "", questions: [{ text: "", children: [] }] },
-  ]);
+  const fetchQuestionReletedToProject = async () => {
+    setCategories([{ category: "", questions: [{ text: "", children: [] }] }]);
+    const response = await getQuestions(selectedProject);
+    console.log(response?.requirements);
+    if (response?.requirements) setCategories(response?.requirements);
+  };
+
+  useEffect(() => {
+    if (selectedProject) fetchQuestionReletedToProject();
+  }, [selectedProject]);
 
   const handleCategoryChange = (index, value) => {
     const updated = [...categories];
@@ -76,6 +89,11 @@ const Questions = () => {
     };
     try {
       const status = await postQuestions(formatedData);
+      if (status == 201) {
+        setCategories([
+          { category: "", questions: [{ text: "", children: [] }] },
+        ]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -166,7 +184,7 @@ const Questions = () => {
         </div>
       </div>
 
-      {categories.map((cat, catIndex) => (
+      {categories?.map((cat, catIndex) => (
         <div className="card shadow-sm mb-4" key={catIndex}>
           <div className="card-header bg-primary border-bottom d-flex justify-content-between align-items-center">
             <div className="input-group w-75">

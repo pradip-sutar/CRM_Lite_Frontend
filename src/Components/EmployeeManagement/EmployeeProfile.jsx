@@ -26,22 +26,6 @@ const CustomTabs = styled(Tabs)({
 });
 
 const EmployeeProfile = () => {
-  const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
-  const [copySuccess, setCopySuccess] = useState(false);
-
-  const handleCopy = () => {
-    const linkToCopy = `${
-      import.meta.env.VITE_LinkGenerate_Ip
-    }/employee/CreateLink`;
-    navigator.clipboard
-      ?.writeText(linkToCopy)
-      .then(() => {
-        setCopySuccess(true);
-        setTimeout(() => setCopySuccess(false), 2000);
-      })
-      .catch((err) => console.error("Failed to copy:", err));
-  };
-
   const [mainActiveTab, setMainActiveTab] = useState(0);
 
   const navigate = useNavigate();

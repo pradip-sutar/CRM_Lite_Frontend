@@ -8,15 +8,13 @@ import * as XLSX from "xlsx";
 import Select from "react-select";
 import { useForm } from "react-hook-form";
 import { fetchEmployee } from "../../services/EmpManagement/apiCompanyProfile";
-import { fetchPageData } from "../../services/Pagination/Pagination";
+import { fetchPageData2 } from "../../services/Pagination/Pagination";
 import { getCustomerReport } from "../../services/Reports/apiCustomerReport";
 import NumberedPagination from "../Pagination/NumberedPagination";
+import { getBookingReport } from "../../services/BookingForm/apiBookingForm";
 
 function Booking() {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
   const logged_employee_Type = crmStore.getState().user?.userInfo?.userType;
-  const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [companyInfo, setCompanyInfo] = useState({});
   const [row, setRow] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,11 +24,9 @@ function Booking() {
     formState: { errors },
   } = useForm();
   const [employees, setEmployees] = useState([]);
-  const [data, setData] = useState([]);
-  const [nextUrl, setNextUrl] = useState(null);
-  const [prevUrl, setPrevUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(null);
+  const [flter, setFilter] = useState(false);
+
   const [paginationInfo, setPaginationInfo] = useState({
     total: 0,
     perPage: 10,
@@ -45,15 +41,8 @@ function Booking() {
 
   const loadData = async (url) => {
     setLoading(true);
-    const result = await fetchPageData(url);
-    setRow(result.data);
-    setNextUrl(result.nextUrl);
-    setPrevUrl(result.prevUrl);
-    setCount(result.total);
-    setPaginationInfo({
-      total: result.total || 0,
-      perPage: result.perPage || 10,
-    });
+    const result = await fetchPageData2(url);
+    setRow(result);
     setLoading(false);
   };
 
@@ -119,8 +108,8 @@ function Booking() {
     };
   });
 
-  const generateExcelReport = (data) => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
+  const generateExcelReport = () => {
+    const worksheet = XLSX.utils.json_to_sheet(row?.data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Customer Report");
     const formattedDate = new Date().toISOString().split("T")[0];
@@ -128,7 +117,7 @@ function Booking() {
     XLSX.writeFile(workbook, fileName);
   };
 
-  const onSubmit = async (data) => {
+  const onFilterSubmit = async (data) => {
     if (data.startDate) {
       if (new Date(data.endDate) < new Date(data.startDate)) {
         setError("endDate", {
@@ -140,17 +129,18 @@ function Booking() {
     }
 
     setIsModalOpen(false);
-    const response = await getCustomerReport(
+    const response = await getBookingReport(
       data.startDate,
       data.endDate,
-      data.customerName,
-      data.employee
+      data.customerName
     );
     if (!response || response.length === 0) {
       toast.error("No customer data available to generate report");
       return;
+    } else {
+      setFilter(true);
+      setRow(response);
     }
-    generateExcelReport(response);
     reset();
   };
 
@@ -174,16 +164,36 @@ function Booking() {
 
         <div className="d-flex gap-2">
           <button
-            className="btn btn-primary"
+            className="btn btn-outline-primary btn-sm me-2 position-relative"
             onClick={() => setIsModalOpen(true)}
+            title="Filter"
           >
-            <i className="mdi mdi-book-open-page-variant me-2"></i> Report
+            <i className="mdi mdi-filter"></i>
+
+            {flter && (
+              <span
+                className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"
+                style={{ zIndex: 1 }}
+              ></span>
+            )}
           </button>
           <button
-            className="btn btn-secondary"
-            onClick={() => fetchBookingDetails()}
+            className="btn btn-success btn-sm me-2"
+            onClick={() => generateExcelReport()}
+            title="Report"
           >
-            <i className="mdi mdi-refresh me-2"></i> Reset
+            <i className="mdi mdi-file-document"></i>
+          </button>
+
+          <button
+            className="btn btn-secondary btn-sm me-2"
+            onClick={() => {
+              setFilter(false);
+              loadData(`/api/booking_form/?page=${currentPage}`);
+            }}
+            title="Reset"
+          >
+            <i className="mdi mdi-refresh"></i>
           </button>
         </div>
       </div>
@@ -214,7 +224,7 @@ function Booking() {
                           </tr>
                         </thead>
                         <tbody>
-                          {row?.map((data, index) => {
+                          {row?.data?.map((data, index) => {
                             return (
                               <tr key={index}>
                                 <td>
@@ -267,11 +277,9 @@ function Booking() {
                 </div>
                 {/* Pagination */}
                 <div className="d-flex justify-content-between align-items-center ">
-                  <div className="text-muted">
-                    Showing {paginationInfo.perPage} of {count} entries
-                  </div>
+                  <div className="text-muted"></div>
                   <NumberedPagination
-                    totalPages={2}
+                    totalPages={row?.total_pages}
                     onPageChange={setCurrentPage}
                   />
                 </div>
@@ -331,7 +339,7 @@ function Booking() {
             </div>
 
             <div style={{ padding: "15px 0" }}>
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={handleSubmit(onFilterSubmit)}>
                 <div className="d-flex justify-content-between">
                   <div style={{ marginBottom: "15px" }}>
                     <label style={{ display: "block", marginBottom: "5px" }}>
