@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteProduct } from "../../services/Product/apiProductForm";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 import NumberedPagination from "../Pagination/NumberedPagination";
+import { HandleDeleteById } from "../../services/DeleteSwal/HandleDeleteById";
 
 function Product() {
   const [productData, setProductData] = useState([]);
@@ -24,10 +25,6 @@ function Product() {
 
   const deleteProductfn = async (id) => {
     const status = await deleteProduct(id);
-    if (status == 204) {
-      const url = `${import.meta.env.VITE_URL_BASE}/api/project_new_handler/`;
-      fetchData(url);
-    }
   };
 
   const navigate = useNavigate();
@@ -123,7 +120,14 @@ function Product() {
 
                                   <div
                                     onClick={() =>
-                                      deleteProductfn(row.project_id)
+                                      HandleDeleteById(
+                                        row.project_id,
+                                        deleteProductfn,
+                                        fetchData,
+                                        `${
+                                          import.meta.env.VITE_URL_BASE
+                                        }/api/project_new_handler/`
+                                      )
                                     }
                                     className="btn btn-text-danger btn-sm small py-1 px-2"
                                     data-bs-toggle="tooltip"

@@ -30,11 +30,13 @@ import { getSalesTab } from "../../services/Dashboard/DashboardComponents/SalesT
 import { getBuyPersonaTab } from "../../services/Dashboard/DashboardComponents/BuyesPersonaTab";
 
 const Dashboard = () => {
+  const [enable, setEnable] = useState(false);
+  const [rawfilterData, setrawfilterData] = useState("");
   const [activeComponent, setActiveComponent] = useState("Overview");
   const [OverviewData, setOverviewData] = useState(null);
-  const [sourceData, setsourceData] = useState(null);
-  const [sourceTableDATA, setSourceTableData] = useState([]);
-  const [sourceEnquiryActionData, setSourceEnquiryActionData] = useState([]);
+  // const [sourceData, setsourceData] = useState(null);
+  // const [sourceTableDATA, setSourceTableData] = useState([]);
+  // const [sourceEnquiryActionData, setSourceEnquiryActionData] = useState([]);
   const [productData, setproductData] = useState(null);
   const [FollowUpData, setFollowUpData] = useState(null);
   const [enquiryData, setenquiryData] = useState(null);
@@ -53,33 +55,33 @@ const Dashboard = () => {
     }
   };
 
-  //Source
-  const fetchsourceData = async (enable, rawfilterData) => {
-    try {
-      const response = await getSourceTabData(enable, rawfilterData);
-      setsourceData(response);
-    } catch (error) {
-      console.error("Error fetching source data", error);
-    }
-  };
+  // //Source
+  // const fetchsourceData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getSourceTabData(enable, rawfilterData);
+  //     setsourceData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching source data", error);
+  //   }
+  // };
 
-  const fetchsourceTableData = async (enable, rawfilterData) => {
-    try {
-      const response = await getSourceTableData(enable, rawfilterData);
-      setSourceTableData(response);
-    } catch (error) {
-      console.error("Error fetching source data", error);
-    }
-  };
+  // const fetchsourceTableData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getSourceTableData(enable, rawfilterData);
+  //     setSourceTableData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching source data", error);
+  //   }
+  // };
 
-  const fetchEnquiryActionData = async (enable, rawfilterData) => {
-    try {
-      const response = await getEnquiryActionData(enable, rawfilterData);
-      setSourceEnquiryActionData(response);
-    } catch (error) {
-      console.error("Error fetching source data", error);
-    }
-  };
+  // const fetchEnquiryActionData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getEnquiryActionData(enable, rawfilterData);
+  //     setSourceEnquiryActionData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching source data", error);
+  //   }
+  // };
 
   //Product
   const fetchproductData = async (enable, rawfilterData) => {
@@ -160,9 +162,9 @@ const Dashboard = () => {
         fetchOverViewData(enable, filterData);
         break;
       case "Source":
-        fetchsourceData(enable, filterData);
-        fetchsourceTableData(enable, filterData);
-        fetchEnquiryActionData(enable, filterData);
+        // fetchsourceData(enable, filterData);
+        // fetchsourceTableData(enable, filterData);
+        // fetchEnquiryActionData(enable, filterData);
         break;
       case "Product":
         fetchproductData(enable, filterData);
@@ -208,7 +210,11 @@ const Dashboard = () => {
           fromDate,
           toDate,
         };
-        functionSwitcher(activeComponent, true, formatedData);
+         functionSwitcher(activeComponent, true, formatedData);
+        (() => {
+          setEnable(true);
+          setrawfilterData(formatedData);
+        })();
       } else {
         toast.error("End Date Should be After Start Date");
       }
@@ -224,26 +230,34 @@ const Dashboard = () => {
       case "Overview":
         return <OverviewTab OverviewData={OverviewData} />;
       case "Source":
-        return (
-          <SourceTab
-            sourceData={sourceData}
-            sourceTableDATA={sourceTableDATA}
-            sourceEnquiryActionData={sourceEnquiryActionData}
-            setSourceEnquiryActionData={setSourceEnquiryActionData}
-          />
-        );
+        return <SourceTab enable={enable} rawfilterData={rawfilterData} />;
       case "Product":
         return <PropertiesTab productData={productData} />;
       case "FollowUp":
-        return <CallingTab FollowUpData={FollowUpData} setFollowUpData={setFollowUpData} />;
+        return (
+          <CallingTab
+            FollowUpData={FollowUpData}
+            setFollowUpData={setFollowUpData}
+          />
+        );
       case "Enquiry":
         return <EnquiryTab enquiryData={enquiryData} />;
       case "Shedules":
         return <SheduleTab scheduleData={scheduleData} />;
       case "Quotations":
-        return <QuotationTab quotationData={quotationData} setquotationData={setquotationData} />;
+        return (
+          <QuotationTab
+            quotationData={quotationData}
+            setquotationData={setquotationData}
+          />
+        );
       case "Bookings":
-        return <BookingTab bookingData={bookingData} setbookingData={setbookingData} />;
+        return (
+          <BookingTab
+            bookingData={bookingData}
+            setbookingData={setbookingData}
+          />
+        );
       case "Sales":
         return <SalesTab salesData={salesData} />;
       case "Buyer Persona":

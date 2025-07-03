@@ -1821,11 +1821,11 @@ const AccountProfileview = ({ id }) => {
                               sx={{
                                 display: "flex",
                                 alignItems: "center",
-                                flexDirection: "row",
                               }}
                             >
                               <Box>
-                                <Grid>
+                                <Grid
+                                >
                                   <Typography
                                     sx={{
                                       fontSize: {
@@ -1833,26 +1833,13 @@ const AccountProfileview = ({ id }) => {
                                         sm: "12px",
                                         md: "16px",
                                       },
+                                      flexGrow: 1,
                                     }}
                                   >
                                     Create
                                   </Typography>
-                                  <Box mt={-3} mb={1}>
-                                    <Avatar
-                                      sx={{
-                                        backgroundColor: "#8b8ee55c",
-                                        color: "#5d3ff8",
-                                        ml: "auto",
-                                      }}
-                                    >
-                                      <AssignmentIcon
-                                        sx={{
-                                          backgroundColor: "#dadcff !important",
-                                          borderRadius: "50%",
-                                        }}
-                                      />
-                                    </Avatar>
-                                  </Box>
+
+                                
                                 </Grid>
 
                                 {!(confirm_project == null) ? (
@@ -2003,7 +1990,26 @@ const AccountProfileview = ({ id }) => {
                                   </>
                                 ) : (
                                   <>
-                                    <div
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      sx={{
+                                        ml: "auto",
+                                        width: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "80px",
+                                        },
+                                        height: {
+                                          xs: "10px",
+                                          sm: "12px",
+                                          md: "19px",
+                                        },
+                                        backgroundColor: "#666cff",
+                                        "&:hover": {
+                                          backgroundColor: "#4f54c7",
+                                        },
+                                      }}
                                       onClick={() => {
                                         navigate("/FollowUp/Productviews", {
                                           state: {
@@ -2012,29 +2018,27 @@ const AccountProfileview = ({ id }) => {
                                           },
                                         });
                                       }}
-                                      style={{ cursor: "pointer" }}
                                     >
-                                      <p>Add Product First</p>
-                                    </div>
+                                      Details
+                                    </Button>
                                   </>
                                 )}
                               </Box>
-                              {/* <Box mt={-3}>
-                                <Avatar
+                                
+                            <Avatar
+                                sx={{
+                                  backgroundColor: "#8b8ee55c",
+                                  color: "#5d3ff8",
+                                  ml: "auto",
+                                }}
+                              >
+                                <InventoryIcon
                                   sx={{
-                                    backgroundColor: "#8b8ee55c",
-                                    color: "#5d3ff8",
-                                    ml: "auto",
+                                    backgroundColor: "#dadcff !important",
+                                    borderRadius: "50%",
                                   }}
-                                >
-                                  <InventoryIcon
-                                    sx={{
-                                      backgroundColor: "#dadcff !important",
-                                      borderRadius: "50%",
-                                    }}
-                                  />
-                                </Avatar>
-                              </Box> */}
+                                />
+                              </Avatar>
                             </CardContent>
                           </Card>
                           <Card sx={{ mb: 2 }}>
@@ -2153,7 +2157,26 @@ const AccountProfileview = ({ id }) => {
                                     Details
                                   </Button>
                                 ) : (
-                                  <div
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                      ml: "auto",
+                                      width: {
+                                        xs: "10px",
+                                        sm: "12px",
+                                        md: "80px",
+                                      },
+                                      height: {
+                                        xs: "10px",
+                                        sm: "12px",
+                                        md: "19px",
+                                      },
+                                      backgroundColor: "#666cff",
+                                      "&:hover": {
+                                        backgroundColor: "#4f54c7",
+                                      },
+                                    }}
                                     onClick={() => {
                                       navigate("/FollowUp/Productviews", {
                                         state: {
@@ -2162,10 +2185,9 @@ const AccountProfileview = ({ id }) => {
                                         },
                                       });
                                     }}
-                                    style={{ cursor: "pointer" }}
                                   >
-                                    <p>Add Product First</p>
-                                  </div>
+                                    Details
+                                  </Button>
                                 )}
                               </Box>
                               <Avatar

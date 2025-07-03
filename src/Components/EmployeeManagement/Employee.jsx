@@ -110,8 +110,6 @@ const Employee = () => {
     XLSX.writeFile(workbook, fileName);
   };
 
-
-
   const handleExcelUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -138,8 +136,7 @@ const Employee = () => {
       if (response.status === 201) {
         setIsExcelModalOpen(false);
         setSelectedFile(null);
-        loadData(`${import.meta.env.VITE_URL_BASE}
-  /api/employee_management_handler/?page=1`);
+        await loadData(`/api/employee_management_handler/?page=1`);
       }
     } catch (error) {
       console.error("Error uploading Excel file:", error);

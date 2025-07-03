@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NumberedPagination from "../../Pagination/NumberedPagination";
 import { fetchPageData } from "../../../services/Pagination/Pagination";
+import { getSource } from "../../../services/EnquiryBucket/apiSourceType";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,21 +22,82 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+import {
+  getSourceTabData,
+  getSourceTableData,
+  getEnquiryActionData,
+} from "../../../services/Dashboard/DashboardComponents/SourceTab";
 
-const SourceTab = ({
-  sourceData,
-  sourceTableDATA,
-  sourceEnquiryActionData,
-  setSourceEnquiryActionData,
-}) => {
-  console.log(sourceData);
-  console.log(sourceEnquiryActionData);
-
+const SourceTab = ({ enable, rawfilterData }) => {
+  const [souceType, setSourceType] = useState([]);
   const [enquiryActionPageNo, setEnquiryActionPageNo] = useState(1);
+  const [sourceData, setsourceData] = useState(null);
+  const [sourceTableDATA, setSourceTableData] = useState([]);
+  const [filtersourceTableDATA, setfilterSourceTableData] = useState([]);
+  const [sourceEnquiryActionData, setSourceEnquiryActionData] = useState([]);
+  const [showTable, setShowTable] = useState(true);
+  const [selectedReport, setSelectedReport] = useState(
+    "Source Wise Performance"
+  );
+  const [selectedSource, setSelectedSource] = useState("");
+  const [activeTab, setActiveTab] = useState("bar");
+  useEffect(() => {
+    if (selectedSource) {
+      setfilterSourceTableData(
+        sourceTableDATA.filter((data) => data.source === selectedSource)
+      );
+    } else {
+      setfilterSourceTableData([]);
+    }
+  }, [selectedSource]);
+
+  //Source
+  const fetchsourceData = async (enable, rawfilterData) => {
+    try {
+      const response = await getSourceTabData(enable, rawfilterData);
+      setsourceData(response);
+    } catch (error) {
+      console.error("Error fetching source data", error);
+    }
+  };
+
+  const fetchsourceTableData = async (enable, rawfilterData) => {
+    try {
+      const response = await getSourceTableData(enable, rawfilterData);
+      setSourceTableData(response);
+    } catch (error) {
+      console.error("Error fetching source data", error);
+    }
+  };
+
+  const fetchEnquiryActionData = async (enable, rawfilterData) => {
+    try {
+      const response = await getEnquiryActionData(enable, rawfilterData);
+      setSourceEnquiryActionData(response);
+    } catch (error) {
+      console.error("Error fetching source data", error);
+    }
+  };
+
+  useEffect(() => {
+    if (enable && rawfilterData) {
+      fetchsourceData(enable, rawfilterData);
+      console.log("hi");
+    }
+  }, [enable, rawfilterData]);
 
   const loadData = async (url) => {
     const result = await fetchPageData(url);
     setSourceEnquiryActionData(result);
+  };
+
+  const fetchSourceType = async () => {
+    try {
+      const data = await getSource();
+      setSourceType(data);
+    } catch (error) {
+      console.error("Error fetching source type data:", error);
+    }
   };
 
   useEffect(() => {
@@ -142,12 +204,13 @@ const SourceTab = ({
       conversation: "Xyz",
     },
   ]);
+  useEffect(() => {
+    fetchSourceType();
+    fetchsourceData();
+    fetchsourceTableData();
+    fetchEnquiryActionData();
+  }, []);
 
-  const [showTable, setShowTable] = useState(true);
-  const [selectedReport, setSelectedReport] = useState(
-    "Source Wise Performance"
-  );
-  const [activeTab, setActiveTab] = useState("bar");
   const tabStyle = (tabName) => ({
     backgroundColor: activeTab === tabName ? "#5f5dfc" : "white",
     border: "1px solid #5f5dfc",
@@ -1059,11 +1122,11 @@ const SourceTab = ({
 
       {/* Filter Section */}
 
-      <div className="row g-3 mb-1  justify-content-between">
+      {/* <div className="row g-3 mb-1  justify-content-between">
         <div className="col-12 col-md-6 col-lg-12 ">
           <div className="card shadow-sm px-3 py-3">
             <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-              {/* Start Date */}
+              
               <div style={{ width: "200px" }}>
                 <input
                   type="date"
@@ -1074,7 +1137,7 @@ const SourceTab = ({
 
               <span>to</span>
 
-              {/* End Date */}
+           
               <div style={{ width: "200px" }}>
                 <input
                   type="date"
@@ -1088,7 +1151,7 @@ const SourceTab = ({
                 </button>
               </div>
 
-              {/* Medium Filter */}
+      
               <div className="d-flex" style={{ width: "250px" }}>
                 <span className="fw-bold mt-2">Medium: </span>
                 <select className="form-select">
@@ -1111,7 +1174,7 @@ const SourceTab = ({
                 </select>
               </div>
 
-              {/* Reset Button */}
+          
               <div>
                 <button className="btn btn-outline-primary btn-sm">
                   <span class="mdi mdi-refresh"></span> Reset
@@ -1120,7 +1183,7 @@ const SourceTab = ({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Dropdown Section */}
       <div>
@@ -1129,19 +1192,19 @@ const SourceTab = ({
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex" style={{ width: "300px" }}>
               <span className="fw-bold mt-2 me-2 text-nowrap">
-                Report Type:
+                Source Type:
               </span>
               <select
                 className="form-select"
-                value={selectedReport}
-                onChange={(e) => setSelectedReport(e.target.value)}
+                value={selectedSource}
+                onChange={(e) => setSelectedSource(e.target.value)}
               >
-                <option>Source Wise Performance</option>
-                <option>Bulk Upload Validation</option>
-                <option>Validation Report</option>
-                <option>Activity Report</option>
-                <option>Stage Wise</option>
-                <option>Status Wise Report</option>
+                <option value="">Select Source</option>
+                {souceType?.map((data, index) => (
+                  <option key={index} value={data.name}>
+                    {data.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="d-flex">
@@ -1215,10 +1278,12 @@ const SourceTab = ({
                             </tr>
                           </thead>
                           <tbody>
-                            {sourceTableDATA.map((row, index) => (
+                            {(filtersourceTableDATA.length > 0
+                              ? filtersourceTableDATA
+                              : sourceTableDATA
+                            )?.map((row, index) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
-
                                 <td>{row.source}</td>
                                 <td>{row.total_enquiry_count}</td>
                                 <td>{row.valid_enquiry_count}</td>
@@ -1226,7 +1291,7 @@ const SourceTab = ({
                                 <td>{row.Opportunity}</td>
                                 <td>{row.Quote}</td>
                                 {/* <td>{row.schedule}</td>
-                                <td>{row.sales}</td> */}
+      <td>{row.sales}</td> */}
                               </tr>
                             ))}
                           </tbody>
@@ -1898,8 +1963,7 @@ const SourceTab = ({
                         {/* <th scope="col">Validation</th> */}
                         {/* <th scope="col">Response</th> */}
                         {/* <th scope="col">Activity</th> */}
-                        <th scope="col">Stage</th>=
-                        <th scope="col">Status</th>
+                        <th scope="col">Stage</th>=<th scope="col">Status</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Last Date</th>
                         <th scope="col">Conversation</th>
@@ -1908,7 +1972,7 @@ const SourceTab = ({
                     <tbody>
                       {sourceEnquiryActionData?.data?.map((row, index) => (
                         <tr key={index}>
-                          <td>{(enquiryActionPageNo-1)*10+index + 1}</td>
+                          <td>{(enquiryActionPageNo - 1) * 10 + index + 1}</td>
                           <td>{row?.source}</td>
                           <td>{row?.date}</td>
                           {/* <td>{row?.assign}</td> */}

@@ -87,9 +87,13 @@ const Expectation = () => {
   const handleProjectChange = async (event) => {
     const selectedProjectId = event.target.value;
     setSelectedProject(selectedProjectId);
-    const response = await getExpectations(selectedProjectId);
-    console.log(response);
-    setGetExpectations(response);
+    if (selectedProjectId) {
+      const response = await getExpectations(selectedProjectId);
+      console.log(response);
+      setGetExpectations(response);
+    }else{
+      setGetExpectations({});
+    }
   };
 
   const onSubmit = async (data) => {
@@ -140,7 +144,7 @@ const Expectation = () => {
             onChange={(e) => handleProjectChange(e)}
             value={selectedProject}
           >
-            <MenuItem value=" ">Select Project</MenuItem>
+            <MenuItem value="">Select Project</MenuItem>
             {project?.length > 0 &&
               project?.map((option, index) => (
                 <MenuItem key={index} value={option?.project_id}>
