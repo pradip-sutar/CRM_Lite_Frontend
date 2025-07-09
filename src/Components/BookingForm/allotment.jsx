@@ -45,7 +45,6 @@ const Allotment = () => {
   const [productData, setProductData] = useState([]);
   const [selectedProductData, setSelectProductDataa] = useState({});
   const initialUrl = `/api/project_new_handler/`;
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -57,6 +56,7 @@ const Allotment = () => {
 
   const PaymentMode = watch("PaymentType");
   const BankModes = watch("BankModeType");
+  const quantity = watch("quantity");
 
   useEffect(() => {
     console.log(selectedProductData);
@@ -65,9 +65,10 @@ const Allotment = () => {
       setValue("description", selectedProductData?.project_description);
       setValue("rate", selectedProductData?.rate);
       setValue("product_gst", selectedProductData?.gst);
-      setValue("cost", selectedProductData?.cost);
+      const total_cost = selectedProductData?.cost || 0 * quantity || 1;
+      setValue("cost", total_cost);
     }
-  }, [selectedProductData]);
+  }, [selectedProductData, quantity]);
 
   const fetchData = async () => {
     const response = await getProductForm(initialUrl);
@@ -97,6 +98,7 @@ const Allotment = () => {
       );
       setSelectProductDataa(data);
     }
+    setValue("project_details", selectedProductData?.project_id);
   }, [productData]);
 
   const handleInputChange = (inputValue) => {
@@ -210,16 +212,16 @@ const Allotment = () => {
       customer: allFormData.customer_id,
       customer_email: allFormData.customer_email,
       project_details: allFormData.project_details,
-      customer_pincode:allFormData.customer_pincode,
-      customer_mob:allFormData.customer_mob,
-      customer_name:allFormData.customer_name,
+      customer_pincode: allFormData.customer_pincode,
+      customer_mob: allFormData.customer_mob,
+      customer_name: allFormData.customer_name,
       payment_details: paymentDetails,
       enquiry_id,
       payable_amount: paymentDetails.amount,
     };
 
     if (editData) {
-      formatedDataForSubmit.customer=editData.customer;
+      formatedDataForSubmit.customer = editData.customer;
       const res = await editBookingForm(formatedDataForSubmit, editData?.id);
       if (res == 200) {
         navigate(-1);
@@ -244,7 +246,7 @@ const Allotment = () => {
     if (editData) {
       setTimeout(() => {
         reset(editData);
-        setValue("")
+        setValue("");
         setValue("PaymentType", editData?.payment_details?.mode_of_payment);
         setValue("totalAmmountcash", editData?.payment_details?.amount);
         setValue("BankModeType", editData?.payment_details?.bankMode);
@@ -335,7 +337,7 @@ const Allotment = () => {
                           setSelectProductDataa(data);
                         },
                       })}
-                      disabled={!!editData?.project_details?.product_id}
+                      disabled={!editData?.project_details?.product_id}
                     >
                       <option value="" disabled selected>
                         Select Project
@@ -404,6 +406,7 @@ const Allotment = () => {
                     type="number"
                     className="form-control controlFoorm"
                     id="carpetArea"
+                    disabled="true"
                     {...register("cost")}
                   />
                 </div>

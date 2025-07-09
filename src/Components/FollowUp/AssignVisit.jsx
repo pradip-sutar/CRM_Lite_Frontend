@@ -48,6 +48,7 @@ const AssignVisit = () => {
     customer_name = "",
     customer_phone = "",
     customer_email = "",
+    activeTab
   } = useLocation()?.state || {};
   const [teamMembers, setTeamMembers] = useState([]);
   const { control, getValues, register, setValue } = useForm();
@@ -136,9 +137,15 @@ const AssignVisit = () => {
       visit_type: data?.visit_type,
     };
     const res = await postAssignVisit(formatedData);
-    if (res == 201) {
-      postSchedule(formatedDataForActivity);
-      getAssignedVisitByEmployee(logged_employee_Id);
+    console.log(res);
+    
+    if (res == 200) {
+      console.log("hii2");
+      
+      await postSchedule(formatedDataForActivity);
+      navigate("/followUp", { state: { activeTab } })
+     
+      // await getAssignedVisitByEmployee(logged_employee_Id);
     }
   };
 
@@ -397,7 +404,7 @@ const AssignVisit = () => {
             </Paper>
 
             {/* visit History */}
-            <TableContainer>
+            {/* <TableContainer>
               <Paper elevation={11} sx={{ padding: 2, marginBottom: 4 }}>
                 <Table>
                   <TableHead>
@@ -555,7 +562,7 @@ const AssignVisit = () => {
                     </TableCell>
                   </TableRow>
 
-                  {/* Additional rows for Report Data  inputs */}
+                  
                   <TableBody>
                     {rows?.map((row, index) => (
                       <TableRow key={index}>
@@ -660,7 +667,7 @@ const AssignVisit = () => {
                   </TableBody>
                 </Table>
               </Paper>
-            </TableContainer>
+            </TableContainer> */}
           </Box>
         </Box>
       </div>

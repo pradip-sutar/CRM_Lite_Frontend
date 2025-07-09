@@ -25,6 +25,7 @@ function Product() {
 
   const deleteProductfn = async (id) => {
     const status = await deleteProduct(id);
+    return status;
   };
 
   const navigate = useNavigate();

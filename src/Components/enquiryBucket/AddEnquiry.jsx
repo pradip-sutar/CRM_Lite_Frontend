@@ -366,7 +366,7 @@ const AddEnquiry = () => {
                             className={`select2 form-select ${
                               errors.source ? "is-invalid" : ""
                             }`}
-                            {...register("owner_type")}
+                            {...register("owner-type")}
                           >
                             <option value="" selected disabled>
                               Select Owner Type
@@ -407,27 +407,13 @@ const AddEnquiry = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-6">
-                        <div className="form-floating form-floating-outline">
-                          <input
-                            type="text"
-                            className={`form-control ${
-                              errors.project ? "is-invalid" : ""
-                            }`}
-                            placeholder="Product Type"
-                            {...register("project")}
-                          />
-                          <label htmlFor="productType">Product Type</label>
-                        </div>
-                      </div>
+                      
 
                       <div className="col-md-6">
                         <div className="form-floating form-floating-outline">
                           <input
                             type="text"
-                            className={`form-control ${
-                              errors.project ? "is-invalid" : ""
-                            }`}
+                            className={`form-control`}
                             placeholder="Business Type"
                             {...register("business_type")}
                           />

@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Line, Bar } from "react-chartjs-2";
+import {
+  getProductTab,
+  getProductreltd,
+} from "../../../services/Dashboard/DashboardComponents/ProductTab";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -23,7 +27,72 @@ ChartJS.register(
   BarElement
 );
 
-const Properties = ({ productData }) => {
+const Properties = ({ enable, rawfilterData }) => {
+  const [productData, setproductData] = useState(null);
+  const [activeTab, setActiveTab] = useState("Enquiry");
+  const [enquiryTableData, setenquiryTableData] = useState([]);
+  const [salesTableData, setsalesTableData] = useState([]);
+  const [quoteTableData, setquoteTableData] = useState([]);
+  const [scheduleTableData, setscheduleTableData] = useState([]);
+  const buttons = ["Enquiry", "Sales", "Quote", "Schedule"];
+
+  const fetchEnquiryTableData = async () => {
+    const response = await getProductreltd("Enquiry");
+    setenquiryTableData(response);
+  };
+  const fetchsalesTableData = async () => {
+    const response = await getProductreltd("Sales");
+    setsalesTableData(response);
+  };
+  const fetchquoteTableData = async () => {
+    const response = await getProductreltd("Quotation");
+    setquoteTableData(response);
+  };
+  const fetchscheduleTableData = async () => {
+    const response = await getProductreltd("Schedule");
+    setscheduleTableData(response);
+  };
+
+  const tabChangeTrack = (tab) => {
+    switch (tab) {
+      case "Enquiry":
+        fetchEnquiryTableData();
+        break;
+      case "Sales":
+        fetchsalesTableData();
+        break;
+      case "Quote":
+        fetchquoteTableData();
+        break;
+      case "Schedule":
+        fetchscheduleTableData();
+        break;
+    }
+  };
+
+  useEffect(() => {
+    tabChangeTrack(activeTab);
+  }, [activeTab]);
+
+  const fetchproductData = async (enable, rawfilterData) => {
+    try {
+      const response = await getProductTab(enable, rawfilterData);
+      setproductData(response);
+    } catch (error) {
+      console.error("Error fetching product data", error);
+    }
+  };
+
+  useEffect(() => {
+    if (enable && rawfilterData) {
+      fetchproductData(enable, rawfilterData);
+    }
+  }, [enable, rawfilterData]);
+
+  useEffect(() => {
+    fetchproductData();
+  }, []);
+
   const [employeeStats, setEmployeeStats] = useState([
     {
       id: 1,
@@ -112,8 +181,7 @@ const Properties = ({ productData }) => {
   };
 
   // Tab Button
-  const [activeTab, setActiveTab] = useState("Enquiry");
-  const buttons = ["Enquiry", "Sales", "Quote", "Schedule"];
+
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case "hot":
@@ -355,7 +423,7 @@ const Properties = ({ productData }) => {
                 <h5 className="mb-0 fw-bold text-light">Enquiry Details</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {enquiryTableData?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -372,15 +440,15 @@ const Properties = ({ productData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {enquiryTableData?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
+                            <td>{row?.project_name}</td>
                             <td>{row?.type}</td>
-                            <td>{row?.enquiries}</td>
-                            <td>{row?.visit}</td>
-                            <td>{row?.quotations}</td>
-                            <td>{row?.booking}</td>
+                            <td>{row?.enquiry_count}</td>
+                            <td>{row?.visit_count}</td>
+                            <td>{row?.quote_count}</td>
+                            <td>{row?.book_count}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -432,7 +500,7 @@ const Properties = ({ productData }) => {
                 <h5 className="mb-0 fw-bold text-light">Quote List</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {quoteTableData?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -451,25 +519,25 @@ const Properties = ({ productData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {quoteTableData?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
-                            <td>{row?.date}</td>
-                            <td>{row?.stage}</td>
+                            <td>{row?.product_name}</td>
+                            <td>{row?.latest_date}</td>
+                            <td>{row?.enquiry_stage}</td>
                             <td>
                               <span
                                 className={`badge-pill ${getStatusBadgeClass(
-                                  row?.status
+                                  row?.enquiry_status
                                 )}`}
                               >
-                                {row?.status}
+                                {row?.enquiry_status}
                               </span>
                             </td>
-                            <td>{row?.customerName}</td>
-                            <td>{`QID-${row?.id}`}</td>
-                            <td>{`v${row?.version || 1}`}</td>
-                            <td>₹{row?.amount?.toLocaleString()}</td>
+                            <td>{row?.enquiry_name}</td>
+                            <td>{`${row?.quote_id}`}</td>
+                            <td>{`${row?.version || 1}`}</td>
+                            <td>₹{row?.quote_amount?.toLocaleString()}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -521,7 +589,7 @@ const Properties = ({ productData }) => {
                 <h5 className="mb-0 fw-bold text-light">Schedule List</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {scheduleTableData?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -540,12 +608,12 @@ const Properties = ({ productData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {scheduleTableData?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
-                            <td>{row?.date}</td>
-                            <td>{row?.stage}</td>
+                            <td>{row?.product_name}</td>
+                            <td>{row?.latest_date}</td>
+                            <td>{row?.enquiry_stage}</td>
                             <td>
                               <span
                                 className={`badge-pill ${getStatusBadgeClass(
@@ -555,13 +623,11 @@ const Properties = ({ productData }) => {
                                 {row?.status}
                               </span>
                             </td>
-                            <td>{row?.customerName}</td>
-                            <td>{`SID-${row?.id}`}</td>
-                            <td>{`v${row?.version || 1}`}</td>
+                            <td>{row?.enquiry_name}</td>
+                            <td>{`${row?.schedule_id}`}</td>
+                            <td>{`${row?.version || 1}`}</td>
                             <td>
-                              <span className="badge bg-success-subtle text-success fw-semibold px-3 py-1 rounded-pill">
-                                Confirmed
-                              </span>
+                              <span>{row?.enquiry_status}</span>
                             </td>
                           </tr>
                         ))}
@@ -614,7 +680,7 @@ const Properties = ({ productData }) => {
                 <h5 className="mb-0 fw-bold text-light">Sales List</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {salesTableData?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -629,12 +695,12 @@ const Properties = ({ productData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {salesTableData?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
+                            <td>{row?.product_name}</td>
                             <td>{row?.date}</td>
-                            <td>{row?.customerName}</td>
+                            <td>{row?.customer_name}</td>
                             <td>₹{row?.amount?.toLocaleString()}</td>
                           </tr>
                         ))}

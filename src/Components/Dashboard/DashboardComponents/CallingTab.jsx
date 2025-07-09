@@ -329,7 +329,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <span className="fw-semibold">Received Calls</span>
               </div>
               <div className="fw-bold fs-4">
-                {FollowUpData?.results?.Received_Calls}
+                {FollowUpData?.results?.answeredcalls}
               </div>
             </div>
           </div>
@@ -352,7 +352,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <span className="fw-semibold">No Answer Calls</span>
               </div>
               <div className="fw-bold fs-4">
-                {FollowUpData?.results?.No_Answer_Calls}
+                {FollowUpData?.results?.unansweredcalls}
               </div>
             </div>
           </div>
@@ -375,7 +375,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <span className="fw-semibold">Invalid No</span>
               </div>
               <div className="fw-bold fs-4">
-                {FollowUpData?.results?.Invalid_No}
+                {FollowUpData?.results?.invalidnumber}
               </div>
             </div>
           </div>
@@ -424,41 +424,35 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
               <h5 className="mb-0 fw-bold text-light">Calling Data Analysis</h5>
             </div>
             <div className="card-body p-4">
-              {employeeStats?.length > 0 ? (
-                <div className="table-responsive">
-                  <table className="table table-hover table-bordered align-middle">
-                    <thead>
-                      <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Total Calls</th>
-                        <th scope="col">Valid Numbers</th>
-                        <th scope="col">Invalid Numbers</th>
-                        <th scope="col">Answered Calls</th>
-                        <th scope="col">Unanswered Calls</th>
-                        <th scope="col">Conversion Rate</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {employeeStats?.map((row, index) => (
-                        <tr key={index}>
-                          <td>{row?.date}</td>
-                          <td>{row?.totalCalls}</td>
-                          <td>{row?.validNumbers}</td>
-                          <td>{row?.invalidNumbers}</td>
-                          <td>{row?.answeredCalls}</td>
-                          <td>{row?.unansweredCalls}</td>
-                          <td>{row?.conversionRate}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center py-5 no-data">
-                  <i className="bi bi-exclamation-circle me-2"></i>
-                  No Employee Stats Found
-                </div>
-              )}
+              <div className="table-responsive">
+                <table className="table table-hover table-bordered align-middle">
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Total Calls</th>
+                      <th scope="col">Valid Numbers</th>
+                      <th scope="col">Invalid Numbers</th>
+                      <th scope="col">Answered Calls</th>
+                      <th scope="col">Unanswered Calls</th>
+                      <th scope="col">Conversion Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr key={67}>
+                      <td>{FollowUpData?.results?.date}</td>
+                      <td>{FollowUpData?.results?.totalcalls}</td>
+                      <td>
+                        {FollowUpData?.results?.totalcalls -
+                          FollowUpData?.results?.invalidnumber}
+                      </td>
+                      <td>{FollowUpData?.results?.invalidnumber}</td>
+                      <td>{FollowUpData?.results?.answeredcalls}</td>
+                      <td>{FollowUpData?.results?.unansweredcalls}</td>
+                      <td>{FollowUpData?.results?.conversionrate}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
               {employeeStats?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">

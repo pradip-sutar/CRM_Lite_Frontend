@@ -426,7 +426,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
         </div>
       </div>
 
-      <div className="row g-3">
+      {/* <div className="row g-3">
         <div className="col-12">
           <div className="card stats-card animate-card shadow-sm">
             <div className="d-flex justify-content-end gap-3 p-3">
@@ -485,7 +485,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Table Section */}
       <div className="row">

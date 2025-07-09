@@ -223,11 +223,11 @@ const SourceTab = ({ enable, rawfilterData }) => {
 
   // Source Chart
   const sourceChartData = {
-    labels: sourceTableDATA.map((item) => item.source),
+    labels: sourceTableDATA?.map((item) => item.source),
     datasets: [
       {
         label: "Total Enquiry",
-        data: sourceTableDATA.map((item) => item.total_enquiry_count),
+        data: sourceTableDATA?.map((item) => item.total_enquiry_count),
         backgroundColor: "#4e73df",
         borderRadius: {
           topLeft: 10,
@@ -238,7 +238,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
       },
       {
         label: "Valid Enquiry",
-        data: sourceTableDATA.map((item) => item.valid_enquiry_count),
+        data: sourceTableDATA?.map((item) => item.valid_enquiry_count),
         backgroundColor: "#1cc88a",
         borderRadius: {
           topLeft: 10,
@@ -249,7 +249,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
       },
       {
         label: "Lead",
-        data: sourceTableDATA.map((item) => item.Lead),
+        data: sourceTableDATA?.map((item) => item.Lead),
         backgroundColor: "#36b9cc",
         borderRadius: {
           topLeft: 10,
@@ -260,7 +260,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
       },
       {
         label: "Opportunity",
-        data: sourceTableDATA.map((item) => item.Opportunity),
+        data: sourceTableDATA?.map((item) => item.Opportunity),
         backgroundColor: "#f6c23e",
         borderRadius: {
           topLeft: 10,
@@ -271,7 +271,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
       },
       {
         label: "Quote",
-        data: sourceTableDATA.map((item) => item.Quote),
+        data: sourceTableDATA?.map((item) => item.Quote),
         backgroundColor: "#e74a3b",
         borderRadius: {
           topLeft: 10,
@@ -1034,8 +1034,8 @@ const SourceTab = ({ enable, rawfilterData }) => {
       </style>
 
       {/* Card Section */}
-      <div className="row g-3">
-        <div className="col-12 col-lg-3 col-md-6">
+      <div className="row g-3 d-flex justify-content-between">
+        <div className="col-12 col-lg-4 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -1056,7 +1056,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
           </div>
         </div>
 
-        <div className="col-12 col-lg-3 col-md-6">
+        <div className="col-12 col-lg-4 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -1079,7 +1079,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
           </div>
         </div>
 
-        <div className="col-12 col-lg-3 col-md-6">
+        {/* <div className="col-12 col-lg-3 col-md-6">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -1089,7 +1089,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
-                {/* <BlockIcon style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }} /> */}
+                
                 <span className="fw-semibold">
                   <span class="mdi mdi-chart-pie"></span>Conversion Rate
                 </span>
@@ -1097,9 +1097,9 @@ const SourceTab = ({ enable, rawfilterData }) => {
               <div className="fw-bold fs-4">24.8%</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="col-12 col-lg-3 col-md-6">
+        <div className="col-12 col-lg-4 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -1114,7 +1114,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
                   <span class="mdi mdi-sale"></span>Total Sales
                 </span>
               </div>
-              <div className="fw-bold fs-4">631</div>
+              <div className="fw-bold fs-4">{sourceData?.total_sales_count}</div>
             </div>
           </div>
         </div>
@@ -1291,7 +1291,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
                                 <td>{row.Opportunity}</td>
                                 <td>{row.Quote}</td>
                                 {/* <td>{row.schedule}</td>
-      <td>{row.sales}</td> */}
+                                <td>{row.total_sales_count}</td> */}
                               </tr>
                             ))}
                           </tbody>
@@ -1963,7 +1963,8 @@ const SourceTab = ({ enable, rawfilterData }) => {
                         {/* <th scope="col">Validation</th> */}
                         {/* <th scope="col">Response</th> */}
                         {/* <th scope="col">Activity</th> */}
-                        <th scope="col">Stage</th>=<th scope="col">Status</th>
+                        <th scope="col">Stage</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Last Date</th>
                         <th scope="col">Conversation</th>

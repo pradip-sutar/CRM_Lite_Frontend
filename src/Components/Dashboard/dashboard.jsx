@@ -37,7 +37,7 @@ const Dashboard = () => {
   // const [sourceData, setsourceData] = useState(null);
   // const [sourceTableDATA, setSourceTableData] = useState([]);
   // const [sourceEnquiryActionData, setSourceEnquiryActionData] = useState([]);
-  const [productData, setproductData] = useState(null);
+  // const [productData, setproductData] = useState(null);
   const [FollowUpData, setFollowUpData] = useState(null);
   const [enquiryData, setenquiryData] = useState(null);
   const [scheduleData, setscheduleData] = useState(null);
@@ -84,14 +84,14 @@ const Dashboard = () => {
   // };
 
   //Product
-  const fetchproductData = async (enable, rawfilterData) => {
-    try {
-      const response = await getProductTab(enable, rawfilterData);
-      setproductData(response);
-    } catch (error) {
-      console.error("Error fetching product data", error);
-    }
-  };
+  // const fetchproductData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getProductTab(enable, rawfilterData);
+  //     setproductData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching product data", error);
+  //   }
+  // };
 
   const fetchFollowUpData = async (enable, rawfilterData) => {
     try {
@@ -167,7 +167,7 @@ const Dashboard = () => {
         // fetchEnquiryActionData(enable, filterData);
         break;
       case "Product":
-        fetchproductData(enable, filterData);
+        // fetchproductData(enable, filterData);
         break;
       case "FollowUp":
         fetchFollowUpData(enable, filterData);
@@ -232,7 +232,7 @@ const Dashboard = () => {
       case "Source":
         return <SourceTab enable={enable} rawfilterData={rawfilterData} />;
       case "Product":
-        return <PropertiesTab productData={productData} />;
+        return <PropertiesTab enable={enable} rawfilterData={rawfilterData} />;
       case "FollowUp":
         return (
           <CallingTab

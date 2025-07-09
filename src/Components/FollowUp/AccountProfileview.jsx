@@ -1875,6 +1875,7 @@ const AccountProfileview = ({ id }) => {
                                             "/FollowUp/AccountProfileview/AssignQuote",
                                             {
                                               state: {
+                                                activeTab,
                                                 team_id,
                                                 enquiry_id,
                                                 customer_id,
@@ -1965,6 +1966,7 @@ const AccountProfileview = ({ id }) => {
                                             "/FollowUp/AccountProfileview/AssignVisit",
                                             {
                                               state: {
+                                                activeTab,
                                                 team_id,
                                                 enquiry_id,
                                                 customer_id,

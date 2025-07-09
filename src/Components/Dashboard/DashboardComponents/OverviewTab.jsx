@@ -1172,7 +1172,7 @@ const Overview = ({ OverviewData }) => {
                       </div>
                     </div>
 
-                    {/* <div className="col-12 col-md-4">
+                    <div className="col-12 col-md-4">
                       <div
                         className="card shadow-sm stat-card h-75"
                         style={{
@@ -1195,7 +1195,7 @@ const Overview = ({ OverviewData }) => {
                           <div className="fw-bold fs-5">18</div>
                         </div>
                       </div>
-                    </div> */}
+                    </div>
 
                     <div className="col-12 col-md-4">
                       <div

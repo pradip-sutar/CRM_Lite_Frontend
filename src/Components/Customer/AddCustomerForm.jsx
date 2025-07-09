@@ -23,7 +23,7 @@ function AddCustomerForm() {
   async function onSubmit(data) {
     try {
       const customer_id = data.customer_id;
-      const res = await updateCustomerDetails(customer_id,data);
+      const res = await updateCustomerDetails(customer_id, data);
       console.log(res);
 
       if (res == 200) {
@@ -86,9 +86,10 @@ function AddCustomerForm() {
                   </label>
                   <input
                     className="form-control"
-                    type="text"
+                    type="number"
                     placeholder="Phone No"
                     id="phone"
+                    onChange={((e)=>e.target.value=e.target.value.slice(0,10))}
                     {...register("mob")}
                   />
                 </div>
@@ -165,7 +166,10 @@ function AddCustomerForm() {
                     id="present_pincode"
                     {...register("present_pincode")}
                     className="form-control"
-                    type="text"
+                    type="number"
+                    onChange={(e) =>
+                      (e.target.value = e.target.value.slice(0, 6))
+                    }
                     placeholder="Pincode"
                   />
                 </div>
@@ -231,7 +235,10 @@ function AddCustomerForm() {
                     id="permanent_pincode"
                     {...register("permanent_pincode")}
                     className="form-control"
-                    type="text"
+                    onChange={(e) =>
+                      (e.target.value = e.target.value.slice(0, 6))
+                    }
+                    type="number"
                     placeholder="Pincode"
                   />
                 </div>
@@ -244,7 +251,7 @@ function AddCustomerForm() {
                     id="age"
                     {...register("age")}
                     className="form-control"
-                    type="text"
+                    type="number"
                     placeholder="Age"
                   />
                 </div>

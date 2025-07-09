@@ -6,7 +6,7 @@ function CustomerRow({ customer,index }) {
   return (
     <tr className={customer.id % 2 === 0 ? "even" : "odd"}>
       <td className="sorting_1">{index+1}</td>
-      <td>{customer.name}</td>, 
+      <td>{customer.name}</td>
       <td>+91 {customer.mob}</td>
       <td>{customer.email}</td>
       <td>{customer.gender}</td>

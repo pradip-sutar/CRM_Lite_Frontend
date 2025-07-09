@@ -12,14 +12,14 @@ export const getSourceTabData = async (enable, filterData) => {
       response = await apiGateWay.get(`/api/get_dash_source_data/`);
     }
     return response.data;
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
   }
 };
 
 export const getSourceTableData = async (enable, filterData) => {
   try {
-    const response = await apiGateWay.get(`/api/get_dash_sourcetable_data/`);
+    const response = await apiGateWay.get(`/api/get_dash_sourcetable_data/?from_date=${filterData.fromDate}&to_date=${filterData.toDate}`);
     return response.data;
   } catch (error) {
     console.log(error);
