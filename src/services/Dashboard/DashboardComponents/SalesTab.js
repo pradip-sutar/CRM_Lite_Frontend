@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import apiGateWay from "../../ApiGateWay/apiGateWay";
 
-export const getSalesTab = async (enable, filterData) => {
+export const getSalesCardData = async (enable, filterData) => {
   let response;
   try {
     if (enable) {

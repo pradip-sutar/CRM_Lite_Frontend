@@ -7,6 +7,12 @@ import { Line, Bar } from "react-chartjs-2";
 import { fetchPageData2 } from "../../../services/Pagination/Pagination";
 import NumberedPagination from "../../Pagination/NumberedPagination";
 import {
+  getFollowUpCardandStatistics,
+  getFollowUpCallingAnalys,
+  getFollowUpCategorymatrices,
+  getFollowUpCustomerleads,
+} from "../../../services/Dashboard/DashboardComponents/FollowupTab";
+import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
@@ -29,18 +35,60 @@ ChartJS.register(
   BarElement
 );
 
-const Calling = ({ FollowUpData, setFollowUpData }) => {
+const Calling = ({ enable, rawfilterData }) => {
   const [customerLeadsPageNo, setcustomerLeadsPageNo] = useState(1);
+  const [FollowUpCardStastics, setFollowUpCardStastics] = useState(null);
+  const [callingDataAnlays, setCallingDataAnlays] = useState({});
+  const [categorymat, setCategorymat] = useState({});
+  const [customerLeads, setCustomerLeads] = useState({});
 
   const loadData = async (url) => {
     const result = await fetchPageData2(url);
-    setFollowUpData(result);
+    setCustomerLeads(result);
     console.log(result);
+  };
+  const fetchFollowUpCardStast = async () => {
+    try {
+      const response = await getFollowUpCardandStatistics(enable, rawfilterData);
+      setFollowUpCardStastics(response);
+    } catch (error) {
+      console.error("Error fetching FollowUp data", error);
+    }
+  };
+
+  const fetchFollowUpCallingAnalys = async () => {
+    try {
+      const response = await getFollowUpCallingAnalys(enable, rawfilterData);
+      setCallingDataAnlays(response);
+    } catch (error) {
+      console.error("Error fetching FollowUp data", error);
+    }
+  };
+
+  const fetchFollowUpCategorymatr = async () => {
+    try {
+      const response = await getFollowUpCategorymatrices(enable, rawfilterData);
+      setCategorymat(response);
+    } catch (error) {
+      console.error("Error fetching FollowUp data", error);
+    }
   };
 
   useEffect(() => {
-    loadData(`/api/folloup-call-summary/?page=${customerLeadsPageNo}`);
-  }, [customerLeadsPageNo]);
+    if (enable) {
+      loadData(
+        `/api/followup-call-summary/?page=${customerLeadsPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/followup-call-summary/?page=${customerLeadsPageNo}`);
+    }
+  }, [customerLeadsPageNo, enable,rawfilterData]);
+
+  useEffect(() => {
+    fetchFollowUpCardStast();
+    fetchFollowUpCallingAnalys();
+    fetchFollowUpCategorymatr();
+  }, [enable,rawfilterData]);
 
   const [employeeStats, setEmployeeStats] = useState([
     {
@@ -63,17 +111,13 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
   ]);
 
   const activityData = {
-    labels: [
-      "2025-05-01",
-      "2025-05-02",
-      "2025-05-03",
-      "2025-05-04",
-      "2025-05-05",
-    ],
+    labels: FollowUpCardStastics?.calling_statistics?.map((item) => item.date),
     datasets: [
       {
         label: "Calls",
-        data: [350, 295, 310, 280, 320],
+        data: FollowUpCardStastics?.calling_statistics?.map(
+          (item) => item.calls
+        ),
         borderColor: "#1E90FF",
         backgroundColor: "#007bff",
         tension: 0.4,
@@ -82,7 +126,9 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
       },
       {
         label: "Visits",
-        data: [22, 150, 25, 120, 123],
+        data: FollowUpCardStastics?.calling_statistics?.map(
+          (item) => item.visit
+        ),
         borderColor: "#2E8B57",
         backgroundColor: "#2E8B57",
         tension: 0.4,
@@ -91,7 +137,9 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
       },
       {
         label: "Bookings",
-        data: [10, 8, 129, 9, 320],
+        data: FollowUpCardStastics?.calling_statistics?.map(
+          (item) => item.booking
+        ),
         borderColor: "#DC143C",
         backgroundColor: "#DC143C",
         tension: 0.4,
@@ -329,7 +377,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <span className="fw-semibold">Received Calls</span>
               </div>
               <div className="fw-bold fs-4">
-                {FollowUpData?.results?.answeredcalls}
+                {FollowUpCardStastics?.answeredcalls}
               </div>
             </div>
           </div>
@@ -352,7 +400,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <span className="fw-semibold">No Answer Calls</span>
               </div>
               <div className="fw-bold fs-4">
-                {FollowUpData?.results?.unansweredcalls}
+                {FollowUpCardStastics?.unansweredcalls}
               </div>
             </div>
           </div>
@@ -375,7 +423,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <span className="fw-semibold">Invalid No</span>
               </div>
               <div className="fw-bold fs-4">
-                {FollowUpData?.results?.invalidnumber}
+                {FollowUpCardStastics?.invalidnumber}
               </div>
             </div>
           </div>
@@ -384,7 +432,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
 
       {/* Charts Section */}
       <div className="row g-3 mb-2">
-        <div className="col-12 col-md-6">
+        <div className="col-12 ">
           <div className="card stats-card animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -399,7 +447,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
             </div>
           </div>
         </div>
-        <div className="col-12 col-md-6">
+        {/* <div className="col-12 col-md-6">
           <div className="card stats-card animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -413,7 +461,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Table Section */}
@@ -439,22 +487,22 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                   </thead>
                   <tbody>
                     <tr key={67}>
-                      <td>{FollowUpData?.results?.date}</td>
-                      <td>{FollowUpData?.results?.totalcalls}</td>
+                      <td>{callingDataAnlays?.date}</td>
+                      <td>{callingDataAnlays?.totalcalls}</td>
                       <td>
-                        {FollowUpData?.results?.totalcalls -
-                          FollowUpData?.results?.invalidnumber}
+                        {callingDataAnlays?.totalcalls -
+                          callingDataAnlays?.invalidnumber}
                       </td>
-                      <td>{FollowUpData?.results?.invalidnumber}</td>
-                      <td>{FollowUpData?.results?.answeredcalls}</td>
-                      <td>{FollowUpData?.results?.unansweredcalls}</td>
-                      <td>{FollowUpData?.results?.conversionrate}</td>
+                      <td>{callingDataAnlays?.invalidnumber}</td>
+                      <td>{callingDataAnlays?.answeredcalls}</td>
+                      <td>{callingDataAnlays?.unansweredcalls}</td>
+                      <td>{callingDataAnlays?.conversionrate}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
-              {employeeStats?.length > 0 && (
+              {/* {employeeStats?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">
                   <div className="text-muted">
                     Showing 1 to {employeeStats.length} of{" "}
@@ -478,7 +526,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                     </li>
                   </ul>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -508,13 +556,13 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <div className="d-flex justify-content-between mb-2">
                   <span>New</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Assignment?.New}
+                    {categorymat?.Assignment?.New}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Old</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Assignment?.Old}
+                    {categorymat?.Assignment?.Old}
                   </span>
                 </div>
               </div>
@@ -533,19 +581,19 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <div className="d-flex justify-content-between mb-2">
                   <span>Cold</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Status?.Cold}
+                    {categorymat?.Status?.Cold}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Warm</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Status?.Warm}
+                    {categorymat?.Status?.Warm}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Hot</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Status?.Hot}
+                    {categorymat?.Status?.Hot}
                   </span>
                 </div>
               </div>
@@ -566,31 +614,31 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <div className="d-flex justify-content-between mb-2">
                   <span>Enquiry</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Activity?.Enquiry}
+                    {categorymat?.Activity?.Enquiry}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Quote</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Activity?.Quote}
+                    {categorymat?.Activity?.Quote}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Schedule</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Activity?.Schedule}
+                    {categorymat?.Activity?.Schedule}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Sales</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Activity?.Sales}
+                    {categorymat?.Activity?.Sales}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Dead</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Activity?.Dead}
+                    {categorymat?.Activity?.Dead}
                   </span>
                 </div>
               </div>
@@ -609,19 +657,19 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <div className="d-flex justify-content-between mb-2">
                   <span>Enquiry</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Stage?.Enquiry}
+                    {categorymat?.Stage?.Enquiry}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Lead</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Stage?.Lead}
+                    {categorymat?.Stage?.Lead}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Prospect</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Stage?.Prospect}
+                    {categorymat?.Stage?.Prospect}
                   </span>
                 </div>
               </div>
@@ -664,21 +712,19 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 }}
               >
                 <h6 className="fw-semibold border-bottom pb-2 mb-2">Product</h6>
-                {Object.keys(FollowUpData?.results?.Product || {})?.map(
-                  (key) => {
-                    return (
-                      <div
-                        className="d-flex justify-content-between mb-1"
-                        key={key}
-                      >
-                        <span>{key}</span>
-                        <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                          {FollowUpData?.results?.Product[key]}
-                        </span>
-                      </div>
-                    );
-                  }
-                )}
+                {Object.keys(categorymat?.Product || {})?.map((key) => {
+                  return (
+                    <div
+                      className="d-flex justify-content-between mb-1"
+                      key={key}
+                    >
+                      <span>{key}</span>
+                      <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                        {categorymat?.Product[key]}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -697,25 +743,25 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <div className="d-flex justify-content-between mb-2">
                   <span>0-25%</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Conversion?.["0_25"]}
+                    {categorymat?.Conversion?.["0_25"]}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>26-50%</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Conversion?.["26_50"]}
+                    {categorymat?.Conversion?.["26_50"]}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>51-75%</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Conversion?.["51_75"]}
+                    {categorymat?.Conversion?.["51_75"]}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>76-100%</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.Conversion?.["76_100"]}
+                    {categorymat?.Conversion?.["76_100"]}
                   </span>
                 </div>
               </div>
@@ -734,25 +780,25 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                 <div className="d-flex justify-content-between mb-2">
                   <span>1</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.rate_1_count}
+                    {categorymat?.rate_1_count}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>2</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.rate_2_count}
+                    {categorymat?.rate_2_count}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>3</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.rate_3_count}
+                    {categorymat?.rate_3_count}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>4</span>
                   <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
-                    {FollowUpData?.results?.rate_4_count}
+                    {categorymat?.rate_4_count}
                   </span>
                 </div>
               </div>
@@ -768,7 +814,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
               <h5 className="mb-0 fw-bold text-light">Customer Leads</h5>
             </div>
             <div className="card-body p-4">
-              {FollowUpData?.results?.Customer_Leads?.length > 0 ? (
+              {customerLeads?.results?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered align-middle">
                     <thead>
@@ -784,31 +830,29 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {FollowUpData?.results?.Customer_Leads?.map(
-                        (row, index) => (
-                          <tr key={index}>
-                            <td>{row?.name}</td>
-                            <td>{row?.created_at}</td>
-                            <td>{row?.source}</td>
-                            <td>{row?.product}</td>
-                            <td>{row?.status}</td>
-                            <td>{row?.stage}</td>
-                            <td>{row?.conversionPercent}</td>
-                            <td>
-                              {[...Array(5)].map((_, i) => (
-                                <span
-                                  key={i}
-                                  className={`mdi ${
-                                    i < row?.rate
-                                      ? "mdi-star text-warning"
-                                      : "mdi-star-outline text-muted"
-                                  }`}
-                                ></span>
-                              ))}
-                            </td>
-                          </tr>
-                        )
-                      )}
+                      {customerLeads?.results?.map((row, index) => (
+                        <tr key={index}>
+                          <td>{row?.name}</td>
+                          <td>{row?.created_at}</td>
+                          <td>{row?.source}</td>
+                          <td>{row?.product}</td>
+                          <td>{row?.status}</td>
+                          <td>{row?.stage}</td>
+                          <td>{row?.conversionPercent}</td>
+                          <td>
+                            {[...Array(5)].map((_, i) => (
+                              <span
+                                key={i}
+                                className={`mdi ${
+                                  i < row?.rate
+                                    ? "mdi-star text-warning"
+                                    : "mdi-star-outline text-muted"
+                                }`}
+                              ></span>
+                            ))}
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -821,7 +865,7 @@ const Calling = ({ FollowUpData, setFollowUpData }) => {
 
               {employeeStats?.length > 0 && (
                 <NumberedPagination
-                  totalPages={FollowUpData?.total_pages}
+                  totalPages={customerLeads?.total_pages}
                   onPageChange={setcustomerLeadsPageNo}
                 />
               )}

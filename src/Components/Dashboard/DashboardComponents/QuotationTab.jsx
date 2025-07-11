@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { fetchPageData2 } from "../../../services/Pagination/Pagination";
 import NumberedPagination from "../../Pagination/NumberedPagination";
+import { getQuotationCardData } from "../../../services/Dashboard/DashboardComponents/QutationsTab";
 
 import {
   Chart as ChartJS,
@@ -25,101 +26,39 @@ ChartJS.register(
   BarElement
 );
 
-const QuotationTab = ({ quotationData, setquotationData }) => {
+const QuotationTab = ({ enable, rawfilterData }) => {
+  const [quotationTableData, setquotationTableData] = useState({});
   const [quotationPageNo, setquotationPageNo] = useState(1);
+  const [quotationCardData, setQuotationCardData] = useState({});
+
+  const fetchQuotationCardData = async () => {
+    try {
+      const response = await getQuotationCardData(enable, rawfilterData);
+      setQuotationCardData(response);
+    } catch (error) {
+      console.error("Error fetching Quotation data", error);
+    }
+  };
 
   const loadData = async (url) => {
     const result = await fetchPageData2(url);
-    setquotationData(result);
+    setquotationTableData(result);
     console.log(result);
   };
 
   useEffect(() => {
-    loadData(`/api/quotation-summary/?page=${quotationPageNo}`);
-  }, [quotationPageNo]);
+    fetchQuotationCardData();
+  }, [enable, rawfilterData]);
 
-  const [employeeStats, setEmployeeStats] = useState([
-    {
-      id: 1,
-      date: "May 16, 2025",
-      enquiryId: "ENQ-2345",
-      name: "John Smith",
-      contact: "+1 (555) 123-4567",
-      product: "Premium Plan",
-      quoteId: "Q-8721",
-      type: "New",
-      time: "10:30 AM",
-      quoteNumber: 1,
-      amount: "₹12,500",
-      quoteStatus: "Sent",
-      enquiryStage: "Lead",
-      enquiryStatus: "Warm",
-      conversion: "65%",
-      show: "Viewed",
-      mode: "Email",
-      report: "View",
-    },
-    {
-      id: 2,
-      date: "May 16, 2025",
-      enquiryId: "ENQ-2346",
-      name: "Maria Garcia",
-      contact: "+1 (555) 234-5678",
-      product: "Enterprise Solution",
-      quoteId: "Q-8722",
-      type: "New",
-      time: "02:00 PM",
-      quoteNumber: 1,
-      amount: "₹45,000",
-      quoteStatus: "Sent",
-      enquiryStage: "Prospect",
-      enquiryStatus: "Hot",
-      conversion: "85%",
-      show: "Viewed",
-      mode: "WhatsApp",
-      report: "View",
-    },
-    {
-      id: 3,
-      date: "May 17, 2025",
-      enquiryId: "ENQ-2347",
-      name: "Robert Chen",
-      contact: "+1 (555) 345-6789",
-      product: "Basic Package",
-      quoteId: "Q-8723",
-      type: "Revised",
-      time: "11:15 AM",
-      quoteNumber: 2,
-      amount: "₹8,500",
-      quoteStatus: "Prepared",
-      enquiryStage: "Lead",
-      enquiryStatus: "Warm",
-      conversion: "45%",
-      show: "Pending",
-      mode: "Email",
-      report: "View",
-    },
-    {
-      id: 4,
-      date: "May 15, 2025",
-      enquiryId: "ENQ-2348",
-      name: "Sarah Johnson",
-      contact: "+1 (555) 456-7890",
-      product: "Premium Plan",
-      quoteId: "Q-8724",
-      type: "Revised",
-      time: "09:00 AM",
-      quoteNumber: 3,
-      amount: "₹13,750",
-      quoteStatus: "Sent",
-      enquiryStage: "Prospect",
-      enquiryStatus: "Hot",
-      conversion: "90%",
-      show: "Not Viewed",
-      mode: "Manual",
-      report: "View",
-    },
-  ]);
+  useEffect(() => {
+    if (enable) {
+      loadData(
+        `/api/quotations/list/?page=${quotationPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/quotations/list/?page=${quotationPageNo}`);
+    }
+  }, [quotationPageNo, enable, rawfilterData]);
 
   return (
     <div className="container-fluid">
@@ -328,7 +267,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                 >
                   <div className="fw-semibold mb-1">Number</div>
                   <div className="fw-bold fs-5">
-                    {quotationData?.results?.total_quotation_count}
+                    {quotationCardData?.total_quotation_count}
                   </div>
                 </div>
               </div>
@@ -343,7 +282,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                 >
                   <div className="fw-semibold mb-1">Value</div>
                   <div className="fw-bold fs-5">
-                    ₹{quotationData?.results?.total_project_cost}
+                    ₹{quotationCardData?.total_project_cost}
                   </div>
                 </div>
               </div>
@@ -365,7 +304,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                 >
                   <div className="fw-semibold mb-1">Number</div>
                   <div className="fw-bold fs-5">
-                    {quotationData?.results?.new_quote_numbers}
+                    {quotationCardData?.new_quote_numbers}
                   </div>
                 </div>
               </div>
@@ -380,7 +319,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                 >
                   <div className="fw-semibold mb-1">Value</div>
                   <div className="fw-bold fs-5">
-                    ₹{quotationData?.results?.new_quote_total_cost}
+                    ₹{quotationCardData?.new_quote_total_cost}
                   </div>
                 </div>
               </div>
@@ -402,7 +341,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                 >
                   <div className="fw-semibold mb-1">Number</div>
                   <div className="fw-bold fs-5">
-                    {quotationData?.results?.["Revised Quotes number"]}
+                    {quotationCardData?.["Revised Quotes number"]}
                   </div>
                 </div>
               </div>
@@ -417,7 +356,8 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                 >
                   <div className="fw-semibold mb-1">Value</div>
                   <div className="fw-bold fs-5">
-                    ₹{quotationData?.results?.["Revised Quotes total cost"]}
+                    ₹
+                    {quotationCardData?.["Revised Quotes total cost"]}
                   </div>
                 </div>
               </div>
@@ -500,7 +440,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
               </h5>
             </div>
             <div className="card-body p-4">
-              {quotationData?.results?.quotation_data?.length > 0 ? (
+              {quotationTableData?.data?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered align-middle">
                     <thead>
@@ -527,7 +467,7 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {quotationData?.results?.quotation_data?.map((row, index) => (
+                      {quotationTableData?.data?.map((row, index) => (
                         <tr key={index} className="text-nowrap text-center">
                           <td>{index + 1}</td>
                           <td>{row.date}</td>
@@ -577,9 +517,9 @@ const QuotationTab = ({ quotationData, setquotationData }) => {
                 </div>
               )}
 
-              {quotationData?.results?.quotation_data?.length > 0 && (
+              {quotationTableData?.data?.length > 0 && (
                 <NumberedPagination
-                  totalPages={quotationData?.total_pages}
+                  totalPages={quotationTableData?.total_pages}
                   onPageChange={setquotationPageNo}
                 />
               )}

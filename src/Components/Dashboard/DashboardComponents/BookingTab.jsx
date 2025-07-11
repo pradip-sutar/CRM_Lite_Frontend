@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchPageData2 } from "../../../services/Pagination/Pagination";
 import NumberedPagination from "../../Pagination/NumberedPagination";
 import {
@@ -13,6 +13,8 @@ import {
   BarElement,
 } from "chart.js";
 import { Chip } from "@mui/material";
+import { getBookingCardData } from "../../../services/Dashboard/DashboardComponents/BookingTab";
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -24,8 +26,19 @@ ChartJS.register(
   BarElement
 );
 
-const BookingTab = ({bookingData,setbookingData}) => {
-    const [customerLeadsPageNo, setcustomerLeadsPageNo] = useState(1);
+const BookingTab = ({ enable, rawfilterData }) => {
+  const [bookingData, setbookingData] = useState(null);
+  const [bookingDetailsPageNo, setbookingDetailsPageNo] = useState(1);
+  const [bookingCardData, setbookingCardData] = useState(null);
+
+  const fetchBookingCardData = async () => {
+    try {
+      const response = await getBookingCardData(enable, rawfilterData);
+      setbookingCardData(response);
+    } catch (error) {
+      console.error("Error fetching Booking data", error);
+    }
+  };
 
   const loadData = async (url) => {
     const result = await fetchPageData2(url);
@@ -34,27 +47,18 @@ const BookingTab = ({bookingData,setbookingData}) => {
   };
 
   useEffect(() => {
-    loadData(`/api/booking_summary/?page=${customerLeadsPageNo}`);
-  }, [customerLeadsPageNo]);
+    if (enable) {
+      loadData(
+        `/api/booking_summary/list/?page=${bookingDetailsPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/booking_summary/list/?page=${bookingDetailsPageNo}`);
+    }
+  }, [bookingDetailsPageNo, enable, rawfilterData]);
 
-  const getModeChip = (mode) => {
-    const colorMap = {
-      Email: "#d0e2ff",
-      WhatsApp: "#d0f0d5",
-      Manual: "#f3d9fa",
-    };
-    return (
-      <Chip
-        label={mode}
-        size="small"
-        style={{
-          backgroundColor: colorMap[mode] || "#eee",
-          color: "#000",
-          fontWeight: 500,
-        }}
-      />
-    );
-  };
+  useEffect(() => {
+    fetchBookingCardData();
+  }, [enable, rawfilterData]);
 
   const getPayStatusChip = (status) => {
     const colorMap = {
@@ -341,11 +345,15 @@ const BookingTab = ({bookingData,setbookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-dark">{bookingData?.results?.total_bookings}</div>
+                  <div className="fw-bold fs-4 text-dark">
+                    {bookingCardData?.total_bookings}
+                  </div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-success">₹{bookingData?.results?.total_payable_amount_across_enquiries}</div>
+                  <div className="fw-bold fs-4 text-success">
+                    ₹{bookingCardData?.total_payable_amount_across_enquiries}
+                  </div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -367,11 +375,15 @@ const BookingTab = ({bookingData,setbookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-danger">{bookingData?.results?.balance_due?.entry_count}</div>
+                  <div className="fw-bold fs-4 text-danger">
+                    {bookingCardData?.balance_due?.entry_count}
+                  </div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-danger">{bookingData?.results?.balance_due?.total_balance_due}</div>
+                  <div className="fw-bold fs-4 text-danger">
+                    {bookingCardData?.balance_due?.total_balance_due}
+                  </div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -393,11 +405,15 @@ const BookingTab = ({bookingData,setbookingData}) => {
               </div>
               <div className="d-flex justify-content-between">
                 <div>
-                  <div className="fw-bold fs-4 text-success">{bookingData?.results?.advance_payment?.entry_count}</div>
+                  <div className="fw-bold fs-4 text-success">
+                    {bookingCardData?.advance_payment?.entry_count}
+                  </div>
                   <p style={{ fontSize: "0.8rem" }}>Bookings</p>
                 </div>
                 <div>
-                  <div className="fw-bold fs-4 text-success">₹{bookingData?.results?.advance_payment?.total_advance_amount}</div>
+                  <div className="fw-bold fs-4 text-success">
+                    ₹{bookingCardData?.advance_payment?.total_advance_amount}
+                  </div>
                   <p style={{ fontSize: "0.8rem" }}>Total Value</p>
                 </div>
               </div>
@@ -422,7 +438,7 @@ const BookingTab = ({bookingData,setbookingData}) => {
               </button>
             </div>
             <div className="card-body p-4">
-              {bookingData?.results?.all_booking_data?.length > 0 ? (
+              {bookingData?.data?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-bordered table-hover align-middle">
                     <thead>
@@ -443,9 +459,9 @@ const BookingTab = ({bookingData,setbookingData}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {bookingData?.results?.all_booking_data?.map((row, index) => (
+                      {bookingData?.data?.map((row, index) => (
                         <tr key={index} className="text-nowrap">
-                          <td>{(customerLeadsPageNo-1)*10+index + 1}</td>
+                          <td>{(bookingDetailsPageNo - 1) * 10 + index + 1}</td>
                           <td>{row.updated_at}</td>
                           <td className="fw-bold">{row.enquiry_id}</td>
                           <td>{row.customer_name}</td>
@@ -471,10 +487,10 @@ const BookingTab = ({bookingData,setbookingData}) => {
                   No Booking Found
                 </div>
               )}
-              {bookingData?.results?.all_booking_data?.length > 0 && (
-               <NumberedPagination
+              {bookingData?.data?.length > 0 && (
+                <NumberedPagination
                   totalPages={bookingData?.total_pages}
-                  onPageChange={setcustomerLeadsPageNo}
+                  onPageChange={setbookingDetailsPageNo}
                 />
               )}
             </div>

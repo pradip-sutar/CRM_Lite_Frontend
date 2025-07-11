@@ -1,34 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getSalesCardData } from "../../../services/Dashboard/DashboardComponents/SalesTab";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
+import NumberedPagination from "../../Pagination/NumberedPagination";
+const SalesTab = ({ enable, rawfilterData }) => {
+  const [salesData, setsalesData] = useState(null);
+  const [salesDataPageNo, setsalesDataPageNo] = useState(1);
+  const [salesCardData, setsalesCardData] = useState(null);
 
-const SalesTab = ({ salesData }) => {
-  // const [salesData, setSalesData] = useState([
-  //     {
-  //         id: 1,
-  //         date: "23-05-2024",
-  //         enquiryId: "ENQ123",
-  //         name: "John Doe",
-  //         contactNumber: "9876543210",
-  //         product: "CRM",
-  //         time: "10:30 AM",
-  //         bookingId: "BK456",
-  //         amount: "₹15,000",
-  //         mode: "WhatsApp",
-  //         payReceipt: "Generated",
-  //     },
-  //     {
-  //         id: 2,
-  //         date: "24-05-2024",
-  //         enquiryId: "ENQ123",
-  //         name: "Jane Smith",
-  //         contactNumber: "9874563210",
-  //         product: "CRM",
-  //         time: "08:30 AM",
-  //         bookingId: "BK486",
-  //         amount: "₹15,000",
-  //         mode: "Email",
-  //         payReceipt: "Not Generated",
-  //     },
-  // ]);
+  const fetchSalesCardData = async () => {
+    try {
+      const response = await getSalesCardData(enable, rawfilterData);
+      setsalesCardData(response);
+    } catch (error) {
+      console.error("Error fetching Sales data", error);
+    }
+  };
+
+  const loadData = async (url) => {
+    const result = await fetchPageData2(url);
+    setsalesData(result);
+  };
+
+  useEffect(() => {
+    if (enable) {
+      loadData(
+        `/api/followup-call-summary/?page=${salesDataPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/followup-call-summary/?page=${salesDataPageNo}`);
+    }
+  }, [salesDataPageNo, enable, rawfilterData]);
+
+  useEffect(() => {
+    fetchSalesCardData();
+  }, [enable, rawfilterData]);
 
   return (
     <div className="container-fluid p-0 pr-1 ">
@@ -228,7 +233,9 @@ const SalesTab = ({ salesData }) => {
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Total Sales (Count)</span>
               </div>
-              <div className="fw-bold fs-4">{salesData?.total_sales_count}</div>
+              <div className="fw-bold fs-4">
+                {salesCardData?.total_sales_count}
+              </div>
             </div>
           </div>
         </div>
@@ -245,7 +252,9 @@ const SalesTab = ({ salesData }) => {
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Total Sales (Value)</span>
               </div>
-              <div className="fw-bold fs-4">₹{salesData?.total_payable_amount_sum}</div>
+              <div className="fw-bold fs-4">
+                ₹{salesCardData?.total_payable_amount_sum}
+              </div>
             </div>
           </div>
         </div>
@@ -331,23 +340,10 @@ const SalesTab = ({ salesData }) => {
                     Showing 1 to {salesData.length} of {salesData.length}{" "}
                     entries
                   </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">
-                        Previous
-                      </a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">
-                        1
-                      </a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">
-                        Next
-                      </a>
-                    </li>
-                  </ul>
+                  <NumberedPagination
+                    totalPages={salesData?.total_pages}
+                    onPageChange={setsalesDataPageNo}
+                  />
                 </div>
               )}
             </div>

@@ -12,24 +12,23 @@ export const getSourceTabData = async (enable, filterData) => {
       response = await apiGateWay.get(`/api/get_dash_source_data/`);
     }
     return response.data;
-  } catch (error) { 
-    console.log(error);
-  }
-};
-
-export const getSourceTableData = async (enable, filterData) => {
-  try {
-    const response = await apiGateWay.get(`/api/get_dash_sourcetable_data/?from_date=${filterData.fromDate}&to_date=${filterData.toDate}`);
-    return response.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const getEnquiryActionData = async (enable, filterData) => {
+export const getSourceTableData = async (enable, filterData) => {
+  let response;
   try {
-    const response = await apiGateWay.get(`/api/get_recent_enquiry_actions/`);
-    return response.data;
+    if (enable) {
+      response = await apiGateWay.get(
+        `/api/get_dash_sourcetable_data/?from_date=${filterData.fromDate}&to_date=${filterData.toDate}`
+      );
+      return response.data;
+    } else {
+      response = await apiGateWay.get(`/api/get_dash_sourcetable_data/`);
+      return response.data;
+    }
   } catch (error) {
     console.log(error);
   }

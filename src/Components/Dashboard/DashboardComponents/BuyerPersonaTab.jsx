@@ -1,35 +1,27 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getBuyPersonaTab } from "../../../services/Dashboard/DashboardComponents/BuyesPersonaTab";
+import NumberedPagination from "../../Pagination/NumberedPagination";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
 
-const BuyerPersonaTab = ({buyersPersonaData}) => {
-  const [personaData, setPersonaData] = useState([
-    {
-      customerId: "CUST001",
-      name: "Ravi Kumar",
-      contact: "9876543210",
-      product: "2BHK Apartment",
-      conversion: "70",
-      stage: "Lead",
-      status: "Active",
-      activity: "Site Visit Scheduled",
-      finalComment: "Interested in next phase launch",
-    },
-    {
-      customerId: "CUST002",
-      name: "Priya Sharma",
-      contact: "9123456789",
-      product: "3BHK Apartment",
-      conversion: "30",
-      stage: "Enquiry",
-      status: "Pending",
-      activity: "Call Done",
-      finalComment: "Asked to follow up next week",
-    },
-  ]);
+const BuyerPersonaTab = ({ enable, rawfilterData }) => {
+  const [buyersPersonaData, setbuyersPersonaData] = useState(null);
+  const [buyerspersonaPageNo, setbuyerspersonaPageNo] = useState(1);
 
+  const loadData = async (url) => {
+    const result = await fetchPageData2(url);
+    setbuyersPersonaData(result);
+  };
 
-
-
+  useEffect(() => {
+    if (enable) {
+      loadData(
+        `/api/get_dash_buyerpersona_data/?page=${buyerspersonaPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/get_dash_buyerpersona_data/?page=${buyerspersonaPageNo}`);
+    }
+  }, [buyerspersonaPageNo, enable, rawfilterData]);
 
   return (
     <div className="container-fluid">
@@ -214,21 +206,24 @@ const BuyerPersonaTab = ({buyersPersonaData}) => {
         `}
       </style>
 
-
       {/* Table Section */}
       <div className="row">
         <div className="col-12">
           <div className="card stats-card">
             <div className="card-header py-3">
-              <h5 className="mb-0 fw-bold text-light">Buyer Persona Management</h5>
+              <h5 className="mb-0 fw-bold text-light">
+                Buyer Persona Management
+              </h5>
             </div>
             <div className="card-body p-4">
-              {personaData?.length > 0 ? (
+              {buyersPersonaData?.data?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered align-middle">
                     <thead>
                       <tr className="text-nowrap text-center">
-                        <th scope="col" style={{ width: "60px" }}>SL No.</th>
+                        <th scope="col" style={{ width: "60px" }}>
+                          SL No.
+                        </th>
                         <th scope="col">Customer ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Contact</th>
@@ -241,22 +236,28 @@ const BuyerPersonaTab = ({buyersPersonaData}) => {
                       </tr>
                     </thead>
                     <tbody className="text-nowrap text-center">
-                      {personaData?.map((row, index) => (
+                      {buyersPersonaData?.data?.map((row, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{row.customerId}</td>
-                          <td>{row.name}</td>
-                          <td>{row.contact}</td>
-                          <td>{row.product}</td>
+                          <td>{row.customer_id}</td>
+                          <td>{row.customer_name}</td>
+                          <td>{row.customer_mobile}</td>
+                          <td>{row.project_name}</td>
                           <td>
                             <div className="d-flex align-items-center ">
-                              <div className="progress rounded-pill w-100" style={{ height: "10px", backgroundColor: "#e9ecef" }}>
+                              <div
+                                className="progress rounded-pill w-100"
+                                style={{
+                                  height: "10px",
+                                  backgroundColor: "#e9ecef",
+                                }}
+                              >
                                 <div
                                   className="progress-bar"
                                   role="progressbar"
                                   style={{
                                     width: `${row.conversion}%`,
-                                    backgroundColor: "#28a745", 
+                                    backgroundColor: "#28a745",
                                     borderRadius: "10px",
                                   }}
                                   aria-valuenow={row.conversion}
@@ -264,19 +265,19 @@ const BuyerPersonaTab = ({buyersPersonaData}) => {
                                   aria-valuemax="100"
                                 ></div>
                               </div>
-                              <span className="ms-2 fw-semibold">{row.conversion}%</span>
+                              <span className="ms-2 fw-semibold">
+                                {row.conversion}%
+                              </span>
                             </div>
                           </td>
 
-
-                          <td>{row.stage}</td>
-                          <td>{row.status}</td>
-                          <td>{row.activity}</td>
-                          <td>{row.finalComment}</td>
+                          <td>{row.current_stage}</td>
+                          <td>{row.current_status}</td>
+                          <td>{row.last_action}</td>
+                          <td>{row.last_next_discussion}</td>
                         </tr>
                       ))}
                     </tbody>
-
                   </table>
                 </div>
               ) : (
@@ -286,22 +287,16 @@ const BuyerPersonaTab = ({buyersPersonaData}) => {
                 </div>
               )}
 
-              {personaData?.length > 0 && (
+              {buyersPersonaData?.data?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">
                   <div className="text-muted">
-                    Showing 1 to {personaData.length} of {personaData.length} entries
+                    Showing 1 to {buyersPersonaData.length} of{" "}
+                    {buyersPersonaData.length} entries
                   </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
+                  <NumberedPagination
+                    totalPages={buyersPersonaData?.total_pages}
+                    onPageChange={setbuyerspersonaPageNo}
+                  />
                 </div>
               )}
             </div>

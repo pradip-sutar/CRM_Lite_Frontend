@@ -2,49 +2,41 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import NumberedPagination from "../../Pagination/NumberedPagination";
 import { fetchPageData2 } from "../../../services/Pagination/Pagination";
-const SheduleTab = ({ scheduleData }) => {
+import { getScheduleCard } from "../../../services/Dashboard/DashboardComponents/SchedulesTab";
+
+const SheduleTab = ({ enable, rawfilterData }) => {
+  const [scheduleData, setscheduleData] = useState(null);
   const [scheduletablePageNo, setscheduletablePageNo] = useState(1);
+  const [scheduleCardData, setScheduleCardaData] = useState({});
+
+  const fetchScheduleCardData = async () => {
+    try {
+      const response = await getScheduleCard(enable, rawfilterData);
+      setScheduleCardaData(response);
+    } catch (error) {
+      console.error("Error fetching Schedule data", error);
+    }
+  };
 
   const loadData = async (url) => {
     const result = await fetchPageData2(url);
-    setFollowUpData(result);
+    setscheduleData(result);
     console.log(result);
   };
 
   useEffect(() => {
-    loadData(`/api/shedules-stats/?page=${scheduletablePageNo}`);
-  }, [scheduletablePageNo]);
+    if (enable) {
+      loadData(
+        `/api/shedules/list/?page=${scheduletablePageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/shedules/list/?page=${scheduletablePageNo}`);
+    }
+  }, [scheduletablePageNo, enable, rawfilterData]);
 
-  const [scheduleStatus, setScheduleStatus] = useState([
-    {
-      enquiryId: "ENQ001",
-      name: "Greenville Apartments",
-      contact: "9876543210",
-      scheduleType: "Site Visit",
-      mode: "Offline",
-      time: "10:30 AM",
-      scheduleNumber: "SCH123",
-      product: "2BHK Flat",
-      status: "Scheduled", // Schedule Status
-      stage: "Initial Discussion", // Enquiry Stage
-      enquiryStatus: "Open",
-      conversion: "50%",
-    },
-    {
-      enquiryId: "ENQ002",
-      name: "Skyline Towers",
-      contact: "9123456789",
-      scheduleType: "Call",
-      mode: "Online",
-      time: "03:00 PM",
-      scheduleNumber: "SCH124",
-      product: "3BHK Flat",
-      status: "Completed", // Schedule Status
-      stage: "Site Visit", // Enquiry Stage
-      enquiryStatus: "Closed",
-      conversion: "100%",
-    },
-  ]);
+  useEffect(() => {
+    fetchScheduleCardData();
+  }, [enable, rawfilterData]);
 
   return (
     <div className="container-fluid">
@@ -264,7 +256,7 @@ const SheduleTab = ({ scheduleData }) => {
                   <span className="fw-semibold">Total Schedules</span>
                 </div>
                 <div className="fw-bold fs-4">
-                  {scheduleData?.data?.total_records}
+                  {scheduleCardData?.total_schedules}
                 </div>
               </div>
             </div>
@@ -283,9 +275,7 @@ const SheduleTab = ({ scheduleData }) => {
                   {/* <BlockIcon style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }} /> */}
                   <span className="fw-semibold">Upcoming</span>
                 </div>
-                <div className="fw-bold fs-4">
-                  {scheduleData?.data?.upcoming_records}
-                </div>
+                <div className="fw-bold fs-4">{scheduleCardData?.upcoming}</div>
               </div>
             </div>
           </div>
@@ -303,9 +293,7 @@ const SheduleTab = ({ scheduleData }) => {
                   {/* <BlockIcon style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }} /> */}
                   <span className="fw-semibold">Today</span>
                 </div>
-                <div className="fw-bold fs-4">
-                  {scheduleData?.data?.today_records}
-                </div>
+                <div className="fw-bold fs-4">{scheduleCardData?.today}</div>
               </div>
             </div>
           </div>
@@ -323,9 +311,7 @@ const SheduleTab = ({ scheduleData }) => {
                   {/* <HourglassEmptyIcon style={{ color: "#ff9800", fontSize: 20, marginRight: "6px" }} /> */}
                   <span className="fw-semibold">Past</span>
                 </div>
-                <div className="fw-bold fs-4">
-                  {scheduleData?.data?.past_records}
-                </div>
+                <div className="fw-bold fs-4">{scheduleCardData?.past}</div>
               </div>
             </div>
           </div>
@@ -345,9 +331,7 @@ const SheduleTab = ({ scheduleData }) => {
                     }}
                   >
                     <div className="fw-semibold mb-1">New</div>
-                    <div className="fw-bold fs-5">
-                      {scheduleData?.data?.new}
-                    </div>
+                    <div className="fw-bold fs-5">{scheduleCardData?.new}</div>
                   </div>
                 </div>
 
@@ -361,7 +345,7 @@ const SheduleTab = ({ scheduleData }) => {
                   >
                     <div className="fw-semibold mb-1">Rescheduled</div>
                     <div className="fw-bold fs-5">
-                      {scheduleData?.data?.rescheduled}
+                      {scheduleCardData?.rescheduled}
                     </div>
                   </div>
                 </div>
@@ -383,7 +367,7 @@ const SheduleTab = ({ scheduleData }) => {
                   >
                     <div className="fw-semibold mb-1">Appeared</div>
                     <div className="fw-bold fs-5">
-                      {scheduleData?.data?.Appeared}
+                      {scheduleCardData?.appeared}
                     </div>
                   </div>
                 </div>
@@ -398,7 +382,7 @@ const SheduleTab = ({ scheduleData }) => {
                   >
                     <div className="fw-semibold mb-1">No Show</div>
                     <div className="fw-bold fs-5">
-                      {scheduleData?.data?.total_records}
+                      {scheduleCardData?.no_show}
                     </div>
                   </div>
                 </div>
@@ -417,7 +401,7 @@ const SheduleTab = ({ scheduleData }) => {
                 </h5>
               </div>
               <div className="card-body p-4">
-                {scheduleData?.data?.visit_data?.length > 0 ? (
+                {scheduleData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -438,7 +422,7 @@ const SheduleTab = ({ scheduleData }) => {
                         </tr>
                       </thead>
                       <tbody className="text-nowrap text-center">
-                        {scheduleData?.data?.visit_data?.map((row, index) => (
+                        {scheduleData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{row.enquiry_id}</td>
                             <td>{row.customer_name}</td>

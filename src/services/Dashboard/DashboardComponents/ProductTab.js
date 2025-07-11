@@ -18,18 +18,34 @@ export const getProductTab = async (enable, filterData) => {
   }
 };
 
-export async function getProductreltd(type) {
+export async function getProductreltd(type, page, enable, filterData) {
+  let response;
   try {
-    const response = await fetch(
-      `${
-        import.meta.env.VITE_URL_BASE
-      }/api/get_project_summary/?filter_param=${type}`,
-      {
-        method: "GET",
-      }
-    );
-    const data = await response.json();
-    return data;
+    if (enable) {
+      response = await fetch(
+        `${
+          import.meta.env.VITE_URL_BASE
+        }/api/get_project_summary/?filter_param=${type}&page=${page}&from_date=${
+          filterData.fromDate
+        }&to_date=${filterData.toDate}`,
+        {
+          method: "GET",
+        }
+      );
+      const data = await response.json();
+      return data;
+    } else {
+      response = await fetch(
+        `${
+          import.meta.env.VITE_URL_BASE
+        }/api/get_project_summary/?filter_param=${type}&page=${page}`,
+        {
+          method: "GET",
+        }
+      );
+      const data = await response.json();
+      return data;
+    }
   } catch (err) {
     console.error("Fetch error:", err);
     throw err;

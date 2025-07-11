@@ -1,11 +1,44 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getEnquiryCardData } from "../../../services/Dashboard/DashboardComponents/EnquiryTab";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
+import NumberedPagination from "../../Pagination/NumberedPagination";
 
-const EnquiryTab = ({ enquiryData }) => {
+const EnquiryTab = ({ enable, rawfilterData }) => {
+  const [enquiryData, setenquiryData] = useState(null);
+  const [enquiryPageNo, setEnquiryPageNo] = useState(1);
+  const [enquiryCardData, setEnquiryCardData] = useState({});
   const navigate = useNavigate();
+
+  const loadData = async (link) => {
+    const response = await fetchPageData2(link);
+    setenquiryData(response);
+  };
+
+  const fetchEnquiryCardData = async () => {
+    try {
+      const response = await getEnquiryCardData(enable, rawfilterData);
+      setEnquiryCardData(response);
+    } catch (error) {
+      console.error("Error fetching Enquiry data", error);
+    }
+  };
+
+  useEffect(() => {
+    if (enable) {
+      loadData(
+        `/api/enquiry/visit-details-table/?page=${enquiryPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/enquiry/visit-details-table/?page=${enquiryPageNo}`);
+    }
+  }, [enquiryPageNo, enable, rawfilterData]);
+
+  useEffect(() => {
+    fetchEnquiryCardData();
+  }, [enable, rawfilterData]);
+
   console.log("Received Filter Enquiry Data:", enquiryData);
-
-
 
   return (
     <div className="container-fluid p-0 pe-lg-3 ">
@@ -249,13 +282,18 @@ const EnquiryTab = ({ enquiryData }) => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #FFA500", background: "linear-gradient(135deg, #ffffff, #FFE5B4)" }}
+            style={{
+              borderTop: "4px solid #FFA500",
+              background: "linear-gradient(135deg, #ffffff, #FFE5B4)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Total Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">{enquiryData?.total_enquiries}</div>
+              <div className="fw-bold fs-4">
+                {enquiryCardData?.total_enquiries}
+              </div>
             </div>
           </div>
         </div>
@@ -264,13 +302,18 @@ const EnquiryTab = ({ enquiryData }) => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #DC143C", background: "linear-gradient(135deg, #ffffff, #F4A6A6)" }}
+            style={{
+              borderTop: "4px solid #DC143C",
+              background: "linear-gradient(135deg, #ffffff, #F4A6A6)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">New Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">{enquiryData?.new_enquiries}</div>
+              <div className="fw-bold fs-4">
+                {enquiryCardData?.new_enquiries}
+              </div>
             </div>
           </div>
         </div>
@@ -279,21 +322,25 @@ const EnquiryTab = ({ enquiryData }) => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+            style={{
+              borderTop: "4px solid #3B82F6",
+              background: "linear-gradient(135deg, #ffffff, #DBEAFE)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
                 <span className="fw-semibold">Old Enquiries</span>
               </div>
-              <div className="fw-bold fs-4">{enquiryData?.old_enquiries}</div>
+              <div className="fw-bold fs-4">
+                {enquiryCardData?.old_enquiries}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="row g-3 p-2">
-
-        <div className='col-12 col-lg-6 col-md-6'>
+        <div className="col-12 col-lg-6 col-md-6">
           <div className="card shadow-sm p-4 mb-4">
             <h5 className="fw-bold mb-3">Enquiry Stage</h5>
             <div className="row g-3">
@@ -301,10 +348,19 @@ const EnquiryTab = ({ enquiryData }) => {
               <div className="col-12 col-md-4 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
+                  style={{
+                    borderTop: "4px solid #52AA56",
+                    background: "linear-gradient(135deg, #ffffff, #B6D9B8)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Enquiry</div>
-                  <div className="fw-bold fs-5">{enquiryData?.stage_counts?.find(s => s.stage === "Enquiry FollowUp")?.count}</div>
+                  <div className="fw-bold fs-5">
+                    {
+                      enquiryCardData?.enquiry_stage?.find(
+                        (s) => s.stage === "Enquiry FollowUp"
+                      )?.count
+                    }
+                  </div>
                 </div>
               </div>
 
@@ -312,10 +368,19 @@ const EnquiryTab = ({ enquiryData }) => {
               <div className="col-12 col-md-4">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #DC3545", background: "linear-gradient(135deg, #ffffff, #FFB3BA)" }}
+                  style={{
+                    borderTop: "4px solid #DC3545",
+                    background: "linear-gradient(135deg, #ffffff, #FFB3BA)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Lead</div>
-                  <div className="fw-bold fs-5">{enquiryData?.stage_counts?.find(s => s.stage === "Lead")?.count}</div>
+                  <div className="fw-bold fs-5">
+                    {
+                      enquiryCardData?.enquiry_stage?.find(
+                        (s) => s.stage === "Lead"
+                      )?.count
+                    }
+                  </div>
                 </div>
               </div>
 
@@ -323,31 +388,45 @@ const EnquiryTab = ({ enquiryData }) => {
               <div className="col-12 col-md-4">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #6F42C1", background: "linear-gradient(135deg, #ffffff, #C6B3FF)" }}
+                  style={{
+                    borderTop: "4px solid #6F42C1",
+                    background: "linear-gradient(135deg, #ffffff, #C6B3FF)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Prospect</div>
-                  <div className="fw-bold fs-5">{enquiryData?.stage_counts?.find(s => s.stage === "Opportunity")?.count}</div>
+                  <div className="fw-bold fs-5">
+                    {
+                      enquiryCardData?.enquiry_stage?.find(
+                        (s) => s.stage === "Opportunity"
+                      )?.count
+                    }
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className='col-12 col-lg-6 col-md-6'>
+        <div className="col-12 col-lg-6 col-md-6">
           <div className="card shadow-sm p-4 mb-4">
             <h5 className="fw-bold mb-3">Enquiry status</h5>
             <div className="row g-3">
-
               <div className="col-12 col-md-4 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
                   style={{
                     borderTop: "4px solid #FFC107",
-                    background: "linear-gradient(135deg, #ffffff, #FFECB3)"
+                    background: "linear-gradient(135deg, #ffffff, #FFECB3)",
                   }}
                 >
                   <div className="fw-semibold mb-1">Cold</div>
-                  <div className="fw-bold fs-5">{enquiryData?.status_counts?.find(s => s.status === "Cold")?.count}</div>
+                  <div className="fw-bold fs-5">
+                    {
+                      enquiryCardData?.enquiry_status?.find(
+                        (s) => s.status === "Cold"
+                      )?.count
+                    }
+                  </div>
                 </div>
               </div>
 
@@ -356,12 +435,17 @@ const EnquiryTab = ({ enquiryData }) => {
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
                   style={{
                     borderTop: "4px solid #117A65",
-                    background: "linear-gradient(135deg, #ffffff, #A3E4D7 )"
+                    background: "linear-gradient(135deg, #ffffff, #A3E4D7 )",
                   }}
-
                 >
                   <div className="fw-semibold mb-1">Hot</div>
-                  <div className="fw-bold fs-5">{enquiryData?.status_counts?.find(s => s.status === "Hot")?.count}</div>
+                  <div className="fw-bold fs-5">
+                    {
+                      enquiryCardData?.enquiry_status?.find(
+                        (s) => s.status === "Hot"
+                      )?.count
+                    }
+                  </div>
                 </div>
               </div>
 
@@ -370,33 +454,38 @@ const EnquiryTab = ({ enquiryData }) => {
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
                   style={{
                     borderTop: "4px solid #884EA0",
-                    background: "linear-gradient(135deg, #ffffff, #D7BDE2  )"
+                    background: "linear-gradient(135deg, #ffffff, #D7BDE2  )",
                   }}
                 >
                   <div className="fw-semibold mb-1">Warm</div>
-                  <div className="fw-bold fs-5">{enquiryData?.status_counts?.find(s => s.status === "Warm")?.count}</div>
+                  <div className="fw-bold fs-5">
+                    {
+                      enquiryCardData?.enquiry_status?.find(
+                        (s) => s.status === "Warm"
+                      )?.count
+                    }
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
-
-
 
       <div className="row p-2">
         <div className="col-12">
           <div className="card company-info-card">
             <div className="card-header py-3">
-              <h5 className="mb-0 fw-bold" style={{ color: "white" }}>Enquiry Table</h5>
+              <h5 className="mb-0 fw-bold" style={{ color: "white" }}>
+                Enquiry Table
+              </h5>
             </div>
             <div className="card-body p-4">
-              {enquiryData?.visit_details?.length > 0 ? (
+              {enquiryData?.data?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered">
                     <thead>
-                      <tr className='text-nowrap'>
+                      <tr className="text-nowrap">
                         <th>Date</th>
                         <th>Enquiry ID</th>
                         <th>Name</th>
@@ -413,24 +502,36 @@ const EnquiryTab = ({ enquiryData }) => {
                         <th>Actions</th>
                       </tr>
                     </thead>
-                    <tbody className='text-nowrap'>
-                      {enquiryData?.visit_details?.map((row, index) => (
+                    <tbody className="text-nowrap">
+                      {enquiryData?.data?.map((row, index) => (
                         <tr key={index}>
-                          <td>{new Date(row?.latest_action_datetime).toISOString().split('T')[0]}</td>
+                          <td>
+                            {
+                              new Date(row?.latest_action_datetime)
+                                .toISOString()
+                                .split("T")[0]
+                            }
+                          </td>
                           <td>{row?.enquiry_id}</td>
                           <td>{row?.customer_name}</td>
                           <td>{row?.customer_phone}</td>
                           <td>{row?.source || "Na(Online)"}</td>
-                          <td>{row?.type||"Na(New/Old)"}</td>
+                          <td>{row?.type || "Na(New/Old)"}</td>
                           <td>{row?.customer_email}</td>
                           <td>{row?.response || "Na(In Progress)"}</td>
                           <td>{row?.latest_stage}</td>
-                          <td>{[...Array(5)].map((_, i) => (
-                            <span
-                              key={i}
-                              className={`mdi ${i < row?.rate ? "mdi-star text-warning" : "mdi-star-outline text-muted"}`}
-                            ></span>
-                          ))}</td>
+                          <td>
+                            {[...Array(5)].map((_, i) => (
+                              <span
+                                key={i}
+                                className={`mdi ${
+                                  i < row?.rate
+                                    ? "mdi-star text-warning"
+                                    : "mdi-star-outline text-muted"
+                                }`}
+                              ></span>
+                            ))}
+                          </td>
                           <td>{row?.latest_status}</td>
                           <td>{row?.product || "Na"}</td>
                           <td>{row?.conversion || "Na"}%</td>
@@ -459,22 +560,16 @@ const EnquiryTab = ({ enquiryData }) => {
                 </div>
               )}
 
-              {enquiryData?.visit_details?.length > 0 && (
+              {enquiryData?.data?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">
                   <div className="text-muted">
-                    Showing 1 to {enquiryData?.visit_details.length} of {enquiryData?.visit_details.length} entries
+                    Showing {enquiryData?.data?.length} of{" "}
+                    {enquiryData?.total_count} entries
                   </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
+                  <NumberedPagination
+                    totalPages={enquiryData?.total_pages}
+                    onPageChange={setEnquiryPageNo}
+                  />
                 </div>
               )}
             </div>
@@ -482,7 +577,7 @@ const EnquiryTab = ({ enquiryData }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EnquiryTab
+export default EnquiryTab;

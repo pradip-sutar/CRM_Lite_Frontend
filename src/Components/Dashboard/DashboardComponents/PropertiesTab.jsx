@@ -16,6 +16,7 @@ import {
   CategoryScale,
   BarElement,
 } from "chart.js";
+import NumberedPagination from "../../Pagination/NumberedPagination";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -31,25 +32,49 @@ const Properties = ({ enable, rawfilterData }) => {
   const [productData, setproductData] = useState(null);
   const [activeTab, setActiveTab] = useState("Enquiry");
   const [enquiryTableData, setenquiryTableData] = useState([]);
+  const [enquiryPageNo, setEnquiryPageNo] = useState(1);
   const [salesTableData, setsalesTableData] = useState([]);
+  const [salesPageNo, setSalesPageNo] = useState(1);
   const [quoteTableData, setquoteTableData] = useState([]);
+  const [quotePageNo, setQuotePageNo] = useState(1);
   const [scheduleTableData, setscheduleTableData] = useState([]);
+  const [schedulePageNo, setSchedulePageNo] = useState(1);
   const buttons = ["Enquiry", "Sales", "Quote", "Schedule"];
 
   const fetchEnquiryTableData = async () => {
-    const response = await getProductreltd("Enquiry");
+    const response = await getProductreltd(
+      "Enquiry",
+      enquiryPageNo,
+      enable,
+      rawfilterData
+    );
     setenquiryTableData(response);
   };
   const fetchsalesTableData = async () => {
-    const response = await getProductreltd("Sales");
+    const response = await getProductreltd(
+      "Sales",
+      salesPageNo,
+      enable,
+      rawfilterData
+    );
     setsalesTableData(response);
   };
   const fetchquoteTableData = async () => {
-    const response = await getProductreltd("Quotation");
+    const response = await getProductreltd(
+      "Quotation",
+      quotePageNo,
+      enable,
+      rawfilterData
+    );
     setquoteTableData(response);
   };
   const fetchscheduleTableData = async () => {
-    const response = await getProductreltd("Schedule");
+    const response = await getProductreltd(
+      "Schedule",
+      schedulePageNo,
+      enable,
+      rawfilterData
+    );
     setscheduleTableData(response);
   };
 
@@ -72,9 +97,17 @@ const Properties = ({ enable, rawfilterData }) => {
 
   useEffect(() => {
     tabChangeTrack(activeTab);
-  }, [activeTab]);
+  }, [
+    activeTab,
+    enable,
+    rawfilterData,
+    enquiryPageNo,
+    salesPageNo,
+    quotePageNo,
+    schedulePageNo,
+  ]);
 
-  const fetchproductData = async (enable, rawfilterData) => {
+  const fetchproductData = async () => {
     try {
       const response = await getProductTab(enable, rawfilterData);
       setproductData(response);
@@ -84,14 +117,8 @@ const Properties = ({ enable, rawfilterData }) => {
   };
 
   useEffect(() => {
-    if (enable && rawfilterData) {
-      fetchproductData(enable, rawfilterData);
-    }
+    fetchproductData(enable, rawfilterData);
   }, [enable, rawfilterData]);
-
-  useEffect(() => {
-    fetchproductData();
-  }, []);
 
   const [employeeStats, setEmployeeStats] = useState([
     {
@@ -423,7 +450,7 @@ const Properties = ({ enable, rawfilterData }) => {
                 <h5 className="mb-0 fw-bold text-light">Enquiry Details</h5>
               </div>
               <div className="card-body p-4">
-                {enquiryTableData?.length > 0 ? (
+                {enquiryTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -440,7 +467,7 @@ const Properties = ({ enable, rawfilterData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {enquiryTableData?.map((row, index) => (
+                        {enquiryTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{row?.project_name}</td>
@@ -461,29 +488,16 @@ const Properties = ({ enable, rawfilterData }) => {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {enquiryTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={enquiryTableData?.total_pages}
+                      onPageChange={setEnquiryPageNo}
+                    />
                   </div>
                 )}
               </div>
@@ -500,7 +514,7 @@ const Properties = ({ enable, rawfilterData }) => {
                 <h5 className="mb-0 fw-bold text-light">Quote List</h5>
               </div>
               <div className="card-body p-4">
-                {quoteTableData?.length > 0 ? (
+                {quoteTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -519,7 +533,7 @@ const Properties = ({ enable, rawfilterData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {quoteTableData?.map((row, index) => (
+                        {quoteTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{row?.product_name}</td>
@@ -550,29 +564,16 @@ const Properties = ({ enable, rawfilterData }) => {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {quoteTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={quoteTableData?.total_pages}
+                      onPageChange={setQuotePageNo}
+                    />
                   </div>
                 )}
               </div>
@@ -589,7 +590,7 @@ const Properties = ({ enable, rawfilterData }) => {
                 <h5 className="mb-0 fw-bold text-light">Schedule List</h5>
               </div>
               <div className="card-body p-4">
-                {scheduleTableData?.length > 0 ? (
+                {scheduleTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -608,7 +609,7 @@ const Properties = ({ enable, rawfilterData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {scheduleTableData?.map((row, index) => (
+                        {scheduleTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{row?.product_name}</td>
@@ -641,29 +642,16 @@ const Properties = ({ enable, rawfilterData }) => {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {scheduleTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={scheduleTableData?.total_pages}
+                      onPageChange={setSchedulePageNo}
+                    />
                   </div>
                 )}
               </div>
@@ -680,7 +668,7 @@ const Properties = ({ enable, rawfilterData }) => {
                 <h5 className="mb-0 fw-bold text-light">Sales List</h5>
               </div>
               <div className="card-body p-4">
-                {salesTableData?.length > 0 ? (
+                {salesTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -695,7 +683,7 @@ const Properties = ({ enable, rawfilterData }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {salesTableData?.map((row, index) => (
+                        {salesTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
                             <td>{row?.product_name}</td>
@@ -714,29 +702,16 @@ const Properties = ({ enable, rawfilterData }) => {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {salesTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={salesTableData?.total_pages}
+                      onPageChange={setSalesPageNo}
+                    />
                   </div>
                 )}
               </div>

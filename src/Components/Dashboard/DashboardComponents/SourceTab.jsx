@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NumberedPagination from "../../Pagination/NumberedPagination";
-import { fetchPageData } from "../../../services/Pagination/Pagination";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
 import { getSource } from "../../../services/EnquiryBucket/apiSourceType";
 import {
   Chart as ChartJS,
@@ -25,7 +25,6 @@ ChartJS.register(
 import {
   getSourceTabData,
   getSourceTableData,
-  getEnquiryActionData,
 } from "../../../services/Dashboard/DashboardComponents/SourceTab";
 
 const SourceTab = ({ enable, rawfilterData }) => {
@@ -44,7 +43,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
   useEffect(() => {
     if (selectedSource) {
       setfilterSourceTableData(
-        sourceTableDATA.filter((data) => data.source === selectedSource)
+        sourceTableDATA.filter((data) => data.Source === selectedSource)
       );
     } else {
       setfilterSourceTableData([]);
@@ -70,24 +69,8 @@ const SourceTab = ({ enable, rawfilterData }) => {
     }
   };
 
-  const fetchEnquiryActionData = async (enable, rawfilterData) => {
-    try {
-      const response = await getEnquiryActionData(enable, rawfilterData);
-      setSourceEnquiryActionData(response);
-    } catch (error) {
-      console.error("Error fetching source data", error);
-    }
-  };
-
-  useEffect(() => {
-    if (enable && rawfilterData) {
-      fetchsourceData(enable, rawfilterData);
-      console.log("hi");
-    }
-  }, [enable, rawfilterData]);
-
   const loadData = async (url) => {
-    const result = await fetchPageData(url);
+    const result = await fetchPageData2(url);
     setSourceEnquiryActionData(result);
   };
 
@@ -101,8 +84,15 @@ const SourceTab = ({ enable, rawfilterData }) => {
   };
 
   useEffect(() => {
-    loadData(`/api/get_recent_enquiry_actions/?page=${enquiryActionPageNo}`);
-  }, [enquiryActionPageNo]);
+    if (enable && rawfilterData) {
+      loadData(
+        `/api/get_recent_enquiry_actions/?page=${enquiryActionPageNo}&from_date=${rawfilterData.fromDate}&to_date=${rawfilterData.toDate}`
+      );
+    } else {
+      loadData(`/api/get_recent_enquiry_actions/?page=${enquiryActionPageNo}`);
+    }
+  }, [enquiryActionPageNo, enable, rawfilterData]);
+
   const [reportStats, setReportStats] = useState([
     {
       id: 1,
@@ -204,11 +194,19 @@ const SourceTab = ({ enable, rawfilterData }) => {
       conversation: "Xyz",
     },
   ]);
+
+  useEffect(() => {
+    if (enable && rawfilterData) {
+      setEnquiryActionPageNo(1);
+      fetchsourceData(enable, rawfilterData);
+      fetchsourceTableData(enable, rawfilterData);
+    }
+  }, [enable, rawfilterData]);
+
   useEffect(() => {
     fetchSourceType();
     fetchsourceData();
     fetchsourceTableData();
-    fetchEnquiryActionData();
   }, []);
 
   const tabStyle = (tabName) => ({
@@ -223,11 +221,11 @@ const SourceTab = ({ enable, rawfilterData }) => {
 
   // Source Chart
   const sourceChartData = {
-    labels: sourceTableDATA?.map((item) => item.source),
+    labels: sourceTableDATA?.map((item) => item.Source),
     datasets: [
       {
         label: "Total Enquiry",
-        data: sourceTableDATA?.map((item) => item.total_enquiry_count),
+        data: sourceTableDATA?.map((item) => item.Total_Enquiry),
         backgroundColor: "#4e73df",
         borderRadius: {
           topLeft: 10,
@@ -238,7 +236,7 @@ const SourceTab = ({ enable, rawfilterData }) => {
       },
       {
         label: "Valid Enquiry",
-        data: sourceTableDATA?.map((item) => item.valid_enquiry_count),
+        data: sourceTableDATA?.map((item) => item.Valid_Enquiry),
         backgroundColor: "#1cc88a",
         borderRadius: {
           topLeft: 10,
@@ -1114,7 +1112,9 @@ const SourceTab = ({ enable, rawfilterData }) => {
                   <span class="mdi mdi-sale"></span>Total Sales
                 </span>
               </div>
-              <div className="fw-bold fs-4">{sourceData?.total_sales_count}</div>
+              <div className="fw-bold fs-4">
+                {sourceData?.total_sales_count}
+              </div>
             </div>
           </div>
         </div>
@@ -1284,9 +1284,9 @@ const SourceTab = ({ enable, rawfilterData }) => {
                             )?.map((row, index) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{row.source}</td>
-                                <td>{row.total_enquiry_count}</td>
-                                <td>{row.valid_enquiry_count}</td>
+                                <td>{row.Source}</td>
+                                <td>{row.Total_Enquiry}</td>
+                                <td>{row.Valid_Enquiry}</td>
                                 <td>{row.Lead}</td>
                                 <td>{row.Opportunity}</td>
                                 <td>{row.Quote}</td>

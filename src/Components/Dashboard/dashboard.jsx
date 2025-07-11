@@ -15,18 +15,9 @@ import SourceTab from "./DashboardComponents/SourceTab";
 import CommissionTab from "./DashboardComponents/CommissionTab";
 
 import { getOverView } from "../../services/Dashboard/DashboardComponents/OverviewTab";
-import {
-  getSourceTabData,
-  getSourceTableData,
-  getEnquiryActionData,
-} from "../../services/Dashboard/DashboardComponents/SourceTab";
-import { getProductTab } from "../../services/Dashboard/DashboardComponents/ProductTab";
-import { getFollowUpTab } from "../../services/Dashboard/DashboardComponents/FollowupTab";
-import { getEnquiryTab } from "../../services/Dashboard/DashboardComponents/EnquiryTab";
-import { getScheduleTab } from "../../services/Dashboard/DashboardComponents/SchedulesTab";
-import { getQuotationTab } from "../../services/Dashboard/DashboardComponents/QutationsTab";
-import { getBookingTab } from "../../services/Dashboard/DashboardComponents/BookingTab";
-import { getSalesTab } from "../../services/Dashboard/DashboardComponents/SalesTab";
+// import { getQuotationTab } from "../../services/Dashboard/DashboardComponents/QutationsTab";
+// import { getBookingTab } from "../../services/Dashboard/DashboardComponents/BookingTab";
+// import { getSalesTab } from "../../services/Dashboard/DashboardComponents/SalesTab";
 import { getBuyPersonaTab } from "../../services/Dashboard/DashboardComponents/BuyesPersonaTab";
 
 const Dashboard = () => {
@@ -38,13 +29,13 @@ const Dashboard = () => {
   // const [sourceTableDATA, setSourceTableData] = useState([]);
   // const [sourceEnquiryActionData, setSourceEnquiryActionData] = useState([]);
   // const [productData, setproductData] = useState(null);
-  const [FollowUpData, setFollowUpData] = useState(null);
-  const [enquiryData, setenquiryData] = useState(null);
-  const [scheduleData, setscheduleData] = useState(null);
-  const [quotationData, setquotationData] = useState(null);
-  const [bookingData, setbookingData] = useState(null);
-  const [salesData, setsalesData] = useState(null);
-  const [buyersPersonaData, setbuyersPersonaData] = useState(null);
+  // const [FollowUpData, setFollowUpData] = useState(null);
+  // const [enquiryData, setenquiryData] = useState(null);
+  // const [scheduleData, setscheduleData] = useState(null);
+  // const [quotationData, setquotationData] = useState(null);
+  // const [bookingData, setbookingData] = useState(null);
+  // const [salesData, setsalesData] = useState(null);
+  // const [buyersPersonaData, setbuyersPersonaData] = useState(null);
 
   const fetchOverViewData = async (enable, rawfilterData) => {
     try {
@@ -93,68 +84,68 @@ const Dashboard = () => {
   //   }
   // };
 
-  const fetchFollowUpData = async (enable, rawfilterData) => {
-    try {
-      const response = await getFollowUpTab(enable, rawfilterData);
-      setFollowUpData(response);
-    } catch (error) {
-      console.error("Error fetching FollowUp data", error);
-    }
-  };
+  // const fetchFollowUpData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getFollowUpTab(enable, rawfilterData);
+  //     setFollowUpData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching FollowUp data", error);
+  //   }
+  // };
 
-  const fetchEnquiryData = async (enable, rawfilterData) => {
-    try {
-      const response = await getEnquiryTab(enable, rawfilterData);
-      setenquiryData(response);
-    } catch (error) {
-      console.error("Error fetching Enquiry data", error);
-    }
-  };
+  // const fetchEnquiryData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getEnquiryTab(enable, rawfilterData);
+  //     setenquiryData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching Enquiry data", error);
+  //   }
+  // };
 
-  const fetchScheduleData = async (enable, rawfilterData) => {
-    try {
-      const response = await getScheduleTab(enable, rawfilterData);
-      setscheduleData(response);
-    } catch (error) {
-      console.error("Error fetching Schedule data", error);
-    }
-  };
+  // const fetchScheduleData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getScheduleTab(enable, rawfilterData);
+  //     setscheduleData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching Schedule data", error);
+  //   }
+  // };
 
-  const fetchQuotationData = async (enable, rawfilterData) => {
-    try {
-      const response = await getQuotationTab(enable, rawfilterData);
-      setquotationData(response);
-    } catch (error) {
-      console.error("Error fetching Quotation data", error);
-    }
-  };
+  // const fetchQuotationData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getQuotationTab(enable, rawfilterData);
+  //     setquotationData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching Quotation data", error);
+  //   }
+  // };
 
-  const fetchBookingData = async (enable, rawfilterData) => {
-    try {
-      const response = await getBookingTab(enable, rawfilterData);
-      setbookingData(response);
-    } catch (error) {
-      console.error("Error fetching Booking data", error);
-    }
-  };
+  // const fetchBookingData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getBookingTab(enable, rawfilterData);
+  //     setbookingData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching Booking data", error);
+  //   }
+  // };
 
-  const fetchSalesData = async (enable, rawfilterData) => {
-    try {
-      const response = await getSalesTab(enable, rawfilterData);
-      setsalesData(response);
-    } catch (error) {
-      console.error("Error fetching Sales data", error);
-    }
-  };
+  // const fetchSalesData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getSalesTab(enable, rawfilterData);
+  //     setsalesData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching Sales data", error);
+  //   }
+  // };
 
-  const fetchBuyPersonaData = async (enable, rawfilterData) => {
-    try {
-      const response = await getBuyPersonaTab(enable, rawfilterData);
-      setbuyersPersonaData(response);
-    } catch (error) {
-      console.error("Error fetching BuyPersona data", error);
-    }
-  };
+  // const fetchBuyPersonaData = async (enable, rawfilterData) => {
+  //   try {
+  //     const response = await getBuyPersonaTab(enable, rawfilterData);
+  //     setbuyersPersonaData(response);
+  //   } catch (error) {
+  //     console.error("Error fetching BuyPersona data", error);
+  //   }
+  // };
 
   const functionSwitcher = (component, enable, filterData) => {
     switch (component) {
@@ -170,25 +161,25 @@ const Dashboard = () => {
         // fetchproductData(enable, filterData);
         break;
       case "FollowUp":
-        fetchFollowUpData(enable, filterData);
+        // fetchFollowUpData(enable, filterData);
         break;
       case "Enquiry":
-        fetchEnquiryData(enable, filterData);
+        // fetchEnquiryData(enable, filterData);
         break;
       case "Shedules":
-        fetchScheduleData(enable, filterData);
+        // fetchScheduleData(enable, filterData);
         break;
       case "Quotations":
-        fetchQuotationData(enable, filterData);
+        // fetchQuotationData(enable, filterData);
         break;
       case "Bookings":
-        fetchBookingData(enable, filterData);
+        // fetchBookingData(enable, filterData);
         break;
       case "Sales":
-        fetchSalesData(enable, filterData);
+        // fetchSalesData(enable, filterData);
         break;
       case "Buyer Persona":
-        fetchBuyPersonaData(enable, filterData);
+        // fetchBuyPersonaData(enable, filterData);
         break;
 
       default:
@@ -210,7 +201,7 @@ const Dashboard = () => {
           fromDate,
           toDate,
         };
-         functionSwitcher(activeComponent, true, formatedData);
+        functionSwitcher(activeComponent, true, formatedData);
         (() => {
           setEnable(true);
           setrawfilterData(formatedData);
@@ -234,34 +225,21 @@ const Dashboard = () => {
       case "Product":
         return <PropertiesTab enable={enable} rawfilterData={rawfilterData} />;
       case "FollowUp":
-        return (
-          <CallingTab
-            FollowUpData={FollowUpData}
-            setFollowUpData={setFollowUpData}
-          />
-        );
+        return <CallingTab enable={enable} rawfilterData={rawfilterData} />;
       case "Enquiry":
-        return <EnquiryTab enquiryData={enquiryData} />;
+        return <EnquiryTab enable={enable} rawfilterData={rawfilterData} />;
       case "Shedules":
-        return <SheduleTab scheduleData={scheduleData} />;
+        return <SheduleTab enable={enable} rawfilterData={rawfilterData} />;
       case "Quotations":
-        return (
-          <QuotationTab
-            quotationData={quotationData}
-            setquotationData={setquotationData}
-          />
-        );
+        return <QuotationTab enable={enable} rawfilterData={rawfilterData} />;
       case "Bookings":
-        return (
-          <BookingTab
-            bookingData={bookingData}
-            setbookingData={setbookingData}
-          />
-        );
+        return <BookingTab enable={enable} rawfilterData={rawfilterData} />;
       case "Sales":
-        return <SalesTab salesData={salesData} />;
+        return <SalesTab enable={enable} rawfilterData={rawfilterData} />;
       case "Buyer Persona":
-        return <BuyerPersonaTab buyersPersonaData={buyersPersonaData} />;
+        return (
+          <BuyerPersonaTab enable={enable} rawfilterData={rawfilterData} />
+        );
 
       default:
         return null;
@@ -302,7 +280,27 @@ const Dashboard = () => {
             Search
           </button>
           <div>
-            <button className="btn btn-light">Reset</button>
+            <button
+              className="btn btn-light position-relative"
+              style={{ paddingRight: "24px" }}
+              onClick={() => {
+                setEnable(false);
+                setrawfilterData({});
+              }}
+            >
+              Reset
+              {enable && (
+                <span
+                  className="position-absolute bg-danger rounded-circle"
+                  style={{
+                    top: "6px",
+                    right: "6px",
+                    width: "08px",
+                    height: "08px",
+                  }}
+                ></span>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -310,7 +308,7 @@ const Dashboard = () => {
       {activeComponent === "FollowUp" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
-            <div className="mb-3" style={{ width: "200px" }}>
+            {/* <div className="mb-3" style={{ width: "200px" }}>
               <label htmlFor="timePeriod" className="form-label fw-bold">
                 Date Range:
               </label>
@@ -333,7 +331,7 @@ const Dashboard = () => {
                 <option value="pradip">Pradip Sutar</option>
                 <option value="amit">Amit Das</option>
               </select>
-            </div>
+            </div> */}
             <div className="mb-3" style={{ width: "200px" }}>
               <label htmlFor="dataSource" className="form-label fw-bold">
                 Data Source:
@@ -348,7 +346,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      {activeComponent === "Product" && (
+      {/* {activeComponent === "Product" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
@@ -365,38 +363,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      )}
-      {activeComponent === "Buyer Persona" && (
-        <div className="row g-3 mb-4">
-          <div className="d-flex justify-content-end gap-3 pr-2">
-            <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="timePeriod" className="form-label fw-bold">
-                Date Range:
-              </label>
-              <select className="form-select" id="timePeriod">
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="annually">Annually</option>
-              </select>
-            </div>
-            <div className="mb-3" style={{ width: "200px" }}>
-              <label htmlFor="employee" className="form-label fw-bold">
-                Employee:
-              </label>
-              <select className="form-select" id="employee">
-                <option value="raj">Raj Tripathy</option>
-                <option value="abhishek">Abhishek Rathi</option>
-                <option value="rahul">Rahul Pani</option>
-                <option value="pradip">Pradip Sutar</option>
-                <option value="amit">Amit Das</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      )}
-      {activeComponent === "Shedules" && (
+      )} */}
+      {/* {activeComponent === "Buyer Persona" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
@@ -425,8 +393,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      )}
-      {activeComponent === "Quotations" && (
+      )} */}
+      {/* {activeComponent === "Shedules" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
@@ -455,8 +423,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      )}
-      {activeComponent === "Bookings" && (
+      )} */}
+      {/* {activeComponent === "Quotations" && (
         <div className="row g-3 mb-4">
           <div className="d-flex justify-content-end gap-3 pr-2">
             <div className="mb-3" style={{ width: "200px" }}>
@@ -485,7 +453,37 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+      {/* {activeComponent === "Bookings" && (
+        <div className="row g-3 mb-4">
+          <div className="d-flex justify-content-end gap-3 pr-2">
+            <div className="mb-3" style={{ width: "200px" }}>
+              <label htmlFor="timePeriod" className="form-label fw-bold">
+                Date Range:
+              </label>
+              <select className="form-select" id="timePeriod">
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="annually">Annually</option>
+              </select>
+            </div>
+            <div className="mb-3" style={{ width: "200px" }}>
+              <label htmlFor="employee" className="form-label fw-bold">
+                Employee:
+              </label>
+              <select className="form-select" id="employee">
+                <option value="raj">Raj Tripathy</option>
+                <option value="abhishek">Abhishek Rathi</option>
+                <option value="rahul">Rahul Pani</option>
+                <option value="pradip">Pradip Sutar</option>
+                <option value="amit">Amit Das</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 
