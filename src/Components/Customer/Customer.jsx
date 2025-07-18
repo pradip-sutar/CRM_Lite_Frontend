@@ -272,8 +272,8 @@ function Customer() {
                   {customers?.data?.map((customer, index) => (
                     <CustomerRow
                       customer={customer}
-                      index={(currentPage - 1) * (index + 1)}
-                      key={index}
+                      index={(currentPage - 1) *10+ (index )}
+                      key={index}x
                     />
                   ))}
                 </tbody>

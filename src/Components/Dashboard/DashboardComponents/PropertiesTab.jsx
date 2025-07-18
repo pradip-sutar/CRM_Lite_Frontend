@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Line, Bar } from "react-chartjs-2";
+import {
+  getProductTab,
+  getProductreltd,
+} from "../../../services/Dashboard/DashboardComponents/ProductTab";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -12,6 +16,7 @@ import {
   CategoryScale,
   BarElement,
 } from "chart.js";
+import NumberedPagination from "../../Pagination/NumberedPagination";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -23,8 +28,97 @@ ChartJS.register(
   BarElement
 );
 
-const Properties = ({ productData }) => {
-  console.log(productData);
+const Properties = ({ enable, rawfilterData }) => {
+  const [productData, setproductData] = useState(null);
+  const [activeTab, setActiveTab] = useState("Enquiry");
+  const [enquiryTableData, setenquiryTableData] = useState([]);
+  const [enquiryPageNo, setEnquiryPageNo] = useState(1);
+  const [salesTableData, setsalesTableData] = useState([]);
+  const [salesPageNo, setSalesPageNo] = useState(1);
+  const [quoteTableData, setquoteTableData] = useState([]);
+  const [quotePageNo, setQuotePageNo] = useState(1);
+  const [scheduleTableData, setscheduleTableData] = useState([]);
+  const [schedulePageNo, setSchedulePageNo] = useState(1);
+  const buttons = ["Enquiry", "Sales", "Quote", "Schedule"];
+
+  const fetchEnquiryTableData = async () => {
+    const response = await getProductreltd(
+      "Enquiry",
+      enquiryPageNo,
+      enable,
+      rawfilterData
+    );
+    setenquiryTableData(response);
+  };
+  const fetchsalesTableData = async () => {
+    const response = await getProductreltd(
+      "Sales",
+      salesPageNo,
+      enable,
+      rawfilterData
+    );
+    setsalesTableData(response);
+  };
+  const fetchquoteTableData = async () => {
+    const response = await getProductreltd(
+      "Quotation",
+      quotePageNo,
+      enable,
+      rawfilterData
+    );
+    setquoteTableData(response);
+  };
+  const fetchscheduleTableData = async () => {
+    const response = await getProductreltd(
+      "Schedule",
+      schedulePageNo,
+      enable,
+      rawfilterData
+    );
+    setscheduleTableData(response);
+  };
+
+  const tabChangeTrack = (tab) => {
+    switch (tab) {
+      case "Enquiry":
+        fetchEnquiryTableData();
+        break;
+      case "Sales":
+        fetchsalesTableData();
+        break;
+      case "Quote":
+        fetchquoteTableData();
+        break;
+      case "Schedule":
+        fetchscheduleTableData();
+        break;
+    }
+  };
+
+  useEffect(() => {
+    tabChangeTrack(activeTab);
+  }, [
+    activeTab,
+    enable,
+    rawfilterData,
+    enquiryPageNo,
+    salesPageNo,
+    quotePageNo,
+    schedulePageNo,
+  ]);
+
+  const fetchproductData = async () => {
+    try {
+      const response = await getProductTab(enable, rawfilterData);
+      setproductData(response);
+    } catch (error) {
+      console.error("Error fetching product data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchproductData(enable, rawfilterData);
+  }, [enable, rawfilterData]);
 
   const [employeeStats, setEmployeeStats] = useState([
     {
@@ -57,29 +151,29 @@ const Properties = ({ productData }) => {
     },
   ]);
 
- const colors = [
-  { background: "#007bff", border: "#1E90FF" },
-  { background: "#28a745", border: "#2E8B57" },
-  { background: "#ffc107", border: "#FFA500" },
-  { background: "#dc3545", border: "#B22222" }, // Add more if needed
-];
+  const colors = [
+    { background: "#007bff", border: "#1E90FF" },
+    { background: "#28a745", border: "#2E8B57" },
+    { background: "#ffc107", border: "#FFA500" },
+    { background: "#dc3545", border: "#B22222" }, // Add more if needed
+  ];
 
-// Create Chart.js dataset format
-const activityData = {
-  labels: ["Enquiry", "Quote", "Schedule", "Sales"],
-  datasets: productData?.map((project, index) => ({
-    label: project.project_name,
-    data: [
-      project.enquiry_count,
-      project.quotation_count,
-      project.visit_count,
-      project.sale_count,
-    ],
-    backgroundColor: colors[index % colors.length].background,
-    borderColor: colors[index % colors.length].border,
-    borderWidth: 1,
-  }))
-};
+  // Create Chart.js dataset format
+  const activityData = {
+    labels: ["Enquiry", "Quote", "Schedule", "Sales"],
+    datasets: productData?.map((project, index) => ({
+      label: project.project_name,
+      data: [
+        project.enquiry_count,
+        project.quotation_count,
+        project.visit_count,
+        project.sale_count,
+      ],
+      backgroundColor: colors[index % colors.length].background,
+      borderColor: colors[index % colors.length].border,
+      borderWidth: 1,
+    })),
+  };
   const options = {
     responsive: true,
     plugins: {
@@ -114,8 +208,7 @@ const activityData = {
   };
 
   // Tab Button
-  const [activeTab, setActiveTab] = useState("Enquiry");
-  const buttons = ["Enquiry", "Sales", "Quote", "Schedule"];
+
   const getStatusBadgeClass = (status) => {
     switch (status?.toLowerCase()) {
       case "hot":
@@ -324,7 +417,9 @@ const activityData = {
                 </button>
               </div>
               <div className="chart-container">
-                {productData && <Bar data={activityData} options={options} height={80} /> }
+                {productData && (
+                  <Bar data={activityData} options={options} height={80} />
+                )}
               </div>
             </div>
           </div>
@@ -355,7 +450,7 @@ const activityData = {
                 <h5 className="mb-0 fw-bold text-light">Enquiry Details</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {enquiryTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -372,15 +467,15 @@ const activityData = {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {enquiryTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
+                            <td>{row?.project_name}</td>
                             <td>{row?.type}</td>
-                            <td>{row?.enquiries}</td>
-                            <td>{row?.visit}</td>
-                            <td>{row?.quotations}</td>
-                            <td>{row?.booking}</td>
+                            <td>{row?.enquiry_count}</td>
+                            <td>{row?.visit_count}</td>
+                            <td>{row?.quote_count}</td>
+                            <td>{row?.book_count}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -393,29 +488,16 @@ const activityData = {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {enquiryTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={enquiryTableData?.total_pages}
+                      onPageChange={setEnquiryPageNo}
+                    />
                   </div>
                 )}
               </div>
@@ -432,7 +514,7 @@ const activityData = {
                 <h5 className="mb-0 fw-bold text-light">Quote List</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {quoteTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -451,25 +533,25 @@ const activityData = {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {quoteTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
-                            <td>{row?.date}</td>
-                            <td>{row?.stage}</td>
+                            <td>{row?.product_name}</td>
+                            <td>{row?.latest_date}</td>
+                            <td>{row?.enquiry_stage}</td>
                             <td>
                               <span
                                 className={`badge-pill ${getStatusBadgeClass(
-                                  row?.status
+                                  row?.enquiry_status
                                 )}`}
                               >
-                                {row?.status}
+                                {row?.enquiry_status}
                               </span>
                             </td>
-                            <td>{row?.customerName}</td>
-                            <td>{`QID-${row?.id}`}</td>
-                            <td>{`v${row?.version || 1}`}</td>
-                            <td>₹{row?.amount?.toLocaleString()}</td>
+                            <td>{row?.enquiry_name}</td>
+                            <td>{`${row?.quote_id}`}</td>
+                            <td>{`${row?.version || 1}`}</td>
+                            <td>₹{row?.quote_amount?.toLocaleString()}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -482,29 +564,16 @@ const activityData = {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {quoteTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={quoteTableData?.total_pages}
+                      onPageChange={setQuotePageNo}
+                    />
                   </div>
                 )}
               </div>
@@ -521,7 +590,7 @@ const activityData = {
                 <h5 className="mb-0 fw-bold text-light">Schedule List</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {scheduleTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -540,12 +609,12 @@ const activityData = {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {scheduleTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
-                            <td>{row?.date}</td>
-                            <td>{row?.stage}</td>
+                            <td>{row?.product_name}</td>
+                            <td>{row?.latest_date}</td>
+                            <td>{row?.enquiry_stage}</td>
                             <td>
                               <span
                                 className={`badge-pill ${getStatusBadgeClass(
@@ -555,13 +624,11 @@ const activityData = {
                                 {row?.status}
                               </span>
                             </td>
-                            <td>{row?.customerName}</td>
-                            <td>{`SID-${row?.id}`}</td>
-                            <td>{`v${row?.version || 1}`}</td>
+                            <td>{row?.enquiry_name}</td>
+                            <td>{`${row?.schedule_id}`}</td>
+                            <td>{`${row?.version || 1}`}</td>
                             <td>
-                              <span className="badge bg-success-subtle text-success fw-semibold px-3 py-1 rounded-pill">
-                                Confirmed
-                              </span>
+                              <span>{row?.enquiry_status}</span>
                             </td>
                           </tr>
                         ))}
@@ -575,29 +642,16 @@ const activityData = {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {scheduleTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={scheduleTableData?.total_pages}
+                      onPageChange={setSchedulePageNo}
+                    />
                   </div>
                 )}
               </div>
@@ -614,7 +668,7 @@ const activityData = {
                 <h5 className="mb-0 fw-bold text-light">Sales List</h5>
               </div>
               <div className="card-body p-4">
-                {employeeStats?.length > 0 ? (
+                {salesTableData?.data?.length > 0 ? (
                   <div className="table-responsive">
                     <table className="table table-hover table-bordered align-middle">
                       <thead>
@@ -629,12 +683,12 @@ const activityData = {
                         </tr>
                       </thead>
                       <tbody>
-                        {employeeStats?.map((row, index) => (
+                        {salesTableData?.data?.map((row, index) => (
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{row?.name}</td>
+                            <td>{row?.product_name}</td>
                             <td>{row?.date}</td>
-                            <td>{row?.customerName}</td>
+                            <td>{row?.customer_name}</td>
                             <td>₹{row?.amount?.toLocaleString()}</td>
                           </tr>
                         ))}
@@ -648,29 +702,16 @@ const activityData = {
                   </div>
                 )}
 
-                {employeeStats?.length > 0 && (
+                {salesTableData?.data?.length > 0 && (
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div className="text-muted">
                       Showing 1 to {employeeStats.length} of{" "}
                       {employeeStats.length} entries
                     </div>
-                    <ul className="pagination mb-0">
-                      <li className="page-item disabled">
-                        <a className="page-link" href="#">
-                          Previous
-                        </a>
-                      </li>
-                      <li className="page-item active">
-                        <a className="page-link" href="#">
-                          1
-                        </a>
-                      </li>
-                      <li className="page-item">
-                        <a className="page-link" href="#">
-                          Next
-                        </a>
-                      </li>
-                    </ul>
+                    <NumberedPagination
+                      totalPages={salesTableData?.total_pages}
+                      onPageChange={setSalesPageNo}
+                    />
                   </div>
                 )}
               </div>

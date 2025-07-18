@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NumberedPagination from "../../Pagination/NumberedPagination";
-import { fetchPageData } from "../../../services/Pagination/Pagination";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
+import { getSource } from "../../../services/EnquiryBucket/apiSourceType";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,26 +22,77 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+import {
+  getSourceTabData,
+  getSourceTableData,
+} from "../../../services/Dashboard/DashboardComponents/SourceTab";
 
-const SourceTab = ({
-  sourceData,
-  sourceTableDATA,
-  sourceEnquiryActionData,
-  setSourceEnquiryActionData,
-}) => {
-  console.log(sourceData);
-  console.log(sourceEnquiryActionData);
-
+const SourceTab = ({ enable, rawfilterData }) => {
+  const [souceType, setSourceType] = useState([]);
   const [enquiryActionPageNo, setEnquiryActionPageNo] = useState(1);
+  const [sourceData, setsourceData] = useState(null);
+  const [sourceTableDATA, setSourceTableData] = useState([]);
+  const [filtersourceTableDATA, setfilterSourceTableData] = useState([]);
+  const [sourceEnquiryActionData, setSourceEnquiryActionData] = useState([]);
+  const [showTable, setShowTable] = useState(true);
+  const [selectedReport, setSelectedReport] = useState(
+    "Source Wise Performance"
+  );
+  const [selectedSource, setSelectedSource] = useState("");
+  const [activeTab, setActiveTab] = useState("bar");
+  useEffect(() => {
+    if (selectedSource) {
+      setfilterSourceTableData(
+        sourceTableDATA.filter((data) => data.Source === selectedSource)
+      );
+    } else {
+      setfilterSourceTableData([]);
+    }
+  }, [selectedSource]);
+
+  //Source
+  const fetchsourceData = async (enable, rawfilterData) => {
+    try {
+      const response = await getSourceTabData(enable, rawfilterData);
+      setsourceData(response);
+    } catch (error) {
+      console.error("Error fetching source data", error);
+    }
+  };
+
+  const fetchsourceTableData = async (enable, rawfilterData) => {
+    try {
+      const response = await getSourceTableData(enable, rawfilterData);
+      setSourceTableData(response);
+    } catch (error) {
+      console.error("Error fetching source data", error);
+    }
+  };
 
   const loadData = async (url) => {
-    const result = await fetchPageData(url);
+    const result = await fetchPageData2(url);
     setSourceEnquiryActionData(result);
   };
 
+  const fetchSourceType = async () => {
+    try {
+      const data = await getSource();
+      setSourceType(data);
+    } catch (error) {
+      console.error("Error fetching source type data:", error);
+    }
+  };
+
   useEffect(() => {
-    loadData(`/api/get_recent_enquiry_actions/?page=${enquiryActionPageNo}`);
-  }, [enquiryActionPageNo]);
+    if (enable && rawfilterData) {
+      loadData(
+        `/api/get_recent_enquiry_actions/?page=${enquiryActionPageNo}&from_date=${rawfilterData.fromDate}&to_date=${rawfilterData.toDate}`
+      );
+    } else {
+      loadData(`/api/get_recent_enquiry_actions/?page=${enquiryActionPageNo}`);
+    }
+  }, [enquiryActionPageNo, enable, rawfilterData]);
+
   const [reportStats, setReportStats] = useState([
     {
       id: 1,
@@ -143,11 +195,20 @@ const SourceTab = ({
     },
   ]);
 
-  const [showTable, setShowTable] = useState(true);
-  const [selectedReport, setSelectedReport] = useState(
-    "Source Wise Performance"
-  );
-  const [activeTab, setActiveTab] = useState("bar");
+  useEffect(() => {
+    if (enable && rawfilterData) {
+      setEnquiryActionPageNo(1);
+      fetchsourceData(enable, rawfilterData);
+      fetchsourceTableData(enable, rawfilterData);
+    }
+  }, [enable, rawfilterData]);
+
+  useEffect(() => {
+    fetchSourceType();
+    fetchsourceData();
+    fetchsourceTableData();
+  }, []);
+
   const tabStyle = (tabName) => ({
     backgroundColor: activeTab === tabName ? "#5f5dfc" : "white",
     border: "1px solid #5f5dfc",
@@ -160,11 +221,11 @@ const SourceTab = ({
 
   // Source Chart
   const sourceChartData = {
-    labels: sourceTableDATA.map((item) => item.source),
+    labels: sourceTableDATA?.map((item) => item.Source),
     datasets: [
       {
         label: "Total Enquiry",
-        data: sourceTableDATA.map((item) => item.total_enquiry_count),
+        data: sourceTableDATA?.map((item) => item.Total_Enquiry),
         backgroundColor: "#4e73df",
         borderRadius: {
           topLeft: 10,
@@ -175,7 +236,7 @@ const SourceTab = ({
       },
       {
         label: "Valid Enquiry",
-        data: sourceTableDATA.map((item) => item.valid_enquiry_count),
+        data: sourceTableDATA?.map((item) => item.Valid_Enquiry),
         backgroundColor: "#1cc88a",
         borderRadius: {
           topLeft: 10,
@@ -186,7 +247,7 @@ const SourceTab = ({
       },
       {
         label: "Lead",
-        data: sourceTableDATA.map((item) => item.Lead),
+        data: sourceTableDATA?.map((item) => item.Lead),
         backgroundColor: "#36b9cc",
         borderRadius: {
           topLeft: 10,
@@ -197,7 +258,7 @@ const SourceTab = ({
       },
       {
         label: "Opportunity",
-        data: sourceTableDATA.map((item) => item.Opportunity),
+        data: sourceTableDATA?.map((item) => item.Opportunity),
         backgroundColor: "#f6c23e",
         borderRadius: {
           topLeft: 10,
@@ -208,7 +269,7 @@ const SourceTab = ({
       },
       {
         label: "Quote",
-        data: sourceTableDATA.map((item) => item.Quote),
+        data: sourceTableDATA?.map((item) => item.Quote),
         backgroundColor: "#e74a3b",
         borderRadius: {
           topLeft: 10,
@@ -971,8 +1032,8 @@ const SourceTab = ({
       </style>
 
       {/* Card Section */}
-      <div className="row g-3">
-        <div className="col-12 col-lg-3 col-md-6">
+      <div className="row g-3 d-flex justify-content-between">
+        <div className="col-12 col-lg-4 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -993,7 +1054,7 @@ const SourceTab = ({
           </div>
         </div>
 
-        <div className="col-12 col-lg-3 col-md-6">
+        <div className="col-12 col-lg-4 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -1016,7 +1077,7 @@ const SourceTab = ({
           </div>
         </div>
 
-        <div className="col-12 col-lg-3 col-md-6">
+        {/* <div className="col-12 col-lg-3 col-md-6">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -1026,7 +1087,7 @@ const SourceTab = ({
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
-                {/* <BlockIcon style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }} /> */}
+                
                 <span className="fw-semibold">
                   <span class="mdi mdi-chart-pie"></span>Conversion Rate
                 </span>
@@ -1034,9 +1095,9 @@ const SourceTab = ({
               <div className="fw-bold fs-4">24.8%</div>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div className="col-12 col-lg-3 col-md-6">
+        <div className="col-12 col-lg-4 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
             style={{
@@ -1051,7 +1112,9 @@ const SourceTab = ({
                   <span class="mdi mdi-sale"></span>Total Sales
                 </span>
               </div>
-              <div className="fw-bold fs-4">631</div>
+              <div className="fw-bold fs-4">
+                {sourceData?.total_sales_count}
+              </div>
             </div>
           </div>
         </div>
@@ -1059,11 +1122,11 @@ const SourceTab = ({
 
       {/* Filter Section */}
 
-      <div className="row g-3 mb-1  justify-content-between">
+      {/* <div className="row g-3 mb-1  justify-content-between">
         <div className="col-12 col-md-6 col-lg-12 ">
           <div className="card shadow-sm px-3 py-3">
             <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-              {/* Start Date */}
+              
               <div style={{ width: "200px" }}>
                 <input
                   type="date"
@@ -1074,7 +1137,7 @@ const SourceTab = ({
 
               <span>to</span>
 
-              {/* End Date */}
+           
               <div style={{ width: "200px" }}>
                 <input
                   type="date"
@@ -1088,7 +1151,7 @@ const SourceTab = ({
                 </button>
               </div>
 
-              {/* Medium Filter */}
+      
               <div className="d-flex" style={{ width: "250px" }}>
                 <span className="fw-bold mt-2">Medium: </span>
                 <select className="form-select">
@@ -1111,7 +1174,7 @@ const SourceTab = ({
                 </select>
               </div>
 
-              {/* Reset Button */}
+          
               <div>
                 <button className="btn btn-outline-primary btn-sm">
                   <span class="mdi mdi-refresh"></span> Reset
@@ -1120,7 +1183,7 @@ const SourceTab = ({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Dropdown Section */}
       <div>
@@ -1129,19 +1192,19 @@ const SourceTab = ({
           <div className="d-flex justify-content-between p-3">
             <div className="d-flex" style={{ width: "300px" }}>
               <span className="fw-bold mt-2 me-2 text-nowrap">
-                Report Type:
+                Source Type:
               </span>
               <select
                 className="form-select"
-                value={selectedReport}
-                onChange={(e) => setSelectedReport(e.target.value)}
+                value={selectedSource}
+                onChange={(e) => setSelectedSource(e.target.value)}
               >
-                <option>Source Wise Performance</option>
-                <option>Bulk Upload Validation</option>
-                <option>Validation Report</option>
-                <option>Activity Report</option>
-                <option>Stage Wise</option>
-                <option>Status Wise Report</option>
+                <option value="">Select Source</option>
+                {souceType?.map((data, index) => (
+                  <option key={index} value={data.name}>
+                    {data.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="d-flex">
@@ -1215,18 +1278,20 @@ const SourceTab = ({
                             </tr>
                           </thead>
                           <tbody>
-                            {sourceTableDATA.map((row, index) => (
+                            {(filtersourceTableDATA.length > 0
+                              ? filtersourceTableDATA
+                              : sourceTableDATA
+                            )?.map((row, index) => (
                               <tr key={index}>
                                 <td>{index + 1}</td>
-
-                                <td>{row.source}</td>
-                                <td>{row.total_enquiry_count}</td>
-                                <td>{row.valid_enquiry_count}</td>
+                                <td>{row.Source}</td>
+                                <td>{row.Total_Enquiry}</td>
+                                <td>{row.Valid_Enquiry}</td>
                                 <td>{row.Lead}</td>
                                 <td>{row.Opportunity}</td>
                                 <td>{row.Quote}</td>
                                 {/* <td>{row.schedule}</td>
-                                <td>{row.sales}</td> */}
+                                <td>{row.total_sales_count}</td> */}
                               </tr>
                             ))}
                           </tbody>
@@ -1898,7 +1963,7 @@ const SourceTab = ({
                         {/* <th scope="col">Validation</th> */}
                         {/* <th scope="col">Response</th> */}
                         {/* <th scope="col">Activity</th> */}
-                        <th scope="col">Stage</th>=
+                        <th scope="col">Stage</th>
                         <th scope="col">Status</th>
                         <th scope="col">Rating</th>
                         <th scope="col">Last Date</th>
@@ -1908,7 +1973,7 @@ const SourceTab = ({
                     <tbody>
                       {sourceEnquiryActionData?.data?.map((row, index) => (
                         <tr key={index}>
-                          <td>{(enquiryActionPageNo-1)*10+index + 1}</td>
+                          <td>{(enquiryActionPageNo - 1) * 10 + index + 1}</td>
                           <td>{row?.source}</td>
                           <td>{row?.date}</td>
                           {/* <td>{row?.assign}</td> */}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteProduct } from "../../services/Product/apiProductForm";
 import { fetchPageData } from "../../services/Pagination/Pagination";
 import NumberedPagination from "../Pagination/NumberedPagination";
+import { HandleDeleteById } from "../../services/DeleteSwal/HandleDeleteById";
 
 function Product() {
   const [productData, setProductData] = useState([]);
@@ -13,9 +14,7 @@ function Product() {
   });
 
   useEffect(() => {
-    const url = `${
-      import.meta.env.VITE_URL_BASE
-    }/api/project_new_handler/?page=${currentPage}`;
+    const url = `${import.meta.env.VITE_URL_BASE}/api/project_new_handler/`;
     fetchData(url);
   }, [currentPage]);
 
@@ -26,12 +25,7 @@ function Product() {
 
   const deleteProductfn = async (id) => {
     const status = await deleteProduct(id);
-    if (status == 204) {
-      const url = `${
-        import.meta.env.VITE_URL_BASE
-      }/api/project_new_handler/?page=${currentPage}`;
-      fetchData(url);
-    }
+    return status;
   };
 
   const navigate = useNavigate();
@@ -114,7 +108,7 @@ function Product() {
                                   <div
                                     onClick={() =>
                                       navigate("/product/product-form", {
-                                        state: { data: row,edit:"true" },
+                                        state: { data: row, edit: "true" },
                                       })
                                     }
                                     className="btn btn-text-dark btn-sm small py-1 px-2 waves-effect waves-light"
@@ -127,7 +121,14 @@ function Product() {
 
                                   <div
                                     onClick={() =>
-                                      deleteProductfn(row.project_id)
+                                      HandleDeleteById(
+                                        row.project_id,
+                                        deleteProductfn,
+                                        fetchData,
+                                        `${
+                                          import.meta.env.VITE_URL_BASE
+                                        }/api/project_new_handler/`
+                                      )
                                     }
                                     className="btn btn-text-danger btn-sm small py-1 px-2"
                                     data-bs-toggle="tooltip"
@@ -149,19 +150,6 @@ function Product() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Pagination */}
-              <div className="d-flex justify-content-between align-items-center mt-3">
-                <div className="text-muted">
-                  Showing{" "}
-                  {Math.min(paginationInfo?.perPage, productData?.length)} of{" "}
-                  {paginationInfo.total} entries
-                </div>
-                <NumberedPagination
-                  totalPages={2}
-                  onPageChange={setCurrentPage}
-                />
               </div>
             </div>
           </div>

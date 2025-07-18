@@ -17,7 +17,7 @@ import { apiGetProductView } from "../../services/FollowUp/AccountProfileview/ap
 
 const Productviews = () => {
   const location = useLocation();
-  const { enquiry_id = "", confirm_project_name = null } = location.state || {};
+  const { enquiry_id = "", confirm_project_name = null,activeTab="Today" } = location.state || {};
   console.log(location.state);
 
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const Productviews = () => {
     try {
       const res = await apiPostProductView(data?.confirm_project, enquiry_id);
       if (res === 200) {
-        navigate("/FollowUp");
+        navigate("/followUp", { state: { activeTab } });
       }
     } catch (error) {
       console.log(error);

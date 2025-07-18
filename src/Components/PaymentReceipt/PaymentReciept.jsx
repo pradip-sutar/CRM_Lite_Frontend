@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import crmStore from "../../Utils/crmStore";
-import { fetchPageData } from "../../services/Pagination/Pagination";
+import { fetchPageData2 } from "../../services/Pagination/Pagination";
 import NumberedPagination from "../Pagination/NumberedPagination";
 function PaymentReciept() {
   const navigate = useNavigate();
@@ -9,9 +9,6 @@ function PaymentReciept() {
   const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const [paymentReciept, setPaymentReciept] = useState([]);
 
-  const [nextUrl, setNextUrl] = useState(null);
-  const [prevUrl, setPrevUrl] = useState(null);
-  const [count, setCount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState({
     total: 0,
@@ -25,24 +22,18 @@ function PaymentReciept() {
     loadData(url);
   }, [currentPage]);
 
-  
   const loadData = async (url) => {
     setLoading(true);
-    const result = await fetchPageData(url);
+    const result = await fetchPageData2(url);
     console.log("result", result);
 
     setPaymentReciept(result);
-    
-    setCount(result.total);
     setPaginationInfo({
       total: result.total || 0,
       perPage: result.perPage || 10,
     });
     setLoading(false);
   };
-
-
-
 
   // const fetchPaymentReciept = async () => {
   //   try {
@@ -132,7 +123,6 @@ function PaymentReciept() {
                     className="table table-bordered dataTable no-footer"
                     id="companyinfo_table"
                     aria-describedby="companyinfo_table_info"
-                  
                   >
                     <thead className="table-secondary">
                       <tr>
@@ -329,12 +319,12 @@ function PaymentReciept() {
           {/* Pagination */}
           <div className="d-flex justify-content-between align-items-center mt-3">
             <div className="text-muted">
-              Showing {paginationInfo.perPage} of {count} entries
+              Showing {paginationInfo.perPage} of  entries
             </div>
-               <NumberedPagination
-                  totalPages={2}
-                  onPageChange={setCount}
-                />
+            <NumberedPagination
+              totalPages={paymentReciept.total_pages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </div>

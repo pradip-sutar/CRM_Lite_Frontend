@@ -19,7 +19,7 @@ export const getProductForm = async (url) => {
     return res.data;
   } catch (error) {
     console.log(error);
-    toast.error("Error on Post of Product Data");
+    
   }
 };
 
@@ -28,19 +28,21 @@ export const deleteProduct = async (id) => {
     const res = await apiGateWay.delete(
       `/api/project_new_handler/?project_id=${id}`
     );
-    if (res.status == 204) {
-      return res.status;
-    }
+
+    return res.status;
   } catch (error) {
     console.log(error);
     toast.error("Error on Delet Product");
   }
 };
 
-export const editProduct = async (data,project_id) => {
+export const editProduct = async (data, project_id) => {
   try {
-    const response = await apiGateWay.put(`/api/project_new_handler/?project_id=${project_id}`, data);
-    return response.status
+    const response = await apiGateWay.put(
+      `/api/project_new_handler/?project_id=${project_id}`,
+      data
+    );
+    return response.status;
   } catch (error) {
     console.log(error);
     toast.error("Error on Updata Product ");

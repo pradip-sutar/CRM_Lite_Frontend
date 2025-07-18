@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { postProductForm ,editProduct} from "../../services/Product/apiProductForm";
+import {
+  postProductForm,
+  editProduct,
+} from "../../services/Product/apiProductForm";
 
 function AddProductForm() {
   const navigate = useNavigate();
@@ -54,7 +57,16 @@ function AddProductForm() {
       }
     });
     if (editData) {
-      const res = await editProduct(formData,data?.ProductInfo?.[0]?.project_id);
+      const cleanedData = {};
+      for (let [key, value] of formData.entries()) {
+        const cleanedKey = key.replace(/\[\d+\]$/, "");
+        cleanedData[cleanedKey] = value;
+      }
+
+      const res = await editProduct(
+        cleanedData,
+        data?.ProductInfo?.[0]?.project_id
+      );
       if (res == 200) {
         reset();
         navigate(-1);
@@ -141,6 +153,19 @@ function AddProductForm() {
                         )}
                       </div>
                     </div>
+                    <div className="col-md-4">
+                        <div className="form-floating form-floating-outline">
+                          <input
+                            type="text"
+                            className={`form-control ${
+                              errors.project ? "is-invalid" : ""
+                            }`}
+                            placeholder="Product Type"
+                            {...register("project")}
+                          />
+                          <label htmlFor="productType">Product Type<span className="text-danger">*</span> </label>
+                        </div>
+                      </div>
                     <div className="col-md-4">
                       <div className="form-floating form-floating-outline">
                         <input

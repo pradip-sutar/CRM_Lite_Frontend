@@ -319,183 +319,147 @@ function FollowUp() {
       >
         <Card sx={{ m: 0, boxShadow: "none", border: "none" }}>
           <CardContent sx={{ p: 0 }} className="card-contentFo">
-            <Box className="followup-box h-100" >
+            <Box className="followup-box h-100">
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  overflowX: "auto",
                   width: "100%",
-                  gap: 2,
-                  flexDirection: { xs: "column", sm: "row" },
-                  px: { xs: 1, sm: 2 },
-                  py: 2,
-                  backgroundColor: "background.default",
+                  // Thin scrollbar styling
+                  "&::-webkit-scrollbar": {
+                    height: "6px", // horizontal scrollbar height
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#ccc",
+                    borderRadius: "3px",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    backgroundColor: "transparent",
+                  },
+                  scrollbarWidth: "thin", // Firefox
+                  scrollbarColor: "#ccc transparent", // Firefox
                 }}
               >
                 <Box
                   sx={{
-                    flexGrow: 1,
-                    width: { xs: "100%", sm: "auto" },
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    gap: 2,
+                    flexDirection: { xs: "column", sm: "row" },
+                    px: { xs: 1, sm: 2 },
+                    py: 2,
+                    backgroundColor: "background.default",
                   }}
                 >
                   <Box
                     sx={{
-                      borderColor: "grey.200",
-
-                      backgroundColor: "background.paper",
-                      boxShadow: 1,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      flexDirection: { xs: "column", sm: "row" },
-                      gap: 1,
+                      flexGrow: 1,
+                      width: { xs: "100%", sm: "auto" },
                     }}
                   >
                     <Box
                       sx={{
+                        borderColor: "grey.200",
+
+                        backgroundColor: "background.paper",
+                        boxShadow: 1,
                         display: "flex",
+                        justifyContent: "space-between",
                         alignItems: "center",
                         flexDirection: { xs: "column", sm: "row" },
-                        gap: 0.5,
-                        px: { xs: 1, sm: 2 },
-                        width: { xs: "100%", sm: "auto" },
-                      }}
-                    >
-                      <TextField
-                        type="number"
-                        label="Mobile Number"
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        sx={{
-                          maxWidth: 100,
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: 1,
-                            backgroundColor: "white",
-                            "&:hover .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "primary.main",
-                            },
-                          },
-                          "& .MuiInputLabel-root": {
-                            color: "grey.600",
-                            "&.Mui-focused": {
-                              color: "primary.main",
-                            },
-                          },
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "grey.300",
-                          },
-                        }}
-                        value={mobileSearchBarValue}
-                        onChange={(e) => {
-                          if (e.target.value.length > 10)
-                            e.target.value = e.target.value.slice(0, 10);
-                          setMobileSearchBarValue(e.target.value);
-                        }}
-                      />
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={mobileNumberSearch}
-                        sx={{
-                          minWidth: 48,
-                          height: 40,
-                          borderRadius: 1,
-                          boxShadow: 2,
-                          "&:hover": {
-                            boxShadow: 4,
-                            backgroundColor: "primary.dark",
-                          },
-                        }}
-                      >
-                        <SearchIcon />
-                      </Button>
-                    </Box>
-
-                    <Box
-                      className="followup-listInitiate"
-                      sx={{
-                        overflowX: "auto",
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        maxWidth: 500,
-                        whiteSpace: "nowrap",
-                        scrollbarWidth: "thin",
-                        "&::-webkit-scrollbar": {
-                          height: 6,
-                        },
-                        "&::-webkit-scrollbar-thumb": {
-                          backgroundColor: "grey.400",
-                          borderRadius: 3,
-                        },
-                        "&::-webkit-scrollbar-track": {
-                          backgroundColor: "grey.100",
-                        },
+                        gap: 1,
                       }}
                     >
                       <Box
                         sx={{
                           display: "flex",
-                          flexWrap: "nowrap",
-                          gap: 1,
-                          minWidth: "max-content",
-                          p: 1,
+                          alignItems: "center",
+                          flexDirection: { xs: "column", sm: "row" },
+                          gap: 0.5,
+                          px: { xs: 1, sm: 2 },
+                          width: "100%",
                         }}
                       >
-                        <Button
-                          variant="contained"
-                          startIcon={<AssessmentIcon />}
-                          className="nonInitiated"
+                        <TextField
+                          type="number"
+                          label="Mobile Number"
+                          variant="outlined"
+                          size="small"
+                          fullWidth
                           sx={{
-                            backgroundColor: "grey.100",
-                            color: "primary.main",
-                            whiteSpace: "nowrap",
-                            width: "auto",
-                            height: 30,
-                            fontSize: {
-                              xs: "0.75rem",
-                              sm: "0.875rem",
-                              md: "0.875rem",
+                            width: { xs: "100%", sm: 150 }, // Responsive width
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: 1,
+                              backgroundColor: "white",
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "primary.main",
+                              },
                             },
-                            borderRadius: 1,
-                            boxShadow: 1,
-                            textTransform: "capitalize",
-                            "&:hover": {
-                              backgroundColor: "grey.200",
-                              boxShadow: 2,
+                            "& .MuiInputLabel-root": {
+                              color: "grey.600",
+                              "&.Mui-focused": {
+                                color: "primary.main",
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              borderColor: "grey.300",
                             },
                           }}
-                          onClick={handleOpen}
+                          value={mobileSearchBarValue}
+                          onChange={(e) => {
+                            if (e.target.value.length > 10)
+                              e.target.value = e.target.value.slice(0, 10);
+                            setMobileSearchBarValue(e.target.value);
+                          }}
+                        />
+
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={mobileNumberSearch}
+                          sx={{
+                            minWidth: 48,
+                            height: 40,
+                            borderRadius: 1,
+                            boxShadow: 2,
+                            width: { xs: "100%", sm: "auto" }, // Full width on xs
+                            "&:hover": {
+                              boxShadow: 4,
+                              backgroundColor: "primary.dark",
+                            },
+                          }}
                         >
-                          Report
+                          <SearchIcon />
                         </Button>
-                        {[
-                          {
-                            label: "pending",
-                            icon: <PendingActionsIcon />,
-                          },
-                          { label: "today", icon: <TodayIcon /> },
-                          { label: "upcoming", icon: <AccessAlarmIcon /> },
-                          {
-                            label: "new",
-                            icon: <FormatListBulletedIcon />,
-                          },
-                        ].map((item) => (
+                      </Box>
+
+                      <Box
+                        className="followup-listInitiate"
+                        sx={{
+                          display: "block",
+                          width: "100%",
+                          overflowX: { xs: "auto", sm: "visible" },
+                          maxWidth: "100%",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "inline-flex",
+                            flexWrap: "nowrap",
+                            gap: 1,
+                            minWidth: "max-content",
+                            p: 1,
+                          }}
+                        >
                           <Button
-                            key={item.label}
                             variant="contained"
-                            startIcon={item.icon}
-                            onClick={() => handleTabClick(item.label)}
+                            startIcon={<AssessmentIcon />}
+                            className="nonInitiated"
                             sx={{
-                              backgroundColor:
-                                activeTab === item.label
-                                  ? "primary.main"
-                                  : "grey.100",
-                              color:
-                                activeTab === item.label
-                                  ? "white"
-                                  : "primary.main",
+                              backgroundColor: "grey.100",
+                              color: "primary.main",
                               whiteSpace: "nowrap",
                               width: "auto",
                               height: 30,
@@ -508,88 +472,139 @@ function FollowUp() {
                               boxShadow: 1,
                               textTransform: "capitalize",
                               "&:hover": {
-                                backgroundColor:
-                                  activeTab === item.label
-                                    ? "primary.dark"
-                                    : "grey.200",
+                                backgroundColor: "grey.200",
                                 boxShadow: 2,
                               },
                             }}
+                            onClick={handleOpen}
                           >
-                            {item.label}
+                            Report
                           </Button>
-                        ))}
-                      </Box>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        flexShrink: 0,
-                        px: { xs: 1, sm: 2 },
-                      }}
-                    >
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => handleFilterOpen()}
-                        title="Filter"
-                        sx={{
-                          position: "relative",
-                          minWidth: 40,
-                          height: 40,
-                          borderRadius: 1,
-                          borderColor: "primary.main",
-                          backgroundColor: "white",
-                          "&:hover": {
-                            backgroundColor: "primary.light",
-                            borderColor: "primary.dark",
-                          },
-                        }}
-                      >
-                        <FilterListIcon sx={{ fontSize: "1.25rem" }} />
-                        {Object.keys(filterData).length > 0 &&
-                          filterTabname === activeTab && (
-                            <Box
+                          {[
+                            {
+                              label: "pending",
+                              icon: <PendingActionsIcon />,
+                            },
+                            { label: "today", icon: <TodayIcon /> },
+                            { label: "upcoming", icon: <AccessAlarmIcon /> },
+                            {
+                              label: "new",
+                              icon: <FormatListBulletedIcon />,
+                            },
+                          ].map((item) => (
+                            <Button
+                              key={item.label}
+                              variant="contained"
+                              startIcon={item.icon}
+                              onClick={() => handleTabClick(item.label)}
                               sx={{
-                                position: "absolute",
-                                top: -4,
-                                right: -4,
-                                width: 10,
-                                height: 10,
-                                backgroundColor: "error.main",
-                                borderRadius: "50%",
-                                border: "1px solid",
-                                borderColor: "background.paper",
+                                backgroundColor:
+                                  activeTab === item.label
+                                    ? "primary.main"
+                                    : "grey.100",
+                                color:
+                                  activeTab === item.label
+                                    ? "white"
+                                    : "primary.main",
+                                whiteSpace: "nowrap",
+                                width: "auto",
+                                height: 30,
+                                fontSize: {
+                                  xs: "0.75rem",
+                                  sm: "0.875rem",
+                                  md: "0.875rem",
+                                },
+                                borderRadius: 1,
+                                boxShadow: 1,
+                                textTransform: "capitalize",
+                                "&:hover": {
+                                  backgroundColor:
+                                    activeTab === item.label
+                                      ? "primary.dark"
+                                      : "grey.200",
+                                  boxShadow: 2,
+                                },
                               }}
-                            />
-                          )}
-                      </Button>
+                            >
+                              {item.label}
+                            </Button>
+                          ))}
+                        </Box>
+                      </Box>
 
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => {
-                          setFilterData({});
-                          setFilterUrl("");
-                        }}
-                        title="Reset"
+                      <Box
                         sx={{
-                          minWidth: 40,
-                          height: 40,
-                          borderRadius: 1,
-                          borderColor: "grey.400",
-                          backgroundColor: "white",
-                          "&:hover": {
-                            backgroundColor: "grey.100",
-                            borderColor: "grey.500",
-                          },
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          flexShrink: 0,
+                          flexWrap: "wrap", // allow wrapping on small screens
+                          px: { xs: 1, sm: 2 },
+                          maxWidth: "100%", // prevent overflow
                         }}
                       >
-                        <RefreshIcon sx={{ fontSize: "1.25rem" }} />
-                      </Button>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => handleFilterOpen()}
+                          title="Filter"
+                          sx={{
+                            position: "relative",
+                            minWidth: 40,
+                            height: 40,
+                            borderRadius: 1,
+                            borderColor: "primary.main",
+                            backgroundColor: "white",
+                            "&:hover": {
+                              backgroundColor: "primary.light",
+                              borderColor: "primary.dark",
+                            },
+                            flexShrink: 0, // prevent collapsing on small width
+                          }}
+                        >
+                          <FilterListIcon sx={{ fontSize: "1.25rem" }} />
+                          {Object.keys(filterData).length > 0 &&
+                            filterTabname === activeTab && (
+                              <Box
+                                sx={{
+                                  position: "absolute",
+                                  top: -4,
+                                  right: -4,
+                                  width: 10,
+                                  height: 10,
+                                  backgroundColor: "error.main",
+                                  borderRadius: "50%",
+                                  border: "1px solid",
+                                  borderColor: "background.paper",
+                                }}
+                              />
+                            )}
+                        </Button>
+
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => {
+                            setFilterData({});
+                            setFilterUrl("");
+                          }}
+                          title="Reset"
+                          sx={{
+                            minWidth: 40,
+                            height: 40,
+                            borderRadius: 1,
+                            borderColor: "grey.400",
+                            backgroundColor: "white",
+                            "&:hover": {
+                              backgroundColor: "grey.100",
+                              borderColor: "grey.500",
+                            },
+                            flexShrink: 0, // keep button from shrinking
+                          }}
+                        >
+                          <RefreshIcon sx={{ fontSize: "1.25rem" }} />
+                        </Button>
+                      </Box>
                     </Box>
                   </Box>
                 </Box>

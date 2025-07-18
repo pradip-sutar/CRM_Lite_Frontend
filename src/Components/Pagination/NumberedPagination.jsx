@@ -93,5 +93,5 @@ const NumberedPagination = ({ totalPages, onPageChange }) => {
     </nav>
   );
 };
- 
+
 export default NumberedPagination;

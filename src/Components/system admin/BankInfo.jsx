@@ -175,7 +175,7 @@ function BankInfo() {
               </div>
 
               {/* Pagination */}
-              <div className="d-flex justify-content-between align-items-center mt-3">
+              {/* <div className="d-flex justify-content-between align-items-center mt-3">
                 <div className="text-muted">
                   Showing {paginationInfo.perPage} of {count} entries
                 </div>
@@ -183,7 +183,7 @@ function BankInfo() {
                   totalPages={2}
                   onPageChange={setCurrentPage}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

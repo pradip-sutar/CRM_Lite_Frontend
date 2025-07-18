@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
+import { Autocomplete, Chip } from "@mui/material";
 import {
   Box,
   Grid,
@@ -34,8 +35,7 @@ import crmStore from "../../Utils/crmStore";
 import { hasRightsPermission } from "../../Private/premissionChecker";
 import "./CSS/AssignQuote.css";
 const AssignVisit = () => {
-  const userType = crmStore.getState().user?.userInfo?.userType;
-  const Permissions = crmStore.getState().permisions?.roleAndRights;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const logged_employee_Id = crmStore.getState().user?.userInfo?.employee_id;
   const {
     team_id = null,
@@ -48,6 +48,7 @@ const AssignVisit = () => {
     customer_name = "",
     customer_phone = "",
     customer_email = "",
+    activeTab
   } = useLocation()?.state || {};
   const [teamMembers, setTeamMembers] = useState([]);
   const { control, getValues, register, setValue } = useForm();
@@ -125,8 +126,9 @@ const AssignVisit = () => {
       project: confirm_project,
       status,
       instruction: data.instruction,
+      location: data.location,
+      attendees: data.attendees,
       follow_up_status: data?.status,
-      created_by: data?.created_by,
       product_details: product_details,
       customer_name,
       customer_phone,
@@ -135,9 +137,15 @@ const AssignVisit = () => {
       visit_type: data?.visit_type,
     };
     const res = await postAssignVisit(formatedData);
-    if (res == 201) {
-      postSchedule(formatedDataForActivity);
-      getAssignedVisitByEmployee(logged_employee_Id);
+    console.log(res);
+    
+    if (res == 200) {
+      console.log("hii2");
+      
+      await postSchedule(formatedDataForActivity);
+      navigate("/followUp", { state: { activeTab } })
+     
+      // await getAssignedVisitByEmployee(logged_employee_Id);
     }
   };
 
@@ -230,6 +238,30 @@ const AssignVisit = () => {
                       }}
                       className="Font-Assign"
                     >
+                      attendees
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: 20,
+                        textAlign: "center",
+                        border: "1px solid black",
+                        color: "rgb(126 126 126 / 87%)",
+                      }}
+                      className="Font-Assign"
+                    >
+                      Location
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: 20,
+                        textAlign: "center",
+                        border: "1px solid black",
+                        color: "rgb(126 126 126 / 87%)",
+                      }}
+                      className="Font-Assign"
+                    >
                       Instruction
                     </TableCell>
                   </TableRow>
@@ -265,11 +297,68 @@ const AssignVisit = () => {
                             <MenuItem value="Company visit">
                               Company Visit
                             </MenuItem>
+                            <MenuItem value="Demo">Demo</MenuItem>
                             <MenuItem value="Site visit">Site Visit</MenuItem>
                           </Select>
                         )}
                       />
                     </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <Controller
+                        name="attendees"
+                        control={control}
+                        defaultValue={[]}
+                        render={({ field }) => (
+                          <Autocomplete
+                            {...field}
+                            multiple
+                            freeSolo
+                            options={[]} // no suggestions
+                            value={field.value || []}
+                            onChange={(_, newValue) => {
+                              // Filter only valid emails and remove duplicates
+                              const uniqueValidEmails = Array.from(
+                                new Set(newValue)
+                              ).filter((val) => emailRegex.test(val));
+                              field.onChange(uniqueValidEmails);
+                            }}
+                            renderTags={(value, getTagProps) =>
+                              value.map((option, index) => (
+                                <Chip
+                                  variant="outlined"
+                                  label={option}
+                                  {...getTagProps({ index })}
+                                  key={index}
+                                />
+                              ))
+                            }
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                placeholder="Enter attendee email(s)"
+                                variant="outlined"
+                                helperText="Only valid emails allowed"
+                              />
+                            )}
+                          />
+                        )}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <Controller
+                        name="location"
+                        control={control}
+                        render={({ field }) => (
+                          <TextField
+                            {...field}
+                            placeholder="Enter  Location"
+                            fullWidth
+                            variant="outlined"
+                          />
+                        )}
+                      />
+                    </TableCell>
+
                     <TableCell sx={{ border: "1px solid black" }}>
                       <Controller
                         name="instruction"
@@ -315,7 +404,7 @@ const AssignVisit = () => {
             </Paper>
 
             {/* visit History */}
-            <TableContainer>
+            {/* <TableContainer>
               <Paper elevation={11} sx={{ padding: 2, marginBottom: 4 }}>
                 <Table>
                   <TableHead>
@@ -473,7 +562,7 @@ const AssignVisit = () => {
                     </TableCell>
                   </TableRow>
 
-                  {/* Additional rows for Report Data  inputs */}
+                  
                   <TableBody>
                     {rows?.map((row, index) => (
                       <TableRow key={index}>
@@ -578,7 +667,7 @@ const AssignVisit = () => {
                   </TableBody>
                 </Table>
               </Paper>
-            </TableContainer>
+            </TableContainer> */}
           </Box>
         </Box>
       </div>

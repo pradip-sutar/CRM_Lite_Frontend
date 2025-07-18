@@ -1,12 +1,12 @@
 import toast from "react-hot-toast";
 import apiGateWay from "../../ApiGateWay/apiGateWay";
 
-export const postQuestions = async (formatedData) => {
+export const postQuestionsAnswer = async (formatedData) => {
   console.log(formatedData);
 
   try {
     const response = await apiGateWay.post(
-      "/api/requirement-analysis/",
+      "/api/answer_builder/",
       formatedData
     );
     console.log(response);
@@ -18,13 +18,13 @@ export const postQuestions = async (formatedData) => {
   }
 };
 
-export const getQuestions = async (project_id) => {
+export const getQuestionsAnswer = async (enquiry_id) => {
 
   try {
     const response = await apiGateWay.get(
-      `/api/requirement-analysis/?project_id=${project_id}`
+      `/api/answer_builder/?enquiry_id=${enquiry_id}`
     );
-    return response.data;
+    return response;
   } catch (error) {
     console.log(error);
     throw error;

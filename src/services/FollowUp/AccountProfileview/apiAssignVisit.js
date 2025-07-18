@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 export const postAssignVisit = async (data) => {
   try {
     const response = await apiGateWay.post(`/api/visit/`, data);
-    if (response.status === 201) {
+    if (response.status === 200) {
       toast.success("Visit assigned successfully!");
       return response.status;
     }
@@ -18,9 +18,6 @@ export const getVisitAssignedBy = async () => {
     if (true) {
       const response = await apiGateWay.get(`/api/visit/`);
       return response.data;
-    } else {
-      const response = await apiGateWay.get(`/api/visit/`);
-      return response.data;
     }
   } catch (error) {
     if (error.response.status == 404) {
@@ -30,11 +27,17 @@ export const getVisitAssignedBy = async () => {
 };
 
 export const getVisitAssignToEmployee = async (enquiry_id) => {
+  let response;
   try {
-    const response = await apiGateWay.get(
-      `/api/visit/?enquiry_id=${enquiry_id}`
-    );
-    return response.data;
+    if (enquiry_id) {
+      const response = await apiGateWay.get(
+        `/api/visit/?enquiry_id=${enquiry_id}`
+      );
+      return response.data;
+    } else {
+      const response = await apiGateWay.get(`/api/visit/`);
+      return response.data;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -67,7 +70,7 @@ export const postVisitPdf = async (data) => {
 export const getPreviousVersionDataOfVisit = async (enquiry_id) => {
   try {
     const response = await apiGateWay.get(
-      `/api/store_quotation_pdf/?enquiry_id=${enquiry_id}`
+      `/api/store_visit_pdf/?enquiry_id=${enquiry_id}`
     );
     return response.data;
   } catch (error) {

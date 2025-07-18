@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 
-function CustomerRow({ customer ,index}) {
+function CustomerRow({ customer,index }) {
   const navigate = useNavigate();
   return (
     <tr className={customer.id % 2 === 0 ? "even" : "odd"}>

@@ -1,14 +1,95 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import BlockIcon from '@mui/icons-material/Block';
+import { useState, useEffect } from "react";
+import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import BlockIcon from "@mui/icons-material/Block";
 import { Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
+import NumberedPagination from "../../Pagination/NumberedPagination";
+import {
+  getFollowUpCardandStatistics,
+  getFollowUpCallingAnalys,
+  getFollowUpCategorymatrices,
+  getFollowUpCustomerleads,
+} from "../../../services/Dashboard/DashboardComponents/FollowupTab";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+} from "chart.js";
 import { Icon } from "@mui/material";
-ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement
+);
 
-const Calling = ({FollowUpData}) => {
+const Calling = ({ enable, rawfilterData }) => {
+  const [customerLeadsPageNo, setcustomerLeadsPageNo] = useState(1);
+  const [FollowUpCardStastics, setFollowUpCardStastics] = useState(null);
+  const [callingDataAnlays, setCallingDataAnlays] = useState({});
+  const [categorymat, setCategorymat] = useState({});
+  const [customerLeads, setCustomerLeads] = useState({});
+
+  const loadData = async (url) => {
+    const result = await fetchPageData2(url);
+    setCustomerLeads(result);
+    console.log(result);
+  };
+  const fetchFollowUpCardStast = async () => {
+    try {
+      const response = await getFollowUpCardandStatistics(enable, rawfilterData);
+      setFollowUpCardStastics(response);
+    } catch (error) {
+      console.error("Error fetching FollowUp data", error);
+    }
+  };
+
+  const fetchFollowUpCallingAnalys = async () => {
+    try {
+      const response = await getFollowUpCallingAnalys(enable, rawfilterData);
+      setCallingDataAnlays(response);
+    } catch (error) {
+      console.error("Error fetching FollowUp data", error);
+    }
+  };
+
+  const fetchFollowUpCategorymatr = async () => {
+    try {
+      const response = await getFollowUpCategorymatrices(enable, rawfilterData);
+      setCategorymat(response);
+    } catch (error) {
+      console.error("Error fetching FollowUp data", error);
+    }
+  };
+
+  useEffect(() => {
+    if (enable) {
+      loadData(
+        `/api/followup-call-summary/?page=${customerLeadsPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/followup-call-summary/?page=${customerLeadsPageNo}`);
+    }
+  }, [customerLeadsPageNo, enable,rawfilterData]);
+
+  useEffect(() => {
+    fetchFollowUpCardStast();
+    fetchFollowUpCallingAnalys();
+    fetchFollowUpCategorymatr();
+  }, [enable,rawfilterData]);
+
   const [employeeStats, setEmployeeStats] = useState([
     {
       id: 1,
@@ -30,11 +111,13 @@ const Calling = ({FollowUpData}) => {
   ]);
 
   const activityData = {
-    labels: ["2025-05-01", "2025-05-02", "2025-05-03", "2025-05-04", "2025-05-05"],
+    labels: FollowUpCardStastics?.calling_statistics?.map((item) => item.date),
     datasets: [
       {
         label: "Calls",
-        data: [350, 295, 310, 280, 320],
+        data: FollowUpCardStastics?.calling_statistics?.map(
+          (item) => item.calls
+        ),
         borderColor: "#1E90FF",
         backgroundColor: "#007bff",
         tension: 0.4,
@@ -43,7 +126,9 @@ const Calling = ({FollowUpData}) => {
       },
       {
         label: "Visits",
-        data: [22, 150, 25, 120, 123],
+        data: FollowUpCardStastics?.calling_statistics?.map(
+          (item) => item.visit
+        ),
         borderColor: "#2E8B57",
         backgroundColor: "#2E8B57",
         tension: 0.4,
@@ -52,7 +137,9 @@ const Calling = ({FollowUpData}) => {
       },
       {
         label: "Bookings",
-        data: [10, 8, 129, 9, 320],
+        data: FollowUpCardStastics?.calling_statistics?.map(
+          (item) => item.booking
+        ),
         borderColor: "#DC143C",
         backgroundColor: "#DC143C",
         tension: 0.4,
@@ -274,18 +361,24 @@ const Calling = ({FollowUpData}) => {
 
       {/* Card Section */}
       <div className="row g-3">
-
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #52AA56", background: "linear-gradient(135deg, #ffffff, #B6D9B8)" }}
+            style={{
+              borderTop: "4px solid #52AA56",
+              background: "linear-gradient(135deg, #ffffff, #B6D9B8)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
-                <PhoneInTalkIcon style={{ color: "#4caf50", fontSize: 20, marginRight: "6px" }} />
+                <PhoneInTalkIcon
+                  style={{ color: "#4caf50", fontSize: 20, marginRight: "6px" }}
+                />
                 <span className="fw-semibold">Received Calls</span>
               </div>
-              <div className="fw-bold fs-4">125</div>
+              <div className="fw-bold fs-4">
+                {FollowUpCardStastics?.answeredcalls}
+              </div>
             </div>
           </div>
         </div>
@@ -294,14 +387,21 @@ const Calling = ({FollowUpData}) => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #FFA500", background: "linear-gradient(135deg, #ffffff, #FFE5B4)" }}
+            style={{
+              borderTop: "4px solid #FFA500",
+              background: "linear-gradient(135deg, #ffffff, #FFE5B4)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
-                <HourglassEmptyIcon style={{ color: "#ff9800", fontSize: 20, marginRight: "6px" }} />
+                <HourglassEmptyIcon
+                  style={{ color: "#ff9800", fontSize: 20, marginRight: "6px" }}
+                />
                 <span className="fw-semibold">No Answer Calls</span>
               </div>
-              <div className="fw-bold fs-4">75</div>
+              <div className="fw-bold fs-4">
+                {FollowUpCardStastics?.unansweredcalls}
+              </div>
             </div>
           </div>
         </div>
@@ -310,14 +410,21 @@ const Calling = ({FollowUpData}) => {
         <div className="col-12 col-md-4">
           <div
             className="card stats-card animate-card shadow-sm h-75"
-            style={{ borderTop: "4px solid #DC143C", background: "linear-gradient(135deg, #ffffff, #F4A6A6)" }}
+            style={{
+              borderTop: "4px solid #DC143C",
+              background: "linear-gradient(135deg, #ffffff, #F4A6A6)",
+            }}
           >
             <div className="card-body text-center">
               <div className="d-flex align-items-center justify-content-center mb-2">
-                <BlockIcon style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }} />
+                <BlockIcon
+                  style={{ color: "#f44336", fontSize: 20, marginRight: "6px" }}
+                />
                 <span className="fw-semibold">Invalid No</span>
               </div>
-              <div className="fw-bold fs-4">40</div>
+              <div className="fw-bold fs-4">
+                {FollowUpCardStastics?.invalidnumber}
+              </div>
             </div>
           </div>
         </div>
@@ -325,12 +432,14 @@ const Calling = ({FollowUpData}) => {
 
       {/* Charts Section */}
       <div className="row g-3 mb-2">
-        <div className="col-12 col-md-6">
+        <div className="col-12 ">
           <div className="card stats-card animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="mb-0">Calling Statistics</h6>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Export
+                </button>
               </div>
               <div className="chart-container">
                 <Bar data={activityData} options={options} height={150} />
@@ -338,21 +447,22 @@ const Calling = ({FollowUpData}) => {
             </div>
           </div>
         </div>
-        <div className="col-12 col-md-6">
+        {/* <div className="col-12 col-md-6">
           <div className="card stats-card animate-card">
             <div className="card-body p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="mb-0">Daily Call Distribution</h6>
-                <button className="btn btn-outline-primary btn-sm">Export</button>
+                <button className="btn btn-outline-primary btn-sm">
+                  Export
+                </button>
               </div>
               <div className="chart-container">
                 <Line data={activityData} options={options} height={150} />
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
-
 
       {/* Table Section */}
       <div className="row">
@@ -362,60 +472,61 @@ const Calling = ({FollowUpData}) => {
               <h5 className="mb-0 fw-bold text-light">Calling Data Analysis</h5>
             </div>
             <div className="card-body p-4">
-              {employeeStats?.length > 0 ? (
-                <div className="table-responsive">
-                  <table className="table table-hover table-bordered align-middle">
-                    <thead>
-                      <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Total Calls</th>
-                        <th scope="col">Valid Numbers</th>
-                        <th scope="col">Invalid Numbers</th>
-                        <th scope="col">Answered Calls</th>
-                        <th scope="col">Unanswered Calls</th>
-                        <th scope="col">Conversion Rate</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {employeeStats?.map((row, index) => (
-                        <tr key={index}>
-                          <td>{row?.date}</td>
-                          <td>{row?.totalCalls}</td>
-                          <td>{row?.validNumbers}</td>
-                          <td>{row?.invalidNumbers}</td>
-                          <td>{row?.answeredCalls}</td>
-                          <td>{row?.unansweredCalls}</td>
-                          <td>{row?.conversionRate}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="text-center py-5 no-data">
-                  <i className="bi bi-exclamation-circle me-2"></i>
-                  No Employee Stats Found
-                </div>
-              )}
+              <div className="table-responsive">
+                <table className="table table-hover table-bordered align-middle">
+                  <thead>
+                    <tr>
+                      <th scope="col">Date</th>
+                      <th scope="col">Total Calls</th>
+                      <th scope="col">Valid Numbers</th>
+                      <th scope="col">Invalid Numbers</th>
+                      <th scope="col">Answered Calls</th>
+                      <th scope="col">Unanswered Calls</th>
+                      <th scope="col">Conversion Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr key={67}>
+                      <td>{callingDataAnlays?.date}</td>
+                      <td>{callingDataAnlays?.totalcalls}</td>
+                      <td>
+                        {callingDataAnlays?.totalcalls -
+                          callingDataAnlays?.invalidnumber}
+                      </td>
+                      <td>{callingDataAnlays?.invalidnumber}</td>
+                      <td>{callingDataAnlays?.answeredcalls}</td>
+                      <td>{callingDataAnlays?.unansweredcalls}</td>
+                      <td>{callingDataAnlays?.conversionrate}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-              {employeeStats?.length > 0 && (
+              {/* {employeeStats?.length > 0 && (
                 <div className="d-flex justify-content-between align-items-center mt-4">
                   <div className="text-muted">
-                    Showing 1 to {employeeStats.length} of {employeeStats.length} entries
+                    Showing 1 to {employeeStats.length} of{" "}
+                    {employeeStats.length} entries
                   </div>
                   <ul className="pagination mb-0">
                     <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
+                      <a className="page-link" href="#">
+                        Previous
+                      </a>
                     </li>
                     <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
+                      <a className="page-link" href="#">
+                        1
+                      </a>
                     </li>
                     <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
+                      <a className="page-link" href="#">
+                        Next
+                      </a>
                     </li>
                   </ul>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -432,160 +543,263 @@ const Calling = ({FollowUpData}) => {
           <div className="row g-4">
             {/* Assignment */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #FFEB3B", background: "linear-gradient(135deg, #ffffff, #FAF3B9)" }}>
-                <h6 className="fw-semibold border-bottom pb-2 mb-3">Assignment</h6>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #FFEB3B",
+                  background: "linear-gradient(135deg, #ffffff, #FAF3B9)",
+                }}
+              >
+                <h6 className="fw-semibold border-bottom pb-2 mb-3">
+                  Assignment
+                </h6>
                 <div className="d-flex justify-content-between mb-2">
                   <span>New</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">50</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Assignment?.New}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Old</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">30</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Assignment?.Old}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Status */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #22C55E", background: "linear-gradient(135deg, #ffffff, #D1FADF)" }}>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #22C55E",
+                  background: "linear-gradient(135deg, #ffffff, #D1FADF)",
+                }}
+              >
                 <h6 className="fw-semibold border-bottom pb-2 mb-3">Status</h6>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Cold</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Status?.Cold}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Warm</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">40</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Status?.Warm}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Hot</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Status?.Hot}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Activity */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}>
-                <h6 className="fw-semibold border-bottom pb-2 mb-3">Activity</h6>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #3B82F6",
+                  background: "linear-gradient(135deg, #ffffff, #DBEAFE)",
+                }}
+              >
+                <h6 className="fw-semibold border-bottom pb-2 mb-3">
+                  Activity
+                </h6>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Enquiry</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">60</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Activity?.Enquiry}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Quote</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">30</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Activity?.Quote}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Schedule</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Activity?.Schedule}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Sales</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">15</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Activity?.Sales}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Dead</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">10</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Activity?.Dead}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Stage */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #828F95", background: "linear-gradient(135deg, #ffffff, #DBDEE0)" }}>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #828F95",
+                  background: "linear-gradient(135deg, #ffffff, #DBDEE0)",
+                }}
+              >
                 <h6 className="fw-semibold border-bottom pb-2 mb-3">Stage</h6>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Enquiry</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">50</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Stage?.Enquiry}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Lead</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">30</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Stage?.Lead}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>Prospect</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Stage?.Prospect}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Response */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #A855F7", background: "linear-gradient(135deg, #ffffff, #EDE9FE)" }}>
-                <h6 className="fw-semibold border-bottom pb-2 mb-3">Response</h6>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #A855F7",
+                  background: "linear-gradient(135deg, #ffffff, #EDE9FE)",
+                }}
+              >
+                <h6 className="fw-semibold border-bottom pb-2 mb-3">
+                  Response
+                </h6>
                 <div className="d-flex justify-content-between mb-2">
                   <span>In Progress</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">60</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    60
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>No Response</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    20
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Product */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #EC4899", background: "linear-gradient(135deg, #ffffff, #FCE7F3)" }}>
-                <h6 className="fw-semibold border-bottom pb-2 mb-3">Product</h6>
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Product A</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">30</span>
-                </div>
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Product B</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">25</span>
-                </div>
-                <div className="d-flex justify-content-between mb-2">
-                  <span>Product C</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">15</span>
-                </div>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #EC4899",
+                  background: "linear-gradient(135deg, #ffffff, #FCE7F3)",
+                }}
+              >
+                <h6 className="fw-semibold border-bottom pb-2 mb-2">Product</h6>
+                {Object.keys(categorymat?.Product || {})?.map((key) => {
+                  return (
+                    <div
+                      className="d-flex justify-content-between mb-1"
+                      key={key}
+                    >
+                      <span>{key}</span>
+                      <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                        {categorymat?.Product[key]}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
             {/* Conversion */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #10B981", background: "linear-gradient(135deg, #ffffff, #D1FAE5)" }}>
-                <h6 className="fw-semibold border-bottom pb-2 mb-3">Conversion</h6>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #10B981",
+                  background: "linear-gradient(135deg, #ffffff, #D1FAE5)",
+                }}
+              >
+                <h6 className="fw-semibold border-bottom pb-2 mb-3">
+                  Conversion
+                </h6>
                 <div className="d-flex justify-content-between mb-2">
                   <span>0-25%</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Conversion?.["0_25"]}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>26-50%</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">25</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Conversion?.["26_50"]}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>51-75%</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Conversion?.["51_75"]}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>76-100%</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">10</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.Conversion?.["76_100"]}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Rate */}
             <div className="col-md-6 col-lg-3">
-              <div className="p-3 card stats-card animate-card h-100 d-flex flex-column" style={{ borderTop: "4px solid #F59E0B", background: "linear-gradient(135deg, #ffffff, #FEF3C7)" }}>
+              <div
+                className="p-3 card stats-card animate-card h-100 d-flex flex-column"
+                style={{
+                  borderTop: "4px solid #F59E0B",
+                  background: "linear-gradient(135deg, #ffffff, #FEF3C7)",
+                }}
+              >
                 <h6 className="fw-semibold border-bottom pb-2 mb-3">Rate</h6>
                 <div className="d-flex justify-content-between mb-2">
                   <span>1</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.rate_1_count}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>2</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">15</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.rate_2_count}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>3</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">20</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.rate_3_count}
+                  </span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
                   <span>4</span>
-                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">30</span>
+                  <span className="badge bg-primary bg-opacity-10 fw-bold px-3 py-1 rounded-pill">
+                    {categorymat?.rate_4_count}
+                  </span>
                 </div>
               </div>
             </div>
@@ -600,7 +814,7 @@ const Calling = ({FollowUpData}) => {
               <h5 className="mb-0 fw-bold text-light">Customer Leads</h5>
             </div>
             <div className="card-body p-4">
-              {employeeStats?.length > 0 ? (
+              {customerLeads?.results?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered align-middle">
                     <thead>
@@ -616,10 +830,10 @@ const Calling = ({FollowUpData}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {employeeStats?.map((row, index) => (
+                      {customerLeads?.results?.map((row, index) => (
                         <tr key={index}>
                           <td>{row?.name}</td>
-                          <td>{row?.date}</td>
+                          <td>{row?.created_at}</td>
                           <td>{row?.source}</td>
                           <td>{row?.product}</td>
                           <td>{row?.status}</td>
@@ -629,12 +843,14 @@ const Calling = ({FollowUpData}) => {
                             {[...Array(5)].map((_, i) => (
                               <span
                                 key={i}
-                                className={`mdi ${i < row?.rate ? "mdi-star text-warning" : "mdi-star-outline text-muted"}`}
+                                className={`mdi ${
+                                  i < row?.rate
+                                    ? "mdi-star text-warning"
+                                    : "mdi-star-outline text-muted"
+                                }`}
                               ></span>
                             ))}
                           </td>
-
-
                         </tr>
                       ))}
                     </tbody>
@@ -648,30 +864,15 @@ const Calling = ({FollowUpData}) => {
               )}
 
               {employeeStats?.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center mt-4">
-                  <div className="text-muted">
-                    Showing 1 to {employeeStats.length} of {employeeStats.length} entries
-                  </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
-                </div>
+                <NumberedPagination
+                  totalPages={customerLeads?.total_pages}
+                  onPageChange={setcustomerLeadsPageNo}
+                />
               )}
             </div>
           </div>
         </div>
       </div>
-
-
-
     </div>
   );
 };

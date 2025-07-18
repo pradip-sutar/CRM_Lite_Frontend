@@ -13,7 +13,9 @@ import {
   BarElement,
 } from "chart.js";
 import crmStore from "../../../Utils/crmStore";
+import { useNavigate } from "react-router-dom";
 // import { getOverView } from '../../../services/Dashboard/DashboardComponents/OverviewTab';
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -26,6 +28,7 @@ ChartJS.register(
 );
 
 const Overview = ({ OverviewData }) => {
+  const navigate = useNavigate();
   console.log("Received Filter Overview Data:", OverviewData);
   const [showModal, setShowModal] = useState(false);
   // const [overViewData, setOverViewData] = useState([]);
@@ -706,7 +709,9 @@ const Overview = ({ OverviewData }) => {
                       background: "linear-gradient(135deg, #d0eaff, #ffffff)",
                       color: "white",
                       borderRadius: "0.5rem",
+                      cursor: "pointer",
                     }}
+                    onClick={() => navigate("/product/product-details")}
                   >
                     <h6 className="mb-1">Total Products</h6>
                     <h4 className="fw-bold mb-2">
@@ -723,7 +728,9 @@ const Overview = ({ OverviewData }) => {
                       background: "linear-gradient(135deg, #fff6b7, #fcd9b8)",
                       color: "white",
                       borderRadius: "0.5rem",
+                      cursor: "pointer",
                     }}
+                    onClick={() => navigate("/enquiryBucket/enquiryTable")}
                   >
                     <h6 className="mb-1">Total Enquiries</h6>
                     <h4 className="fw-bold mb-2">
@@ -774,7 +781,9 @@ const Overview = ({ OverviewData }) => {
                       background: "linear-gradient(135deg, #e6f9ec, #ccf6c8)",
                       color: "white",
                       borderRadius: "0.5rem",
+                      cursor: "pointer",
                     }}
+                    onClick={() => navigate("/enquiryBucket/deadTable")}
                   >
                     <h6 className="mb-1">Invalid Enquiries</h6>
                     <h4 className="fw-bold mb-2">
@@ -859,7 +868,9 @@ const Overview = ({ OverviewData }) => {
                       background: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
                       color: "white",
                       borderRadius: "0.5rem",
+                      cursor: "pointer",
                     }}
+                    onClick={() => navigate("/followUp/Quotation")}
                   >
                     <h6 className="mb-1">Total Quotes</h6>
                     <h4 className="fw-bold mb-2">
@@ -896,7 +907,9 @@ const Overview = ({ OverviewData }) => {
                     }}
                   >
                     <h6 className="mb-1">Total Prospects</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.enquiry_summary?.stage_opportunity}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.enquiry_summary?.stage_opportunity}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -911,7 +924,9 @@ const Overview = ({ OverviewData }) => {
                     }}
                   >
                     <h6 className="mb-1">Total Schedules</h6>
-                    <h4 className="fw-bold mb-2">{dataSource?.metrics?.total_visit}</h4>
+                    <h4 className="fw-bold mb-2">
+                      {dataSource?.metrics?.total_visit}
+                    </h4>
                   </div>
                 </div>
               </div>
@@ -923,7 +938,9 @@ const Overview = ({ OverviewData }) => {
                       background: "linear-gradient(135deg, #ffdde1, #ee9ca7)",
                       color: "white",
                       borderRadius: "0.5rem",
+                      cursor: "pointer",
                     }}
+                    onClick={() => navigate("/Booking")}
                   >
                     <h6 className="mb-1">Total Booking</h6>
                     <h4 className="fw-bold mb-2">
@@ -1235,6 +1252,7 @@ const Overview = ({ OverviewData }) => {
                         </div>
                       </div>
                     </div>
+
                   </div>
                 </div>
               </div>

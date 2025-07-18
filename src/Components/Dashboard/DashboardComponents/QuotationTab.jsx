@@ -1,96 +1,64 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { Line, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement } from "chart.js";
-ChartJS.register(ArcElement, Tooltip, Legend, LineElement, PointElement, LinearScale, CategoryScale, BarElement);
+import { useState, useEffect } from "react";
+import { fetchPageData2 } from "../../../services/Pagination/Pagination";
+import NumberedPagination from "../../Pagination/NumberedPagination";
+import { getQuotationCardData } from "../../../services/Dashboard/DashboardComponents/QutationsTab";
 
-const QuotationTab = ({quotationData}) => {
-  const [employeeStats, setEmployeeStats] = useState([
-    {
-      id: 1,
-      date: "May 16, 2025",
-      enquiryId: "ENQ-2345",
-      name: "John Smith",
-      contact: "+1 (555) 123-4567",
-      product: "Premium Plan",
-      quoteId: "Q-8721",
-      type: "New",
-      time: "10:30 AM",
-      quoteNumber: 1,
-      amount: "₹12,500",
-      quoteStatus: "Sent",
-      enquiryStage: "Lead",
-      enquiryStatus: "Warm",
-      conversion: "65%",
-      show: "Viewed",
-      mode: "Email",
-      report: "View",
-    },
-    {
-      id: 2,
-      date: "May 16, 2025",
-      enquiryId: "ENQ-2346",
-      name: "Maria Garcia",
-      contact: "+1 (555) 234-5678",
-      product: "Enterprise Solution",
-      quoteId: "Q-8722",
-      type: "New",
-      time: "02:00 PM",
-      quoteNumber: 1,
-      amount: "₹45,000",
-      quoteStatus: "Sent",
-      enquiryStage: "Prospect",
-      enquiryStatus: "Hot",
-      conversion: "85%",
-      show: "Viewed",
-      mode: "WhatsApp",
-      report: "View",
-    },
-    {
-      id: 3,
-      date: "May 17, 2025",
-      enquiryId: "ENQ-2347",
-      name: "Robert Chen",
-      contact: "+1 (555) 345-6789",
-      product: "Basic Package",
-      quoteId: "Q-8723",
-      type: "Revised",
-      time: "11:15 AM",
-      quoteNumber: 2,
-      amount: "₹8,500",
-      quoteStatus: "Prepared",
-      enquiryStage: "Lead",
-      enquiryStatus: "Warm",
-      conversion: "45%",
-      show: "Pending",
-      mode: "Email",
-      report: "View",
-    },
-    {
-      id: 4,
-      date: "May 15, 2025",
-      enquiryId: "ENQ-2348",
-      name: "Sarah Johnson",
-      contact: "+1 (555) 456-7890",
-      product: "Premium Plan",
-      quoteId: "Q-8724",
-      type: "Revised",
-      time: "09:00 AM",
-      quoteNumber: 3,
-      amount: "₹13,750",
-      quoteStatus: "Sent",
-      enquiryStage: "Prospect",
-      enquiryStatus: "Hot",
-      conversion: "90%",
-      show: "Not Viewed",
-      mode: "Manual",
-      report: "View",
-    },
-  ]);
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+} from "chart.js";
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  BarElement
+);
 
+const QuotationTab = ({ enable, rawfilterData }) => {
+  const [quotationTableData, setquotationTableData] = useState({});
+  const [quotationPageNo, setquotationPageNo] = useState(1);
+  const [quotationCardData, setQuotationCardData] = useState({});
 
+  const fetchQuotationCardData = async () => {
+    try {
+      const response = await getQuotationCardData(enable, rawfilterData);
+      setQuotationCardData(response);
+    } catch (error) {
+      console.error("Error fetching Quotation data", error);
+    }
+  };
 
+  const loadData = async (url) => {
+    const result = await fetchPageData2(url);
+    setquotationTableData(result);
+    console.log(result);
+  };
 
+  useEffect(() => {
+    fetchQuotationCardData();
+  }, [enable, rawfilterData]);
+
+  useEffect(() => {
+    if (enable) {
+      loadData(
+        `/api/quotations/list/?page=${quotationPageNo}&from_date=${rawfilterData?.fromDate}&to_date=${rawfilterData?.toDate}`
+      );
+    } else {
+      loadData(`/api/quotations/list/?page=${quotationPageNo}`);
+    }
+  }, [quotationPageNo, enable, rawfilterData]);
 
   return (
     <div className="container-fluid">
@@ -285,81 +253,112 @@ const QuotationTab = ({quotationData}) => {
 
       {/* Cart Section */}
       <div className="row g-3">
-        <div className='col-12 col-lg-4 col-md-6'>
+        <div className="col-12 col-lg-4 col-md-6">
           <div className="card shadow-sm p-4 mb-4">
             <h5 className="fw-bold mb-3">Total Quotes</h5>
             <div className="row g-3">
               <div className="col-12 col-lg-6 col-md-6 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+                  style={{
+                    borderTop: "4px solid #3B82F6",
+                    background: "linear-gradient(135deg, #ffffff, #DBEAFE)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Number</div>
-                  <div className="fw-bold fs-5">142</div>
+                  <div className="fw-bold fs-5">
+                    {quotationCardData?.total_quotation_count}
+                  </div>
                 </div>
               </div>
 
               <div className="col-12 col-lg-6 col-md-6 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #10B981", background: "linear-gradient(135deg, #ffffff, #D1FAE5)" }}
+                  style={{
+                    borderTop: "4px solid #10B981",
+                    background: "linear-gradient(135deg, #ffffff, #D1FAE5)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Value</div>
-                  <div className="fw-bold fs-5">₹487,500</div>
+                  <div className="fw-bold fs-5">
+                    ₹{quotationCardData?.total_project_cost}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className='col-12 col-lg-4 col-md-6'>
+        <div className="col-12 col-lg-4 col-md-6">
           <div className="card shadow-sm p-4 mb-4">
             <h5 className="fw-bold mb-3">New Quotes</h5>
             <div className="row g-3">
               <div className="col-12 col-lg-6 col-md-6 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+                  style={{
+                    borderTop: "4px solid #3B82F6",
+                    background: "linear-gradient(135deg, #ffffff, #DBEAFE)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Number</div>
-                  <div className="fw-bold fs-5">98</div>
+                  <div className="fw-bold fs-5">
+                    {quotationCardData?.new_quote_numbers}
+                  </div>
                 </div>
               </div>
 
               <div className="col-12 col-lg-6 col-md-6 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #10B981", background: "linear-gradient(135deg, #ffffff, #D1FAE5)" }}
+                  style={{
+                    borderTop: "4px solid #10B981",
+                    background: "linear-gradient(135deg, #ffffff, #D1FAE5)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Value</div>
-                  <div className="fw-bold fs-5">₹310,000</div>
+                  <div className="fw-bold fs-5">
+                    ₹{quotationCardData?.new_quote_total_cost}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className='col-12 col-lg-4 col-md-6'>
+        <div className="col-12 col-lg-4 col-md-6">
           <div className="card shadow-sm p-4 mb-4">
             <h5 className="fw-bold mb-3">Revised Quotes</h5>
             <div className="row g-3">
               <div className="col-12 col-lg-6 col-md-6 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #3B82F6", background: "linear-gradient(135deg, #ffffff, #DBEAFE)" }}
+                  style={{
+                    borderTop: "4px solid #3B82F6",
+                    background: "linear-gradient(135deg, #ffffff, #DBEAFE)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Number</div>
-                  <div className="fw-bold fs-5">65</div>
+                  <div className="fw-bold fs-5">
+                    {quotationCardData?.["Revised Quotes number"]}
+                  </div>
                 </div>
               </div>
 
               <div className="col-12 col-lg-6 col-md-6 ">
                 <div
                   className="rounded p-3 text-center card stats-card animate-card shadow-sm enquiry-status-card"
-                  style={{ borderTop: "4px solid #10B981", background: "linear-gradient(135deg, #ffffff, #D1FAE5)" }}
+                  style={{
+                    borderTop: "4px solid #10B981",
+                    background: "linear-gradient(135deg, #ffffff, #D1FAE5)",
+                  }}
                 >
                   <div className="fw-semibold mb-1">Value</div>
-                  <div className="fw-bold fs-5">₹487,700</div>
+                  <div className="fw-bold fs-5">
+                    ₹
+                    {quotationCardData?.["Revised Quotes total cost"]}
+                  </div>
                 </div>
               </div>
             </div>
@@ -367,12 +366,14 @@ const QuotationTab = ({quotationData}) => {
         </div>
       </div>
 
-      <div className="row g-3">
-        <div className='col-12'>
+      {/* <div className="row g-3">
+        <div className="col-12">
           <div className="card stats-card animate-card shadow-sm">
             <div className="d-flex justify-content-end gap-3 p-3">
               <div className="mb-3" style={{ width: "230px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Product:</label>
+                <label htmlFor="timePeriod" className="form-label fw-bold">
+                  Product:
+                </label>
                 <select className="form-select" id="timePeriod">
                   <option value="basic">Basic Package</option>
                   <option value="standard">Standard Plan</option>
@@ -381,7 +382,9 @@ const QuotationTab = ({quotationData}) => {
                 </select>
               </div>
               <div className="mb-3" style={{ width: "230px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Enquiry Status:</label>
+                <label htmlFor="timePeriod" className="form-label fw-bold">
+                  Enquiry Status:
+                </label>
                 <select className="form-select" id="timePeriod">
                   <option value="all">All</option>
                   <option value="cold">Cold</option>
@@ -390,7 +393,9 @@ const QuotationTab = ({quotationData}) => {
                 </select>
               </div>
               <div className="mb-3" style={{ width: "230px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Quote Type:</label>
+                <label htmlFor="timePeriod" className="form-label fw-bold">
+                  Quote Type:
+                </label>
                 <select className="form-select" id="timePeriod">
                   <option value="all">All</option>
                   <option value="client">New</option>
@@ -398,7 +403,9 @@ const QuotationTab = ({quotationData}) => {
                 </select>
               </div>
               <div className="mb-3" style={{ width: "230px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Quote  Status:</label>
+                <label htmlFor="timePeriod" className="form-label fw-bold">
+                  Quote Status:
+                </label>
                 <select className="form-select" id="timePeriod">
                   <option value="all">All</option>
                   <option value="new">Prepared</option>
@@ -406,7 +413,9 @@ const QuotationTab = ({quotationData}) => {
                 </select>
               </div>
               <div className="mb-3" style={{ width: "230px" }}>
-                <label htmlFor="timePeriod" className="form-label fw-bold">Mode:</label>
+                <label htmlFor="timePeriod" className="form-label fw-bold">
+                  Mode:
+                </label>
                 <select className="form-select" id="timePeriod">
                   <option value="all">All</option>
                   <option value="online">Online</option>
@@ -416,21 +425,26 @@ const QuotationTab = ({quotationData}) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Table Section */}
       <div className="row">
         <div className="col-12">
           <div className="card stats-card">
             <div className="card-header py-3">
-              <h5 className="mb-0" style={{color:"white", fontWeight:"bold"}}>Quotation Details</h5>
+              <h5
+                className="mb-0"
+                style={{ color: "white", fontWeight: "bold" }}
+              >
+                Quotation Details
+              </h5>
             </div>
             <div className="card-body p-4">
-              {employeeStats?.length > 0 ? (
+              {quotationTableData?.data?.length > 0 ? (
                 <div className="table-responsive">
                   <table className="table table-hover table-bordered align-middle">
                     <thead>
-                      <tr className='text-nowrap'>
+                      <tr className="text-nowrap">
                         <th>SL No.</th>
                         <th>Date</th>
                         <th>Enquiry ID</th>
@@ -453,27 +467,29 @@ const QuotationTab = ({quotationData}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {employeeStats.map((row, index) => (
-                        <tr key={index} className='text-nowrap text-center'>
+                      {quotationTableData?.data?.map((row, index) => (
+                        <tr key={index} className="text-nowrap text-center">
                           <td>{index + 1}</td>
                           <td>{row.date}</td>
-                          <td>{row.enquiryId}</td>
-                          <td>{row.name}</td>
-                          <td>{row.contact}</td>
-                          <td>{row.product}</td>
-                          <td>{row.quoteId}</td>
+                          <td>{row.enquiry_id}</td>
+                          <td>{row.customer_name}</td>
+                          <td>{row.customer_phone}</td>
+                          <td>{row.project_name}</td>
+                          <td>{row.quote_id}</td>
                           <td>{row.type}</td>
                           <td>{row.time}</td>
                           <td>{row.quoteNumber}</td>
-                          <td>{row.amount}</td>
+                          <td>{row.project_cost}</td>
                           <td>{row.quoteStatus}</td>
-                          <td>{row.enquiryStage}</td>
-                          <td>{row.enquiryStatus}</td>
+                          <td>{row.stage}</td>
+                          <td>{row.status}</td>
                           <td>{row.conversion}</td>
                           <td>{row.show}</td>
                           <td>{row.mode}</td>
                           <td>
-                            <a href="#" className="text-primary">View</a>
+                            <a href="#" className="text-primary">
+                              View
+                            </a>
                           </td>
                           <td className="d-flex p-4">
                             <button
@@ -493,7 +509,6 @@ const QuotationTab = ({quotationData}) => {
                       ))}
                     </tbody>
                   </table>
-
                 </div>
               ) : (
                 <div className="text-center py-5 no-data">
@@ -502,23 +517,11 @@ const QuotationTab = ({quotationData}) => {
                 </div>
               )}
 
-              {employeeStats?.length > 0 && (
-                <div className="d-flex justify-content-between align-items-center mt-4">
-                  <div className="text-muted">
-                    Showing 1 to {employeeStats.length} of {employeeStats.length} entries
-                  </div>
-                  <ul className="pagination mb-0">
-                    <li className="page-item disabled">
-                      <a className="page-link" href="#">Previous</a>
-                    </li>
-                    <li className="page-item active">
-                      <a className="page-link" href="#">1</a>
-                    </li>
-                    <li className="page-item">
-                      <a className="page-link" href="#">Next</a>
-                    </li>
-                  </ul>
-                </div>
+              {quotationTableData?.data?.length > 0 && (
+                <NumberedPagination
+                  totalPages={quotationTableData?.total_pages}
+                  onPageChange={setquotationPageNo}
+                />
               )}
             </div>
           </div>
