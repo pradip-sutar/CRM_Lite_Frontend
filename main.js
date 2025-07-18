@@ -14,7 +14,7 @@ let backendProcess;
 function startBackend() {
   // Detect packaging vs. dev:
   // `app.isPackaged` is `false` in `electron .` and true when built.
-  const exeName = 'CRM_Lite_backend.exe';
+  const exeName = 'CRM_Lite_backend/CRM_Lite_backend.exe';
 
   const exePath = app.isPackaged
     // In production, extraResources go into process.resourcesPath
@@ -63,7 +63,7 @@ function createWindow() {
   if (process.env.NODE_ENV === "development") {
     const loadURLWithRetry = (retries = 5) => {
       win
-        .loadURL("http://localhost:3006")
+        .loadURL("http://localhost:3000")
         .then(() => console.log("✅ Vite dev server loaded successfully"))
         .catch((err) => {
           if (retries > 0) {

@@ -8,7 +8,7 @@ import React, { lazy, Suspense } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import "@mdi/font/css/materialdesignicons.min.css";
+import "@mdi/font/css/materialdesignicons.min.css";   
 import "./css/rtl/core.css";
 import "./css/rtl/theme-default.css";
 import { ToastContainer } from "react-toastify";
@@ -96,7 +96,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <BrowserRouter>
+      <HashRouter>
         <Provider store={crmStore}>
           <PersistGate loading={null} persistor={persistor}>
             <Suspense fallback={<div>Loading...</div>}>
@@ -318,7 +318,7 @@ const App = () => {
             <Toaster position="top-center" />
           </PersistGate>
         </Provider>
-      </BrowserRouter>
+      </HashRouter>
     </QueryClientProvider>
   );
 };
