@@ -43,42 +43,53 @@ function AddProductForm() {
   const location = useLocation();
   const editData = location?.state?.data || null;
 
-  async function onSubmit(data) {
-    console.log("Submitting data...", data);
-    const formData = new FormData();
+async function onSubmit(data) {
+  console.log("hii", data);
+  const formData = new FormData();
 
-    data?.ProductInfo?.forEach((productDetail, index) => {
-      for (const [key, value] of Object.entries(productDetail)) {
-        if (key === "image" && value?.[0] instanceof File) {
-          formData.append(`${key}[${index}]`, value[0]);
-        } else {
-          formData.append(`${key}[${index}]`, value);
+  data?.ProductInfo?.forEach((productDetail, index) => {
+    for (const [key, value] of Object.entries(productDetail)) {
+      // Only append image if it's a valid File
+      if (key === "image") {
+        const imageFile = value?.[0];
+        if (imageFile instanceof File) {
+          formData.append(`${key}[${index}]`, imageFile);
         }
-      }
-    });
-    if (editData) {
-      const cleanedData = {};
-      for (let [key, value] of formData.entries()) {
-        const cleanedKey = key.replace(/\[\d+\]$/, "");
-        cleanedData[cleanedKey] = value;
-      }
-
-      const res = await editProduct(
-        cleanedData,
-        data?.ProductInfo?.[0]?.project_id
-      );
-      if (res == 200) {
-        reset();
-        navigate(-1);
-      }
-    } else {
-      const res = await postProductForm(formData);
-      if (res == 201) {
-        reset();
-        navigate(-1);
+      } else {
+        formData.append(`${key}[${index}]`, value);
       }
     }
+  });
+
+  if (editData) {
+    const cleanedData = {};
+    for (let [key, value] of formData.entries()) {
+      const cleanedKey = key.replace(/\[\d+\]$/, "");
+      cleanedData[cleanedKey] = value;
+    }
+
+    if (cleanedData.image instanceof File) {
+      console.log("hii");
+      delete cleanedData.image; 
+    }
+
+    const res = await editProduct(
+      cleanedData,
+      data?.ProductInfo?.[0]?.project_id
+    );
+    if (res === 200) {
+      reset();
+      navigate(-1);
+    }
+  } else {
+    const res = await postProductForm(formData);
+    if (res === 201) {
+      reset();
+      navigate(-1);
+    }
   }
+}
+
 
   useEffect(() => {
     if (editData) {
@@ -154,18 +165,20 @@ function AddProductForm() {
                       </div>
                     </div>
                     <div className="col-md-4">
-                        <div className="form-floating form-floating-outline">
-                          <input
-                            type="text"
-                            className={`form-control ${
-                              errors.project ? "is-invalid" : ""
-                            }`}
-                            placeholder="Product Type"
-                            {...register("project")}
-                          />
-                          <label htmlFor="productType">Product Type<span className="text-danger">*</span> </label>
-                        </div>
+                      <div className="form-floating form-floating-outline">
+                        <input
+                          type="text"
+                          className={`form-control ${
+                            errors.project ? "is-invalid" : ""
+                          }`}
+                          placeholder="Product Type"
+                          {...register("project")}
+                        />
+                        <label htmlFor="productType">
+                          Product Type<span className="text-danger">*</span>{" "}
+                        </label>
                       </div>
+                    </div>
                     <div className="col-md-4">
                       <div className="form-floating form-floating-outline">
                         <input
