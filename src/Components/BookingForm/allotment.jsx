@@ -361,6 +361,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("description")}
+                    disabled
                   />
                 </div>
               </div>
@@ -378,6 +379,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("rate")}
+                    disabled
                   />
                 </div>
                 <div className="col-md-4 d-flex flex-d align-items-center">
@@ -392,6 +394,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("product_gst")}
+                    disabled
                   />
                 </div>
 
@@ -407,7 +410,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     disabled="true"
-                    {...register("cost")}
+                    {...register("payable_amount")}
                   />
                 </div>
               </div>
@@ -458,6 +461,7 @@ const Allotment = () => {
                       className="form-control controlFoorm"
                       id="carpetArea"
                       {...register("customer_name")}
+                      disabled
                     />
                   </div>
                 </div>
@@ -468,33 +472,15 @@ const Allotment = () => {
                   >
                     Number:-
                   </label>
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      errors?.customer_mob ? "is-invalid" : ""
-                    }`}
-                    id="carpetArea"
-                    {...register("customer_mob", {
-                      required: "Customer number is required",
-                      minLength: {
-                        value: 10,
-                        message: "Number should be exactly 10 digits",
-                      },
-                      maxLength: {
-                        value: 10,
-                        message: "Number should be exactly 10 digits",
-                      },
-                      pattern: {
-                        value: /^[0-9]{10}$/,
-                        message: "Only numeric digits are allowed",
-                      },
-                    })}
-                  />
-                  {errors?.customer_mob?.message && (
-                    <small style={{ color: "red" }}>
-                      {errors.customer_mob.message}
-                    </small>
-                  )}
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="text"
+                      className="form-control controlFoorm"
+                      id="carpetArea"
+                      {...register("customer_mob")}
+                      disabled
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -511,6 +497,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("customer_email")}
+                    disabled
                   />
                 </div>
                 <div className="col-md-4 d-flex flex-d align-items-center">
@@ -525,6 +512,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("customer_address")}
+                    disabled
                   />
                 </div>
 
@@ -540,6 +528,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("customer_pincode")}
+                    disabled
                   />
                 </div>
               </div>
@@ -556,6 +545,7 @@ const Allotment = () => {
                     className="form-control controlFoorm"
                     id="carpetArea"
                     {...register("customer_gst_no")}
+                    disabled
                   />
                 </div>
 

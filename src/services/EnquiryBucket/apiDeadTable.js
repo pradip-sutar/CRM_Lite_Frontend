@@ -1,21 +1,20 @@
 import apiGateWay from "../ApiGateWay/apiGateWay";
 import toast from "react-hot-toast";
 
-export const movetoDeadTable = async (enquiry_id, invalid) => {
-  const url = `/api/dead_table_handler/?enquiry_id
-=${enquiry_id}
-`;
-  const formatedURL = invalid ? `${url}&reason=invalid` : url;
+export const movetoDeadTable = async (enquiry_id, reason = "invalid") => {
+  const url = `/api/dead_table_handler/?enquiry_id=${enquiry_id}&reason=${encodeURIComponent(reason)}`;
+  
   try {
-    const response = await apiGateWay.delete(formatedURL);
-    if (response.status == 200) {
+    const response = await apiGateWay.delete(url);
+    if (response.status === 200) {
       toast.success("Enquiry moved to Dead Table Successfully");
       return response.status;
     }
   } catch (error) {
-    toast.error("Failed to move Project to Dead Table");
+    toast.error("Failed to move Enquiry to Dead Table");
   }
 };
+
 
 export const deadTableget = async (employee_id, userType) => {
   try {

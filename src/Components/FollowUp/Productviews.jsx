@@ -51,7 +51,7 @@ const Productviews = () => {
     try {
       const res = await apiPostProductView(data?.confirm_project, enquiry_id);
       if (res === 200) {
-        navigate("/followUp", { state: { activeTab } });
+        navigate("/followUp/AccountProfileview", { state: { activeTab } });
       }
     } catch (error) {
       console.log(error);

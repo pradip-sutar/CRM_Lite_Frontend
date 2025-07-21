@@ -143,7 +143,7 @@ const AssignVisit = () => {
       console.log("hii2");
       
       await postSchedule(formatedDataForActivity);
-      navigate("/followUp", { state: { activeTab } })
+      navigate("/followUp/AccountProfileview", { state: { activeTab } })
      
       // await getAssignedVisitByEmployee(logged_employee_Id);
     }

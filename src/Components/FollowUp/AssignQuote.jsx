@@ -55,7 +55,7 @@ const AssignQuote = () => {
     try {
       const data = await getAssignQuote(enquiry_id);
       if (data?.length >= 1) {
-        navigate("/followUp/Quotation", {
+        navigate("/followUp/AccountProfileview", {
           state: { enquiry_id },
         });
       }

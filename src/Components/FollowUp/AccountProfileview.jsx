@@ -221,36 +221,36 @@ const AccountProfileview = ({ id }) => {
 
   const moveToDead = async (Invalid) => {
     console.log(Invalid);
-    Swal.fire({
+
+    const { value: reason, isConfirmed } = await Swal.fire({
       title: "Are you sure?",
-      text: `${
-        Invalid
-          ? "Is this Number Invalid,If Yes then it Will treat as Dead Enquiry !"
-          : "This Enquiry is Going to listed as Dead?"
-      }`,
-      icon: "warning",
+      text: Invalid
+        ? "Is this number invalid? If yes, it will be treated as a dead enquiry!"
+        : "This enquiry is going to be listed as dead.",
+      input: "text",
+      inputLabel: "Reason (optional)",
+      inputPlaceholder: "Enter reason here...",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, Dead it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          let res;
-          if (Invalid) {
-            res = await movetoDeadTable(enquiry_id, Invalid);
-          } else {
-            res = await movetoDeadTable(enquiry_id);
-          }
-
-          if (res == 200) {
-            navigate("/followUp", { state: { activeTab } });
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
     });
+
+    if (isConfirmed) {
+      try {
+        const finalReason = reason?.trim() ? reason.trim() : "invalid"; // use input or default
+        const res = await movetoDeadTable(enquiry_id, finalReason);
+
+        if (res == 200) {
+          navigate("/followUp", { state: { activeTab } });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const StarRating = ({ rate }) => {
@@ -572,7 +572,7 @@ const AccountProfileview = ({ id }) => {
                       >
                         <DoneOutlinedIcon sx={{ color: "#636578b8" }} />
                         <Typography variant="body2" sx={{ color: "#636578" }}>
-                          <strong>Status:</strong> Demo Scheduled
+                          <strong>Status:</strong> {status}
                         </Typography>
                       </Stack>
 
@@ -1824,8 +1824,7 @@ const AccountProfileview = ({ id }) => {
                               }}
                             >
                               <Box>
-                                <Grid
-                                >
+                                <Grid>
                                   <Typography
                                     sx={{
                                       fontSize: {
@@ -1838,8 +1837,6 @@ const AccountProfileview = ({ id }) => {
                                   >
                                     Create
                                   </Typography>
-
-                                
                                 </Grid>
 
                                 {!(confirm_project == null) ? (
@@ -2026,8 +2023,8 @@ const AccountProfileview = ({ id }) => {
                                   </>
                                 )}
                               </Box>
-                                
-                            <Avatar
+
+                              <Avatar
                                 sx={{
                                   backgroundColor: "#8b8ee55c",
                                   color: "#5d3ff8",

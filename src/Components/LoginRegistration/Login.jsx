@@ -466,8 +466,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
-  
+  const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
+
   const getGoogleCodeFromUrl = () => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get("code");
@@ -495,8 +495,7 @@ const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
         code,
         redirect_uri: "http://localhost:3000/",
         grant_type: "authorization_code",
-        client_id:
-          clientId,
+        client_id: clientId,
         client_secret: clientSecret,
       });
 
@@ -508,60 +507,59 @@ const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
           setErrorMessage("Failed to retrieve Google user info.");
           return;
         }
-        
-       try {
-  const authResponse = await axios.post(
-    "http://localhost:8001/api/googleauth/login/",
-    {
-      username: userInfo.email,
-    }
-  );
 
-  // ✅ Login successful
-  crmStore.dispatch(
-    addUserInfo({
-      userType: authResponse.data.user_type,
-      refresh_token: authResponse.data.accessToken,
-      access_token: authResponse.data.accessToken,
-      employee_id: authResponse.data.employee_id,
-      employee_name: authResponse.data.employee_name,
-      employee_mobno: authResponse.data.employee_mobno,
-      email: authResponse.data.email,
-      department_id: authResponse.data.department_id,
-      designation_id: authResponse.data.designation_id,
-    })
-  );
-  navigate("/dashboard");
-} catch (err) {
-  try {
-    const createResponse = await axios.post(
-      "http://localhost:8001/api/create-user/",
-      {
-        username: userInfo.email,
-        name: userInfo.name
-      }
-    );
+        try {
+          const authResponse = await axios.post(
+            "http://localhost:8001/api/googleauth/login/",
+            {
+              username: userInfo.email,
+            }
+          );
 
-    crmStore.dispatch(
-      addUserInfo({
-        userType: createResponse.data.user_type,
-        refresh_token: createResponse.data.accessToken,
-        access_token: createResponse.data.accessToken,
-        employee_id: createResponse.data.employee_id,
-        employee_name: createResponse.data.employee_name,
-        employee_mobno: createResponse.data.employee_mobno,
-        email: createResponse.data.email,
-        department_id: createResponse.data.department_id,
-        designation_id: createResponse.data.designation_id,
-      })
-    );
-    navigate("/dashboard");
-  } catch (createErr) {
-    console.error("User creation failed:", createErr);
-    setErrorMessage("User creation failed. Please try again.");
-  }
-}
+          // ✅ Login successful
+          crmStore.dispatch(
+            addUserInfo({
+              userType: authResponse.data.user_type,
+              refresh_token: authResponse.data.accessToken,
+              access_token: authResponse.data.accessToken,
+              employee_id: authResponse.data.employee_id,
+              employee_name: authResponse.data.employee_name,
+              employee_mobno: authResponse.data.employee_mobno,
+              email: authResponse.data.email,
+              department_id: authResponse.data.department_id,
+              designation_id: authResponse.data.designation_id,
+            })
+          );
+          navigate("/dashboard");
+        } catch (err) {
+          try {
+            const createResponse = await axios.post(
+              "http://localhost:8001/api/create-user/",
+              {
+                username: userInfo.email,
+                name: userInfo.name,
+              }
+            );
 
+            crmStore.dispatch(
+              addUserInfo({
+                userType: createResponse.data.user_type,
+                refresh_token: createResponse.data.accessToken,
+                access_token: createResponse.data.accessToken,
+                employee_id: createResponse.data.employee_id,
+                employee_name: createResponse.data.employee_name,
+                employee_mobno: createResponse.data.employee_mobno,
+                email: createResponse.data.email,
+                department_id: createResponse.data.department_id,
+                designation_id: createResponse.data.designation_id,
+              })
+            );
+            navigate("/dashboard");
+          } catch (createErr) {
+            console.error("User creation failed:", createErr);
+            setErrorMessage("User creation failed. Please try again.");
+          }
+        }
       } else {
         setErrorMessage("Failed to retrieve access token.");
       }
@@ -755,8 +753,30 @@ const clientSecret = import.meta.env.VITE_GOOGLE_CLIENT_SECRET;
             )}
           </Button>
         </form>
-        <div>
-          <Button onClick={handleGoogleLogin} disabled={isLoading}>
+        <div style={{ marginTop: "20px" }}>
+          <Button
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            variant="light"
+            style={{
+              backgroundColor: "#fff",
+              color: "#444",
+              border: "1px solid #ddd",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+              width: "100%",
+              padding: "10px 15px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              fontWeight: 500,
+            }}
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+              style={{ width: "20px", height: "20px" }}
+            />
             Login via Google
           </Button>
         </div>

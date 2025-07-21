@@ -69,7 +69,6 @@ async function onSubmit(data) {
     }
 
     if (cleanedData.image instanceof File) {
-      console.log("hii");
       delete cleanedData.image; 
     }
 

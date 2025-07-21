@@ -216,9 +216,10 @@ function Booking() {
                         <thead className="table-secondary">
                           <tr>
                             <th style={{ width: "35px" }}>SL No.</th>
+                            <th style={{ width: "100px" }}>Customer </th>
+                            <th style={{ width: "100px" }}>Customer name </th>
                             <th style={{ width: "200px" }}>Project Name </th>
                             <th style={{ width: "150px" }}>Quantity </th>
-                            <th style={{ width: "100px" }}>Customer </th>
                             <th style={{ width: "200px" }}>Amount</th>
                             <th style={{ width: "100px" }}>Action</th>
                           </tr>
@@ -232,9 +233,10 @@ function Booking() {
                                     index +
                                     1}
                                 </td>
+                                <td>{data?.customer}</td>
+                                <td>{data?.customer_name}</td>
                                 <td>{data?.project_name}</td>
                                 <td>{data?.quantity}</td>
-                                <td>{data?.customer}</td>
                                 <td>{data?.payment_details?.amount}</td>
                                 <td>
                                   <div

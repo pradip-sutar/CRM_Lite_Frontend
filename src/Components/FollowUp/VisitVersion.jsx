@@ -44,6 +44,7 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
     purpose: row.purpose || "",
     siteManager: row.siteManager || "",
   });
+  console.log("Visit Details:", visitDetails);
 
   const handleNameDesignationChange = (index, field, value) => {
     const updatedData = [...nameDesignationData];
@@ -146,11 +147,11 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
     const result = await GenerateVisitVersion(row.id);
     setVersionAndVisit(result);
     setTimeout(() => {
-      generatePdf();
+      generatePdf(result);
     }, 300);
   };
 
-  const generatePdf = async () => {
+  const generatePdf = async (result) => {
     try {
       if (versionAndVisit) {
         const element = document.getElementById("content-for-pdf");
@@ -183,7 +184,7 @@ const VisitVersion = ({ row, companyInfo, onNavigate }) => {
         formData.append("enquiry_id", row?.enquiry_id);
         formData.append(
           "version",
-          versionAndVisit?.version || visitDetails.version
+          result?.version || visitDetails.version
         );
 
         const res = await postVisitPdf(formData);
